@@ -1,0 +1,19 @@
+Images à exporter depuis Figma, avec exactement ces noms.
+Photos en JPG compressé, 300 Ko maximum chacune.
+
+Logo et icônes
+- logo.png, favicon.png
+- icon-compte.svg, icon-mail.svg
+- icon-instagram.svg, icon-facebook.svg, icon-youtube.svg, icon-tiktok.svg, icon-x.svg
+
+Accueil
+- hero-accueil.jpg
+- valeur-savoir-faire.jpg, valeur-creativite.jpg, valeur-qualite.jpg, valeur-passion.jpg
+
+Recettes
+- recette-fondant.jpg, recette-mousse.jpg, recette-chocolat-chaud.jpg,
+  recette-entremets.jpg, recette-glace.jpg
+
+À propos et contact
+- atelier.jpg
+- carte-sablon.jpg
