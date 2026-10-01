@@ -35,21 +35,24 @@ require RACINE_PATH.'/view/inc/header.php';
     <p class="form-feedback"></p>
 </form>
 
+
+
 <section class="contact-infos">
-    <div class="container contact-infos-inner">
+    <div class="contact-infos-inner">
         <div class="contact-texte">
             <h2>Retrouvez-nous</h2>
             <address>
                 Rue du Sablon, 56<br />
                 <a href="mailto:contact@maisonrosalie.be">contact@maisonrosalie.be</a>
             </address>
+            <br>
             <h2>Horaire</h2>
             <p>Lundi au Vendredi<br />De 9H à 18h</p>
         </div>
-
-        <img class="contact-map" src="<?= RACINE_URL ?>assets/carte-sablon.jpg" alt="Plan du quartier du Sablon avec l'emplacement de la boutique" width="634" height="422" loading="lazy" />
     </div>
+    <div class="map-loc" id="map"></div>
 </section>
+
 
 <script src="<?= RACINE_URL ?>js/contact.js" defer></script>
 

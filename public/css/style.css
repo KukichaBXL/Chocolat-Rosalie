@@ -356,27 +356,32 @@ main:has(.contact-infos) + .site-footer {
 }
 
 .contact-infos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: start;
   margin-top: 90px;
   padding-block: 120px 100px;
   background: var(--bleu-nuit);
   color: var(--dore);
 }
 
-.contact-infos-inner {
+/* .contact-infos-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 60px;
-}
+} */
 
 .contact-texte {
-  text-align: center;
+  background-color: #293b5e;
+  padding: 50px;
+  text-align: start;
   font-family: var(--police-texte);
   font-weight: 400;
-  font-size: 23px;
+  font-size: 18px;
 
   h2 {
-    margin-top: 40px;
     font-family: var(--police-italique);
     font-style: italic;
     font-size: 45px;
@@ -387,10 +392,12 @@ main:has(.contact-infos) + .site-footer {
   }
 }
 
-.contact-map {
-  width: 634px;
-  border-radius: 12px;
+#map { 
+  width: 350px;
+  height: 330px; 
 }
+
+
 
 /* À propos */
 
