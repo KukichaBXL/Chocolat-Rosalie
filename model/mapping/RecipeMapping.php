@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace model\mapping;
 
+
 use model\abstract\AbstractMapping;
 use Exception;
 
@@ -73,7 +74,7 @@ class RecipeMapping extends AbstractMapping
         return $this->photo_main;
     }
     // Setter
-    public function setPhotoMain(string $photo_main): void
+    public function setPhotoMain(?string $photo_main): void
     {
         $this->photo_main = $photo_main;
     }
