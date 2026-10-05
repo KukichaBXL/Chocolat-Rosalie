@@ -392,31 +392,87 @@ main:has(.contact-infos) + .site-footer {
   }
 }
 
-#map { 
+#map {
   width: 350px;
-  height: 330px; 
+  height: 330px;
 }
 
+/* ---------- À propos : l'histoire de la maison ---------- */
 
+.histoire {
+  margin-top: 20px;
+  text-align: center;
+  font-family: var(--police-texte);
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.2;
 
-/* À propos */
+  /* "Maison Rosalie" en bleu nuit, puis "Depuis 1860" en doré sur la ligne du dessous */
+  h1 {
+    margin-bottom: 27px;
+    font-family: var(--police-italique);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 76px;
 
-.a-propos {
-  margin-top: 70px;
-  font-size: 20px;
+    span {
+      display: block;
+      color: var(--dore);
+    }
+  }
 
-  h1,
+  /* "166 ans de savoir-faire" : même taille que le texte, mais dorée */
   h2 {
     font-size: inherit;
+    font-weight: inherit;
+    color: var(--dore);
+    margin-bottom: 27px;
   }
 
-  p,
-  h2 {
-    margin-top: 1.3em;
+  p {
+    margin-bottom: 20px;
   }
 
-  .a-propos-image {
-    margin-top: 45px;
+  p:last-child {
+    margin-bottom: 0;
+  }
+
+  .histoire-image {
+    width: 419px;
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 419 / 279;
+    margin: 44px auto 44px;
+    border-radius: 66px;
+    object-fit: cover;
+  }
+}
+
+main:has(.histoire) + .site-footer {
+  margin-top: 80px;
+}
+
+@media (max-width: 768px) {
+  .histoire {
+    font-size: 19px;
+
+    h1 {
+      font-size: 52px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .histoire {
+    font-size: 17px;
+
+    h1 {
+      font-size: 40px;
+    }
+
+    .histoire-image {
+      border-radius: 44px;
+    }
   }
 }
 
