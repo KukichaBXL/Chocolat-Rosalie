@@ -486,6 +486,7 @@ main:has(.histoire) + .site-footer {
 }
 
 .main-img {
+  margin: 40px;
   img{
     width: 400px;
     height: 600px;
@@ -493,11 +494,9 @@ main:has(.histoire) + .site-footer {
 }
 
 .main-txt {
-
-  width: 40%;
-  padding: 40px;
-  position: relative;
-  left: 120px;
+  margin: 40px;
+  width: 40vw;
+  padding: 10px;
 
   h1{
     margin: 30px;
@@ -633,6 +632,31 @@ main:has(.histoire) + .site-footer {
   }
 }
 
+
+/* VERSION DU CAROUSELLE PLUS SIMPLE A LIER AVEC LE JS */
+
+/* .carousel-viewport {
+  flex: 1;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none; 
+}
+
+.carousel-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.recettes-grid {
+  display: flex;
+  gap: 20px;
+}
+
+.recette-card {
+  flex: 0 0 350px;
+  scroll-snap-align: start;
+} */
+
 /* Page d'une recette */
 
 .recette-top {
@@ -729,10 +753,6 @@ main:has(.histoire) + .site-footer {
     gap: 25px;
   }
 
-  .recettes-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .recette-top {
     grid-template-columns: 1fr 1fr;
   }
@@ -748,6 +768,10 @@ main:has(.histoire) + .site-footer {
 
   .page-title h1 {
     font-size: 60px;
+  }
+
+  .main-txt {
+    width: 70%;
   }
 }
 
@@ -825,6 +849,23 @@ main:has(.histoire) + .site-footer {
 
   .page-title p {
     font-size: 22px;
+  }
+
+  .main-img {
+
+    img{
+      width: 700px;
+    }
+  }
+
+  .main-txt {
+    width: 100%;
+    position: relative;
+    bottom: 50px;
+    p{
+      font-size: 16px;
+    }
+    
   }
 }
 
