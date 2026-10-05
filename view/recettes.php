@@ -14,22 +14,43 @@ $recettes = [
 ];
 ?>
 
-<section class="container page-title">
-    <h1>Nos recettes</h1>
-    <p>Des recettes transmises depuis 1860, à découvrir pas à pas.</p>
+<section class="main-recette">
+    <div class="main-img">
+    <img src="./assets/6a100a69e55b9f863016f75d8723207f49f807d1.jpg" alt="recette">
+    </div>
+    <div class="main-txt">
+        <h1>Nos recettes</h1>
+        <p>Bienvenue dans notre espace dédié aux recettes ! 
+        Vous retrouverez ici toutes nos recettes maison, inspirées de l’univers de Rosalie et préparées avec soin. Des recettes gourmandes, savoureuses et accessibles, pour découvrir nos produits autrement et partager un petit bout de notre savoir-faire.
+        Que vous soyez à la recherche d’une idée pour vous régaler, d’une nouvelle recette à tester ou simplement curieux de découvrir nos créations, vous trouverez ici de quoi vous inspirer. Bonne découverte et surtout… </p>
+        <br>
+        <p class="regale">Régalez-vous !</p>
+    </div>
+    
 </section>
 
-<ul class="container recettes-grid">
-    <?php foreach ($recettes as $recette) : ?>
-        <li class="recette-card">
-            <img src="<?= RACINE_URL ?>assets/<?= $recette['photo_main'] ?>" alt="" width="400" height="300" loading="lazy" />
-            <div class="recette-card-body">
-                <h2><?= $recette['title'] ?></h2>
-                <p>Difficulté : <?= $recette['difficulty'] ?></p>
-                <a href="<?= RACINE_URL ?>recette/<?= $recette['recipes_slug'] ?>" class="btn-pill">Voir la recette</a>
-            </div>
-        </li>
-    <?php endforeach; ?>
-</ul>
+<div class="carousel container">
+    <button class="carousel-btn carousel-prev" aria-label="Recette précédente">&#8249;</button>
+
+    <div class="carousel-viewport">
+        <ul class="recettes-grid">
+            <?php foreach ($recettes as $recette) : ?>
+                <li class="recette-card">
+                    <div class="recette-card-body" style="background-image: url('<?= RACINE_URL ?>assets/<?= $recette['photo_main'] ?>')">
+                        <div class="recette-card-body-txt">
+                            <h2><?= $recette['title'] ?></h2>
+                            <p>Difficulté : <?= $recette['difficulty'] ?></p>
+                            <a href="<?= RACINE_URL ?>recette/<?= $recette['recipes_slug'] ?>" class="btn-pill recette-btn">Voir la recette</a>
+                        </div>
+                    </div>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+
+    <button class="carousel-btn carousel-next" aria-label="Recette suivante">&#8250;</button>
+</div>
+
+<script src="./js/recettes.js"></script>
 
 <?php require RACINE_PATH.'/view/inc/footer.php'; ?>
