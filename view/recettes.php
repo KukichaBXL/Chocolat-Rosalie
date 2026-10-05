@@ -14,9 +14,19 @@ $recettes = [
 ];
 ?>
 
-<section class="container page-title">
-    <h1>Nos recettes</h1>
-    <p>Des recettes transmises depuis 1860, à découvrir pas à pas.</p>
+<section class="main-recette">
+    <div class="main-img">
+    <img src="./assets/6a100a69e55b9f863016f75d8723207f49f807d1.jpg" alt="recette">
+    </div>
+    <div class="main-txt">
+        <h1>Nos recettes</h1>
+        <p>Bienvenue dans notre espace dédié aux recettes ! 
+        Vous retrouverez ici toutes nos recettes maison, inspirées de l’univers de Rosalie et préparées avec soin. Des recettes gourmandes, savoureuses et accessibles, pour découvrir nos produits autrement et partager un petit bout de notre savoir-faire.
+        Que vous soyez à la recherche d’une idée pour vous régaler, d’une nouvelle recette à tester ou simplement curieux de découvrir nos créations, vous trouverez ici de quoi vous inspirer. Bonne découverte et surtout… </p>
+        <br>
+        <p class="regale">Régalez-vous !</p>
+    </div>
+    
 </section>
 
 <ul class="container recettes-grid">

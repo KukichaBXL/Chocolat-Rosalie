@@ -478,6 +478,47 @@ main:has(.histoire) + .site-footer {
 
 /* Liste des recettes */
 
+.main-recette {
+  margin: 40px;
+  display: flex;
+  justify-content: center;
+
+}
+
+.main-img {
+  img{
+    width: 400px;
+    height: 600px;
+  }
+}
+
+.main-txt {
+
+  width: 40%;
+  padding: 40px;
+  position: relative;
+  left: 120px;
+
+  h1{
+    margin: 30px;
+    text-align: center;
+    color: var(--dore);
+    font-family: var(--police-italique);
+    font-weight: 200;
+    font-size: 65px;
+  }
+
+  p{
+    font-family: var(--police-texte);
+    font-size: 22px;
+    font-weight: 100;
+  }
+
+  .regale {
+    text-align: center;
+  }
+}
+
 .recettes-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
