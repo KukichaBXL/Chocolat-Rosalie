@@ -587,9 +587,50 @@ main:has(.histoire) + .site-footer {
   }
 }
 
-@keyframes myAnim {
-  from{bottom: 0px}
-  top{bottom: 180px}
+/****************************** CAROUSELLE  ********************************/
+
+.carousel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.carousel-viewport {
+  flex: 1;
+  overflow: hidden;
+}
+
+.recettes-grid {
+  display: flex;
+  gap: 20px;
+  transition: transform 0.5s ease;
+}
+
+.recette-card {
+  flex: 0 0 350px;
+}
+
+.carousel-btn {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--bleu-nuit);
+  border-radius: 50%;
+  background: none;
+  color: var(--bleu-nuit);
+  font-size: 32px;
+  line-height: 1;
+  transition: background 0.3s, color 0.3s;
+
+  &:hover:not(:disabled) {
+    background: var(--bleu-nuit);
+    color: var(--dore);
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
 }
 
 /* Page d'une recette */
@@ -806,8 +847,18 @@ main:has(.histoire) + .site-footer {
     height: 250px;
   }
 
-  .recettes-grid {
-    grid-template-columns: 1fr;
+    .recette-card {
+    flex: 0 0 100%;
+  }
+
+  .recette-card-body {
+    width: 100%;
+  }
+
+  .carousel-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 24px;
   }
 
   .value-list img {

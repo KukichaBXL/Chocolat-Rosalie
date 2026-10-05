@@ -29,18 +29,28 @@ $recettes = [
     
 </section>
 
-<ul class="container recettes-grid">
-    <?php foreach ($recettes as $recette) : ?>
-        <li class="recette-card"  >
-            <div class="recette-card-body"  style="background-image: url('<?= RACINE_URL ?>assets/<?= $recette['photo_main'] ?>">
-                <div class="recette-card-body-txt">
-                    <h2><?= $recette['title'] ?></h2>
-                    <p>Difficulté : <?= $recette['difficulty'] ?></p>
-                    <a href="<?= RACINE_URL ?>recette/<?= $recette['recipes_slug'] ?>" class="btn-pill recette-btn">Voir la recette</a>
-                </div>
-            </div>
-        </li>
-    <?php endforeach; ?>
-</ul>
+<div class="carousel container">
+    <button class="carousel-btn carousel-prev" aria-label="Recette précédente">&#8249;</button>
+
+    <div class="carousel-viewport">
+        <ul class="recettes-grid">
+            <?php foreach ($recettes as $recette) : ?>
+                <li class="recette-card">
+                    <div class="recette-card-body" style="background-image: url('<?= RACINE_URL ?>assets/<?= $recette['photo_main'] ?>')">
+                        <div class="recette-card-body-txt">
+                            <h2><?= $recette['title'] ?></h2>
+                            <p>Difficulté : <?= $recette['difficulty'] ?></p>
+                            <a href="<?= RACINE_URL ?>recette/<?= $recette['recipes_slug'] ?>" class="btn-pill recette-btn">Voir la recette</a>
+                        </div>
+                    </div>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+
+    <button class="carousel-btn carousel-next" aria-label="Recette suivante">&#8250;</button>
+</div>
+
+<script src="./js/recettes.js"></script>
 
 <?php require RACINE_PATH.'/view/inc/footer.php'; ?>
