@@ -31,12 +31,13 @@ $recettes = [
 
 <ul class="container recettes-grid">
     <?php foreach ($recettes as $recette) : ?>
-        <li class="recette-card">
-            <img src="<?= RACINE_URL ?>assets/<?= $recette['photo_main'] ?>" alt="" width="400" height="300" loading="lazy" />
-            <div class="recette-card-body">
-                <h2><?= $recette['title'] ?></h2>
-                <p>Difficulté : <?= $recette['difficulty'] ?></p>
-                <a href="<?= RACINE_URL ?>recette/<?= $recette['recipes_slug'] ?>" class="btn-pill">Voir la recette</a>
+        <li class="recette-card"  >
+            <div class="recette-card-body"  style="background-image: url('<?= RACINE_URL ?>assets/<?= $recette['photo_main'] ?>">
+                <div class="recette-card-body-txt">
+                    <h2><?= $recette['title'] ?></h2>
+                    <p>Difficulté : <?= $recette['difficulty'] ?></p>
+                    <a href="<?= RACINE_URL ?>recette/<?= $recette['recipes_slug'] ?>" class="btn-pill recette-btn">Voir la recette</a>
+                </div>
             </div>
         </li>
     <?php endforeach; ?>

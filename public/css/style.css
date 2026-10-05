@@ -520,30 +520,42 @@ main:has(.histoire) + .site-footer {
 }
 
 .recettes-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
-  margin-top: 60px;
+  display: flex;
+  gap: 20px;
 }
 
 .recette-card {
-  border-radius: 19px;
-  overflow: hidden;
+  
   background: var(--bleu-nuit);
   color: white;
 
-  img {
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-  }
+}
+
+.slide-active{
+  display: flex;
 }
 
 .recette-card-body {
+  background-size: cover;
+  background-position: center;
+  width: 350px;
+  height: 350px;
+  overflow: hidden;
+}
+
+.recette-card-body-txt {
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding: 20px;
+  background-color: var(--bleu-nuit);
+  opacity: 0;
+  transform: translateY(200%);
+
+  transition: transform 0.5s ease, opacity 0.5s ease;;
+
+  /* position: relative;
+    top: 350px; */
 
   h2 {
     color: var(--dore);
@@ -555,7 +567,29 @@ main:has(.histoire) + .site-footer {
     color: var(--dore);
     font-size: 22px;
     text-align: center;
+    transition-duration: 0.4s;
   }
+}
+
+.recette-btn:hover{
+   background-color: var(--dore);
+   color: var(--bleu-nuit);
+   
+}
+
+.recette-card-body:hover {
+  
+  .recette-card-body-txt{
+    display: flex;
+    opacity: 1;
+    transform: translateY(105%);
+    
+  }
+}
+
+@keyframes myAnim {
+  from{bottom: 0px}
+  top{bottom: 180px}
 }
 
 /* Page d'une recette */
