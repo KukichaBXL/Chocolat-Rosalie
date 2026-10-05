@@ -11,23 +11,19 @@ require RACINE_PATH.'/view/inc/header.php';
 
 <form class="container contact-form" method="post" novalidate>
     <div class="form-field">
-        <label for="nom">Nom</label>
-        <input type="text" id="nom" name="nom" required maxlength="80" autocomplete="name" />
+        <input type="text" id="nom" name="nom" required maxlength="80" autocomplete="name" placeholder="Nom & prénom" />
         <span class="form-error" data-error-for="nom"></span>
     </div>
     <div class="form-field">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required maxlength="120" autocomplete="email" />
+        <input type="email" id="email" name="email" required maxlength="120" autocomplete="email" placeholder="Email" />
         <span class="form-error" data-error-for="email"></span>
     </div>
     <div class="form-field">
-        <label for="sujet">Sujet</label>
-        <input type="text" id="sujet" name="sujet" maxlength="120" />
+        <input type="text" id="sujet" name="sujet" maxlength="120" placeholder="Sujet"/>
         <span class="form-error" data-error-for="sujet"></span>
     </div>
     <div class="form-field message">
-        <label for="message">Message</label>
-        <textarea id="message" name="message" required maxlength="500"></textarea>
+        <textarea id="message" name="message" required maxlength="500" placeholder="Votre message ..."></textarea>
         <span class="form-error" data-error-for="message"></span>
     </div>
 
