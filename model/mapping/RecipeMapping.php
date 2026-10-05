@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace model\mapping;
 
+
 use model\abstract\AbstractMapping;
 use Exception;
 
@@ -58,11 +59,11 @@ class RecipeMapping extends AbstractMapping
     // Getter 
     public function getDescription (): ?string
     {
-        return $this->title;
+        return $this->description;
     }
 
     // Setter
-    public function setDecription (string $description): void 
+    public function setDescription(?string $description): void 
     {
         $this->description = $description;
     }
@@ -73,13 +74,13 @@ class RecipeMapping extends AbstractMapping
         return $this->photo_main;
     }
     // Setter
-    public function setPhotoMain(string $photo_main): void
+    public function setPhotoMain(?string $photo_main): void
     {
         $this->photo_main = $photo_main;
     }
 
     // Getter
-    public function getPrepareTime(): ?string
+    public function getPrepareTime(): ?int
     {
         return $this->prepare_time;
     }
@@ -106,7 +107,7 @@ class RecipeMapping extends AbstractMapping
         return $this->portions;
     }
     // Setter
-    public function setPortion(int $portions): void
+    public function setPortions(int $portions): void
     {
         $this->portions = $portions;
     }
