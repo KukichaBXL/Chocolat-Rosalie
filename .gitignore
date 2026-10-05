@@ -2,4 +2,4 @@
 config.php
 
 # ignore backup WorkBench
-/data/
+data/recipes.sql

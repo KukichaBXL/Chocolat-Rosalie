@@ -82,6 +82,17 @@ class UserMapping extends AbstractMapping
         $this->role = $role;
     }
 
+    // Getter created_at
+    public function getCreatedAt(): ?string
+    {
+        return $this->created_at;
+    }
+
+    // Setter created_at
+    public function setCreatedAt(string $created_at): void
+    {
+        $this->created_at = $created_at;
+    }
 
 }
 
