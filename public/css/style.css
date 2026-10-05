@@ -478,31 +478,84 @@ main:has(.histoire) + .site-footer {
 
 /* Liste des recettes */
 
-.recettes-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
-  margin-top: 60px;
+.main-recette {
+  margin: 40px;
+  display: flex;
+  justify-content: center;
+
 }
 
-.recette-card {
-  border-radius: 19px;
-  overflow: hidden;
-  background: var(--bleu-nuit);
-  color: white;
-
-  img {
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
+.main-img {
+  img{
+    width: 400px;
+    height: 600px;
   }
 }
 
+.main-txt {
+
+  width: 40%;
+  padding: 40px;
+  position: relative;
+  left: 120px;
+
+  h1{
+    margin: 30px;
+    text-align: center;
+    color: var(--dore);
+    font-family: var(--police-italique);
+    font-weight: 200;
+    font-size: 65px;
+  }
+
+  p{
+    font-family: var(--police-texte);
+    font-size: 22px;
+    font-weight: 100;
+  }
+
+  .regale {
+    text-align: center;
+  }
+}
+
+.recettes-grid {
+  display: flex;
+  gap: 20px;
+}
+
+.recette-card {
+  
+  background: var(--bleu-nuit);
+  color: white;
+
+}
+
+.slide-active{
+  display: flex;
+}
+
 .recette-card-body {
+  background-size: cover;
+  background-position: center;
+  width: 350px;
+  height: 350px;
+  overflow: hidden;
+}
+
+.recette-card-body-txt {
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding: 20px;
+  background-color: var(--bleu-nuit);
+  opacity: 0;
+  transform: translateY(200%);
+
+  transition: transform 0.5s ease, opacity 0.5s ease;;
+
+  /* position: relative;
+    top: 350px; */
 
   h2 {
     color: var(--dore);
@@ -514,6 +567,69 @@ main:has(.histoire) + .site-footer {
     color: var(--dore);
     font-size: 22px;
     text-align: center;
+    transition-duration: 0.4s;
+  }
+}
+
+.recette-btn:hover{
+   background-color: var(--dore);
+   color: var(--bleu-nuit);
+   
+}
+
+.recette-card-body:hover {
+  
+  .recette-card-body-txt{
+    display: flex;
+    opacity: 1;
+    transform: translateY(105%);
+    
+  }
+}
+
+/****************************** CAROUSELLE  ********************************/
+
+.carousel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.carousel-viewport {
+  flex: 1;
+  overflow: hidden;
+}
+
+.recettes-grid {
+  display: flex;
+  gap: 20px;
+  transition: transform 0.5s ease;
+}
+
+.recette-card {
+  flex: 0 0 350px;
+}
+
+.carousel-btn {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--bleu-nuit);
+  border-radius: 50%;
+  background: none;
+  color: var(--bleu-nuit);
+  font-size: 32px;
+  line-height: 1;
+  transition: background 0.3s, color 0.3s;
+
+  &:hover:not(:disabled) {
+    background: var(--bleu-nuit);
+    color: var(--dore);
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: default;
   }
 }
 
@@ -731,8 +847,18 @@ main:has(.histoire) + .site-footer {
     height: 250px;
   }
 
-  .recettes-grid {
-    grid-template-columns: 1fr;
+    .recette-card {
+    flex: 0 0 100%;
+  }
+
+  .recette-card-body {
+    width: 100%;
+  }
+
+  .carousel-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 24px;
   }
 
   .value-list img {
