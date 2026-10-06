@@ -55,9 +55,6 @@ require RACINE_PATH.'/view/inc/header.php';
                         <li>
                             <strong><?= htmlspecialchars($etape->getStepTitle()) ?></strong><br />
                             <?= htmlspecialchars($etape->getDescription()) ?>
-                            <?php if (!empty($etape->getStepPhoto())) : ?>
-                                <img src="<?= RACINE_URL ?>assets/<?= htmlspecialchars($etape->getStepPhoto()) ?>" alt="Étape <?= $etape->getStepNumber() ?>" width="320" loading="lazy" />
-                            <?php endif; ?>
                         </li>
                     <?php endforeach; ?>
                 </ol>
@@ -68,6 +65,17 @@ require RACINE_PATH.'/view/inc/header.php';
             <img class="recette-photo" src="<?= RACINE_URL ?>assets/<?= htmlspecialchars($recette->getPhotoMain()) ?>" alt="<?= htmlspecialchars($recette->getTitle()) ?>" width="510" height="854" />
         <?php endif; ?>
     </div>
+    <h2 style="margin-top:50px;" class="etape-titre">Étapes : </h2>
+    <div class="recette-photo-step" >
+        <?php foreach ($etapes as $etape) : ?>
+            <?php if (!empty($etape->getStepPhoto())) : ?>
+                <img src="<?= RACINE_URL ?>assets/<?= htmlspecialchars($etape->getStepPhoto()) ?>" alt="Étape <?= $etape->getStepNumber() ?>" width="120" height="120" loading="lazy" />
+            <?php endif; ?>
+                        
+        <?php endforeach; ?>
+        
+    </div>
+
 
     <!-- les avis branchés sur la base (à faire)-->
     <section class="commentaires">

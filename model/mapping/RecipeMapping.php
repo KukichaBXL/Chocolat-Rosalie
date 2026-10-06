@@ -24,6 +24,8 @@ class RecipeMapping extends AbstractMapping
     protected ?string $difficulty = null;
     protected ?int $users_id = null;
     protected ?string $recipes_slug = null;
+    // MAX
+    // protected ?string $PhotoStep = null;
 
 
 
