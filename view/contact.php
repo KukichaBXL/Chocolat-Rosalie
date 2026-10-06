@@ -4,12 +4,12 @@ $titre = 'Contact';
 require RACINE_PATH.'/view/inc/header.php';
 ?>
 
-<section class="container page-title">
+<section class="container page-title reveal">
     <h1>Contactez-nous</h1>
     <p>Un petit message suffit pour nous faire fondre de plaisir !</p>
 </section>
 
-<form class="container contact-form" method="post" novalidate>
+<form class="container contact-form reveal" method="post" novalidate>
     <div class="form-field">
         <input type="text" id="nom" name="nom" required maxlength="80" autocomplete="name" placeholder="Nom & prénom" />
         <span class="form-error" data-error-for="nom"></span>
@@ -51,5 +51,6 @@ require RACINE_PATH.'/view/inc/header.php';
 
 
 <script src="<?= RACINE_URL ?>js/contact.js" defer></script>
+<script src="./js/main.js"></script>
 
 <?php require RACINE_PATH.'/view/inc/footer.php'; ?>
