@@ -11,7 +11,7 @@ $recettes = (new RecipeManager($db))->getAll();
 
 <section class="main-recette">
     <div class="main-img">
-    <img src="./assets/6a100a69e55b9f863016f75d8723207f49f807d1.jpg" alt="recette">
+    <img src="./assets/fourchette.webp" alt="recette">
     </div>
     <div class="main-txt">
         <h1>Nos recettes</h1>

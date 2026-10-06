@@ -6,7 +6,7 @@ require RACINE_PATH.'/view/inc/header.php';
 
 <section class="hero">
     <img
-        src="<?= RACINE_URL ?>assets/hero-accueil.jpg"
+        src="<?= RACINE_URL ?>assets/hero-accueil.webp"
         alt="Une chocolatière garnit des bonbons au chocolat à la poche à douille dans l'atelier"
         width="1280" height="573"
     />
@@ -14,7 +14,7 @@ require RACINE_PATH.'/view/inc/header.php';
 
 <section class="intro container">
     <h1 class="intro-title">
-        Un héritage chocolatier façonné depuis <span class="accent">166</span> ans
+        Un héritage chocolatier façonné depuis <span class="accent">166</span> anss
     </h1>
     <p>Des créations d'exception pour des moments précieux</p>
 </section>
