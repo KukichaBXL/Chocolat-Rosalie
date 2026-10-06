@@ -32,7 +32,7 @@ require RACINE_PATH . '/view/inc/header.php';
 
     <img
         class="histoire-image"
-        src="<?= RACINE_URL ?>assets/atelier.jpg"
+        src="<?= RACINE_URL ?>assets/atelier.webp"
         alt="L’atelier historique de la Maison Rosalie, en noir et blanc"
         width="419" height="279" loading="lazy" />
 

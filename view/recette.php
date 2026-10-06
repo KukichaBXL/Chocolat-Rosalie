@@ -34,7 +34,7 @@ require RACINE_PATH.'/view/inc/header.php';
             </ol>
         </div>
 
-        <img class="recette-photo" src="<?= RACINE_URL ?>assets/recette-fondant.jpg" alt="Fondant au chocolat coulant" width="510" height="854" />
+        <img class="recette-photo" src="<?= RACINE_URL ?>assets/recette-fondant.webp" alt="Fondant au chocolat coulant" width="510" height="854" />
     </div>
 
     <section class="commentaires">
