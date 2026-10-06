@@ -374,7 +374,8 @@ main:has(.contact-infos) + .site-footer {
 } */
 
 .contact-texte {
-  background-color: #293b5e;
+  background-color: #223355;
+  height: 40vh;
   padding: 50px;
   text-align: start;
   font-family: var(--police-texte);
@@ -393,8 +394,8 @@ main:has(.contact-infos) + .site-footer {
 }
 
 #map {
-  width: 350px;
-  height: 330px;
+  width: 40vW;
+  height: 40vh;
 }
 
 /* ---------- À propos : l'histoire de la maison ---------- */
@@ -824,7 +825,7 @@ main:has(.histoire) + .site-footer {
     flex-direction: column;
   }
 
-  .contact-map {
+  .contact-map { 
     width: 100%;
   }
 
