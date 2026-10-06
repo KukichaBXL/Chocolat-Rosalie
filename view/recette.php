@@ -53,12 +53,10 @@ require RACINE_PATH.'/view/inc/header.php';
 
         <form class="commentaire-form" method="post">
             <div class="form-field">
-                <label for="commentaire-sujet">Sujet (facultatif)</label>
-                <input type="text" id="commentaire-sujet" name="sujet" maxlength="120" />
+                <input type="text" id="commentaire-sujet" name="sujet" maxlength="120" placeholder="Sujet (facultatif)"/>
             </div>
             <div class="form-field">
-                <label for="commentaire-message">Votre commentaire</label>
-                <textarea id="commentaire-message" name="message" required minlength="3" maxlength="500"></textarea>
+                <textarea id="commentaire-message" name="message" required minlength="3" maxlength="500" placeholder="Votre commentaire ..."></textarea>
             </div>
             <button type="submit" class="btn-pill">Publier le commentaire</button>
         </form>

@@ -133,7 +133,7 @@ button {
   }
 }
 
-/* Pied de page */
+/**************************** FOOTER *************************************/
 
 .site-footer {
   margin-top: 150px;
@@ -144,8 +144,8 @@ button {
 }
 
 .footer-inner {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
+  justify-content: space-between;
   gap: 40px;
   padding-top: 50px;
 }
@@ -156,7 +156,7 @@ button {
 
 .footer-nav {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   gap: 37px;
   font-size: 24px;
@@ -476,7 +476,7 @@ main:has(.histoire) + .site-footer {
   }
 }
 
-/* Liste des recettes */
+/* LISTE DES RECETTES */
 
 .main-recette {
   margin: 40px;
@@ -537,8 +537,9 @@ main:has(.histoire) + .site-footer {
 .recette-card-body {
   background-size: cover;
   background-position: center;
-  width: 350px;
-  height: 350px;
+  width: 100%;     
+  aspect-ratio: 1;   
+  height: auto;
   overflow: hidden;
 }
 
@@ -581,12 +582,12 @@ main:has(.histoire) + .site-footer {
   .recette-card-body-txt{
     display: flex;
     opacity: 1;
-    transform: translateY(105%);
+    transform: translateY(90%);
     
   }
 }
 
-/****************************** CAROUSELLE  ********************************/
+/****************************** CARROUSEL  ********************************/
 
 .carousel {
   display: flex;
@@ -602,11 +603,11 @@ main:has(.histoire) + .site-footer {
 .recettes-grid {
   display: flex;
   gap: 20px;
-  transition: transform 0.5s ease;
+  transition: transform 0.6s ease-out;
 }
 
 .recette-card {
-  flex: 0 0 350px;
+   flex: 0 0 calc((100% - 40px) / 3); /* 3 cartes visibles, 40px = 2 écarts de 20px */
 }
 
 .carousel-btn {
@@ -631,31 +632,6 @@ main:has(.histoire) + .site-footer {
     cursor: default;
   }
 }
-
-
-/* VERSION DU CAROUSELLE PLUS SIMPLE A LIER AVEC LE JS */
-
-/* .carousel-viewport {
-  flex: 1;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-  scrollbar-width: none; 
-}
-
-.carousel-viewport::-webkit-scrollbar {
-  display: none;
-}
-
-.recettes-grid {
-  display: flex;
-  gap: 20px;
-}
-
-.recette-card {
-  flex: 0 0 350px;
-  scroll-snap-align: start;
-} */
 
 /* Page d'une recette */
 
@@ -757,6 +733,10 @@ main:has(.histoire) + .site-footer {
     grid-template-columns: 1fr 1fr;
   }
 
+  .recette-card {
+    flex: 0 0 calc((100% - 20px) / 2); /* 2 cartes */
+  }
+
   .contact-map {
     width: 50%;
   }
@@ -773,6 +753,11 @@ main:has(.histoire) + .site-footer {
   .main-txt {
     width: 70%;
   }
+
+  .footer-nav {
+    flex-direction: column;
+  }
+  
 }
 
 /* Tablette */
@@ -866,6 +851,10 @@ main:has(.histoire) + .site-footer {
       font-size: 16px;
     }
     
+  }
+
+  .recette-card {
+    flex: 0 0 100%; /* 1 carte */
   }
 }
 
