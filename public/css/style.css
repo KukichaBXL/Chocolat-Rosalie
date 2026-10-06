@@ -673,12 +673,26 @@ main:has(.histoire) + .site-footer {
     list-style: disc;
   }
 }
-
 .recette-photo {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 15px;
+}
+.etape-titre{
+  font-family: var(--police-titre);
+  color: var(--bleu-nuit);
+  font-size: 32px;
+}
+.recette-photo-step{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  img{
+    object-fit: cover;
+    border-radius: 15px;
+  }
 }
 
 .commentaires {
