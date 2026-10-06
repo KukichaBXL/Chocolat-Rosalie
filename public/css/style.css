@@ -20,6 +20,7 @@ body {
   font-weight: 800;
   color: var(--bleu-nuit);
   line-height: 1.3;
+  
 }
 
 img {
@@ -59,6 +60,7 @@ button {
   font-style: italic;
   font-weight: 400;
   font-size: 27px;
+  transition-duration: 0.4s;
 
   &:hover {
     background: var(--bleu-nuit);
@@ -219,6 +221,7 @@ main:has(.contact-infos) + .site-footer {
   height: 573px;
   object-fit: cover;
   opacity: 0.86;
+  transition: transform 0.2s;
 }
 
 .intro {
@@ -374,7 +377,8 @@ main:has(.contact-infos) + .site-footer {
 } */
 
 .contact-texte {
-  background-color: #293b5e;
+  background-color: #223355;
+  height: 40vh;
   padding: 50px;
   text-align: start;
   font-family: var(--police-texte);
@@ -393,8 +397,8 @@ main:has(.contact-infos) + .site-footer {
 }
 
 #map {
-  width: 350px;
-  height: 330px;
+  width: 40vW;
+  height: 40vh;
 }
 
 /* ---------- À propos : l'histoire de la maison ---------- */
@@ -736,6 +740,17 @@ main:has(.histoire) + .site-footer {
   }
 }
 
+/* ANIMATION DE PAGE */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
 /* Tablette */
 
 @media (max-width: 1100px) {
@@ -838,7 +853,7 @@ main:has(.histoire) + .site-footer {
     flex-direction: column;
   }
 
-  .contact-map {
+  .contact-map { 
     width: 100%;
   }
 

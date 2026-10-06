@@ -9,7 +9,7 @@ require RACINE_PATH.'/view/inc/header.php';
 $recettes = (new RecipeManager($db))->getAll();
 ?>
 
-<section class="main-recette">
+<section class="main-recette reveal">
     <div class="main-img">
     <img src="./assets/fourchette.webp" alt="recette">
     </div>
@@ -27,7 +27,7 @@ $recettes = (new RecipeManager($db))->getAll();
 <div class="carousel container">
     <button class="carousel-btn carousel-prev" aria-label="Recette précédente">&#8249;</button>
 
-    <div class="carousel-viewport">
+    <div class="carousel-viewport reveal">
         <ul class="recettes-grid">
             <?php foreach ($recettes as $recette) : ?>
                 <li class="recette-card">
@@ -47,5 +47,6 @@ $recettes = (new RecipeManager($db))->getAll();
 </div>
 
 <script src="./js/recettes.js"></script>
+<script src="./js/main.js"></script>
 
 <?php require RACINE_PATH.'/view/inc/footer.php'; ?>
