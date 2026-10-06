@@ -4,8 +4,8 @@
 declare(strict_types=1);
 
 namespace model\manager;
-use model\interface\StepMapping;
 use model\interface\ManagerInterface;
+use model\mapping\StepMapping;
 use model\MyPDO;
 
 // les requêtes SQL sur la table `step`

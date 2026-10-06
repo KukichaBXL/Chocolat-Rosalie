@@ -88,7 +88,7 @@ class StepMapping extends AbstractMapping
     }
 
     // setter step_photo
-    public function setStepPhoto (string $step_photo): void
+    public function setStepPhoto(?string $step_photo): void
     {
         $this->step_photo = $step_photo;
     }

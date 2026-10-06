@@ -13,6 +13,8 @@ class IngredientMapping extends AbstractMapping
 {
     protected ?int $id = null;
     protected ?string $name = null;
+    protected ?string $quantity = null;
+    protected ?string $unit = null;
     
     // Getter id
     public function getId(): ?int
@@ -38,6 +40,40 @@ class IngredientMapping extends AbstractMapping
     public function setName(string $name): void
     {
         $this->name = $name;
+    }
+
+    // Getter quantity
+    public function getQuantity(): ?string
+    {
+        return $this->quantity;
+    }
+
+    // Setter quantity (peut être vide : "une pincée")
+    public function setQuantity(?string $quantity): void
+    {
+        $this->quantity = $quantity;
+    }
+
+    // Getter unit
+    public function getUnit(): ?string
+    {
+        return $this->unit;
+    }
+
+    // Setter unit (peut être vide : "3 oeufs")
+    public function setUnit(?string $unit): void
+    {
+        $this->unit = $unit;
+    }
+
+    // texte prêt à afficher : "150 gr", "0,5 l", "3" ou "une pincée"
+    public function getQuantityLabel(): string
+    {
+        if ($this->quantity === null) {
+            return (string) $this->unit;
+        }
+        $nombre = str_replace('.', ',', (string) (float) $this->quantity);
+        return trim($nombre . ' ' . $this->unit);
     }
 
 }
