@@ -895,8 +895,12 @@ main:has(.histoire) + .site-footer {
   }
 
   .footer-inner {
-    justify-items: center;
+    flex-direction: column;
     text-align: center;
+
+    img {
+      margin: 0 auto;
+    }
   }
 
   .footer-newsletter {
@@ -963,6 +967,14 @@ main:has(.histoire) + .site-footer {
 
   .hero img {
     height: 250px;
+  }
+
+  .contact-infos {
+    flex-direction: column;
+
+    #map {
+      width: 356px;
+    }
   }
 
     .recette-card {
