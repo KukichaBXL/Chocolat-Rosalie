@@ -131,8 +131,9 @@ button {
 
     &:hover,
     &.active {
-      color: black;
+      color: var(--dore);
       font-weight: 400;
+      
     }
   }
 }
@@ -788,6 +789,10 @@ main:has(.histoire) + .site-footer {
     font-weight: 200;
   }
 
+  .line {
+    border-bottom: 1px solid var(--dore) ;
+  }
+
   p {
     font-size: 20px;
   }
@@ -890,8 +895,12 @@ main:has(.histoire) + .site-footer {
   }
 
   .footer-inner {
-    justify-items: center;
+    flex-direction: column;
     text-align: center;
+
+    img {
+      margin: 0 auto;
+    }
   }
 
   .footer-newsletter {
@@ -958,6 +967,14 @@ main:has(.histoire) + .site-footer {
 
   .hero img {
     height: 250px;
+  }
+
+  .contact-infos {
+    flex-direction: column;
+
+    #map {
+      width: 356px;
+    }
   }
 
     .recette-card {
