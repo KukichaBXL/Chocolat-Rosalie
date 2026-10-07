@@ -40,7 +40,7 @@ class RatingMapping extends AbstractMapping
     public function setRecipeId(int $recipe_id): void
     {
         // si le chiffre est trop petit
-        if ($recipe_id <= 0) throw new exception("L'id ne peut pas être négatif ou valoir 0", 333);
+        if ($recipe_id <= 0) throw new Exception("L'id ne peut pas être négatif ou valoir 0", 333);
         $this->recipe_id = $recipe_id;
     }
 
@@ -52,10 +52,11 @@ class RatingMapping extends AbstractMapping
 
     // Setter rate 
     public function setRate(int $rate): void
-    {
-        $this->rate = $rate;
-    }
-
+{
+    // une note est un entier de 1 à 5
+    if ($rate < 1 || $rate > 5) throw new Exception("La note doit être comprise entre 1 et 5", 333);
+    $this->rate = $rate;
+}
     // Getter date
     public function getDate(): ?string
     {

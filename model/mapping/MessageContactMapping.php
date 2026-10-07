@@ -64,7 +64,7 @@ class MessageContactMapping extends AbstractMapping
     }
 
     // Setter subject
-    public function setSubject(string $subject): void
+    public function setSubject(?string $subject): void
     {
         $this->subject = $subject;
     }
