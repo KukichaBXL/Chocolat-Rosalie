@@ -74,14 +74,16 @@ require RACINE_PATH.'/view/inc/header.php';
         <h2>Nos avis : </h2>
 
         <ul>
+            <?php foreach ($comments as $comment) :?>
             <li class="commentaire">
-                <p class="commentaire-auteur">Julie M. <span>12 mars 2026</span></p>
+                <p class="commentaire-auteur"><?= htmlspecialchars($comment->get) ?>  ?></p>
                 <p>Testé ce week-end, un vrai régal, merci pour la recette !</p>
             </li>
             <li class="commentaire">
                 <p class="commentaire-auteur">Thomas D. <span>3 février 2026</span></p>
                 <p>Le cœur coulant est parfait, j'ai suivi les temps à la lettre.</p>
             </li>
+            <?php endforeach; ?>
         </ul>
         <br>
         <h2>Ajouter un commentaire : </h2>

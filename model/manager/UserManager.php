@@ -27,7 +27,7 @@ class UserManager implements ManagerInterface
             FROM user
             WHERE user_login = :login";
         $stmt = $this->connect->prepare($sql);
-        $stmt->bindValue(':login', $userMap->getUserLogin());
+        $stmt->bindValue(':login', $userMap->getUsername());
         try{
             $stmt->execute();
         } catch (Exception $e) {
@@ -43,7 +43,7 @@ class UserManager implements ManagerInterface
         $stmt->closeCursor();
 
         // vérification du mot de passe avec le hash stocké en base
-        if(!password_verify($userMap->getUserPwd(), $user['user_pwd'])) {
+        if(!password_verify($userMap->getPassword(), $user['user_pwd'])) {
             return null;
         }
 
@@ -80,7 +80,7 @@ class UserManager implements ManagerInterface
             // nouvel identifiant de session pour éviter la fixation de session
             session_regenerate_id(true);
             $_SESSION['user_id'] = $user->getUserId();
-            $_SESSION['user_login'] = $user->getUserLogin();
+            $_SESSION['user_login'] = $user->getUsername();
             $_SESSION['user_full_name'] = $user->getUserFullName();
             $_SESSION['user_role'] = $user->getUserRole();
             unset($_SESSION['token']);
