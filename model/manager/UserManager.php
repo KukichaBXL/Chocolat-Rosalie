@@ -6,22 +6,23 @@ declare(strict_types=1);
 namespace model\manager;
 
 use model\interface\ManagerInterface;
-use model\MyPDO;
 use model\mapping\UserMapping;
-use Exception;
+use model\MyPDO;
 
+// les requêtes SQL sur la table `users`
+// et sur la table `login_attempt` (les connexions ratées, pour bloquer les essais répétés)
 class UserManager implements ManagerInterface
 {
-    protected MyPDO $connect;
+    private MyPDO $connect;
 
     public function __construct(MyPDO $connect)
     {
         $this->connect = $connect;
     }
 
-    // vérification des identifiants de connexion
-    // retourne l'utilisateur si le login et le mot de passe sont corrects, sinon null
-    public function connectUser(?UserMapping $userMap): ?UserMapping
+    // un utilisateur grâce à son email, AVEC son mot de passe haché
+    // renvoie null si l'email n'existe pas
+    public function getByEmail(string $email): ?UserMapping
     {
         $sql = "SELECT user_id, user_login, user_pwd, user_full_name, user_email, user_role
             FROM user
@@ -44,36 +45,33 @@ class UserManager implements ManagerInterface
 
         // vérification du mot de passe avec le hash stocké en base
         if(!password_verify($userMap->getPassword(), $user['user_pwd'])) {
+        $sql = "SELECT id, username, email, password, role, created_at FROM users WHERE email = :email";
+        $prepare = $this->connect->prepare($sql);
+        $prepare->bindValue(':email', $email);
+        $prepare->execute();
+
+        $ligne = $prepare->fetch();
+        // fetch() renvoie false quand il n'y a aucun résultat
+        if ($ligne === false) {
             return null;
         }
-
-        // on ne garde pas le hash du mot de passe dans l'objet
-        unset($user['user_pwd']);
-
-        return new UserMapping($user);
+        return new UserMapping($ligne);
     }
 
-    // récupération d'un utilisateur par son id (sans le mot de passe), pour la page de profil
-    public function getUserById(int $id): ?UserMapping
+    // un utilisateur grâce à son id, SANS son mot de passe
+    // renvoie null si l'id n'existe pas
+    public function getById(int $id): ?UserMapping
     {
-        $sql = "SELECT user_id, user_login, user_full_name, user_email, user_role
-            FROM user
-            WHERE user_id = :id";
-        $stmt = $this->connect->prepare($sql);
-        $stmt->bindValue(':id', $id, MyPDO::PARAM_INT);
-        try{
-            $stmt->execute();
-        } catch (Exception $e) {
-            throw new Exception("Erreur lors de la récupération de l'utilisateur : " . $e->getMessage());
-        }
+        $sql = "SELECT id, username, email, role, created_at FROM users WHERE id = :id";
+        $prepare = $this->connect->prepare($sql);
+        $prepare->bindValue(':id', $id, MyPDO::PARAM_INT);
+        $prepare->execute();
 
-        if($stmt->rowCount() === 0) {
+        $ligne = $prepare->fetch();
+        if ($ligne === false) {
             return null;
         }
-        $user = $stmt->fetch();
-        $stmt->closeCursor();
-
-        return new UserMapping($user);
+        return new UserMapping($ligne);
     }
         static public function sessionUser(UserMapping $user): void
         {
@@ -102,32 +100,42 @@ class UserManager implements ManagerInterface
             exit;
         }
 
-        // l'utilisateur connecté est-il administrateur ?
-        static public function isAdmin(): bool
-        {
-            return ($_SESSION['user_role'] ?? null) === 'admin';
-        }
+    // ce nom d'utilisateur est-il déjà pris ?
+    public function usernameExists(string $username): bool
+    {
+        $prepare = $this->connect->prepare("SELECT 1 FROM users WHERE username = :username");
+        $prepare->bindValue(':username', $username);
+        $prepare->execute();
+        return $prepare->fetchColumn() !== false;
+    }
 
-        // vérification du jeton CSRF envoyé par un formulaire
-        static public function checkToken(mixed $token): bool
-        {
-            return is_string($token) && isset($_SESSION['token'])
-                && hash_equals($_SESSION['token'], $token);
-        }
+    // cet email est-il déjà utilisé ?
+    public function emailExists(string $email): bool
+    {
+        $prepare = $this->connect->prepare("SELECT 1 FROM users WHERE email = :email");
+        $prepare->bindValue(':email', $email);
+        $prepare->execute();
+        return $prepare->fetchColumn() !== false;
+    }
 
-        // enregistre un message à afficher après la redirection, puis redirige
-        static public function flashAndRedirect(string $path, string $message, string $type = 'success'): never
-        {
-            $_SESSION['flash'] = ['message' => $message, 'type' => $type];
-            header('Location: ' . RACINE_URL . $path);
-            exit;
-        }
+    // crée un compte et renvoie l'utilisateur créé
+    // $passwordHash est DÉJÀ haché par password_hash() : on n'enregistre jamais un mot de passe en clair
+    public function create(string $username, string $email, string $passwordHash): UserMapping
+    {
+        $sql = "INSERT INTO users (username, email, password) VALUES (:username, :email, :password)";
+        $prepare = $this->connect->prepare($sql);
+        $prepare->bindValue(':username', $username);
+        $prepare->bindValue(':email', $email);
+        $prepare->bindValue(':password', $passwordHash);
+        $prepare->execute();
 
-        // récupère le message flash éventuel, qui n'est affiché qu'une seule fois
-        static public function getFlash(): ?array
-        {
-            $flash = $_SESSION['flash'] ?? null;
-            unset($_SESSION['flash']);
-            return $flash;
-        }
+        // le rôle « inscrit » est la valeur par défaut de la colonne `role`
+        return new UserMapping([
+            'id' => (int) $this->connect->lastInsertId(),
+            'username' => $username,
+            'email' => $email,
+            'role' => 'inscrit',
+        ]);
+    }
+
 }
