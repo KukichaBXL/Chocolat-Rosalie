@@ -4,22 +4,22 @@ $titre = 'Recettes de chocolatier';
 require RACINE_PATH.'/view/inc/header.php';
 ?>
 
-<section class="hero">
+<section class="hero reveal">
     <img
-        src="<?= RACINE_URL ?>assets/hero-accueil.jpg"
+        src="<?= RACINE_URL ?>assets/hero-accueil.webp"
         alt="Une chocolatière garnit des bonbons au chocolat à la poche à douille dans l'atelier"
         width="1280" height="573"
     />
 </section>
 
-<section class="intro container">
+<section class="intro container reveal">
     <h1 class="intro-title">
         Un héritage chocolatier façonné depuis <span class="accent">166</span> ans
     </h1>
     <p>Des créations d'exception pour des moments précieux</p>
 </section>
 
-<section class="values container" aria-label="Nos valeurs">
+<section class="values container reveal" aria-label="Nos valeurs">
     <ul class="value-list">
         <li>
             <figure>
@@ -51,5 +51,8 @@ require RACINE_PATH.'/view/inc/header.php';
 <div class="cta-wrap container">
     <a href="<?= RACINE_URL ?>recettes" class="btn-pill">Découvrez nos recettes</a>
 </div>
+
+
+<script src="./js/main.js"></script>
 
 <?php require RACINE_PATH.'/view/inc/footer.php'; ?>

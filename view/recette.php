@@ -1,6 +1,25 @@
 <?php
 // path: view/recette.php
-$titre = 'Fondant chocolat de Rosalie';
+use model\manager\IngredientManager;
+use model\manager\RecipeManager;
+use model\manager\StepManager;
+
+// le slug vient de l'adresse : /recette/mousse-au-chocolat
+$slug = $_GET['slug'] ?? '';
+$recette = is_string($slug) ? (new RecipeManager($db))->getOneBySlug($slug) : null;
+
+// recette inconnue : on affiche la page 404
+if ($recette === null) {
+    http_response_code(404);
+    require RACINE_PATH.'/view/404.php';
+    exit;
+}
+
+// les ingrédients et les étapes de CETTE recette
+$ingredients = (new IngredientManager($db))->getByRecipe($recette->getId());
+$etapes = (new StepManager($db))->getByRecipe($recette->getId());
+
+$titre = $recette->getTitle();
 require RACINE_PATH.'/view/inc/header.php';
 ?>
 
@@ -8,57 +27,80 @@ require RACINE_PATH.'/view/inc/header.php';
     <div class="recette-top">
         <div class="recette-fiche">
             <p class="recette-surtitre">Recette</p>
-            <h1>Fondant chocolat de Rosalie</h1>
+            <h1><?= htmlspecialchars($recette->getTitle()) ?></h1>
+            <p><?= htmlspecialchars($recette->getDescription() ?? '') ?></p>
+            <p>
+                Préparation : <?= $recette->getPrepareTime() ?> min ·
+                Cuisson : <?= $recette->getCookTime() ?> min ·
+                Difficulté : <?= htmlspecialchars($recette->getDifficulty()) ?>
+            </p>
 
-            <h2>Ingrédients — 4 personnes</h2>
-            <ul>
-                <li>150 g de chocolat noir</li>
-                <li>100 g de beurre</li>
-                <li>3 œufs</li>
-                <li>70 g de sucre</li>
-                <li>50 g de farine</li>
-                <li>4 c. à café de pâte à tartiner aux noisettes</li>
-                <li>1 pincée de sel</li>
-            </ul>
+            <h2>Ingrédients — <?= $recette->getPortions() ?> personne(s)</h2>
+            <?php if ($ingredients === []) : ?>
+                <p>Les ingrédients de cette recette arrivent bientôt.</p>
+            <?php else : ?>
+                <ul>
+                    <?php foreach ($ingredients as $ingredient) : ?>
+                        <li><?= htmlspecialchars($ingredient->getQuantityLabel()) ?> <?= htmlspecialchars($ingredient->getName()) ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
 
             <h2>Préparation</h2>
-            <ol>
-                <li>Préchauffe le four à 200 °C.</li>
-                <li>Fais fondre le chocolat avec le beurre au bain-marie.</li>
-                <li>Fouette les œufs avec le sucre, puis ajoute la farine et le sel.</li>
-                <li>Incorpore le chocolat fondu jusqu'à obtenir une pâte homogène.</li>
-                <li>Verse la moitié de la pâte dans 4 petits moules beurrés.</li>
-                <li>Dépose une cuillère de pâte à tartiner au centre, puis recouvre avec le reste de pâte.</li>
-                <li>Enfourne 9 à 11 minutes : le centre doit rester tremblotant.</li>
-                <li>Laisse reposer 1 minute avant de démouler.</li>
-            </ol>
+            <?php if ($etapes === []) : ?>
+                <p>Les étapes de cette recette arrivent bientôt.</p>
+            <?php else : ?>
+                <ol>
+                    <?php foreach ($etapes as $etape) : ?>
+                        <li>
+                            <strong><?= htmlspecialchars($etape->getStepTitle()) ?></strong><br />
+                            <?= htmlspecialchars($etape->getDescription()) ?>
+                        </li>
+                    <?php endforeach; ?>
+                </ol>
+            <?php endif; ?>
         </div>
 
-        <img class="recette-photo" src="<?= RACINE_URL ?>assets/recette-fondant.jpg" alt="Fondant au chocolat coulant" width="510" height="854" />
+        <?php if (!empty($recette->getPhotoMain())) : ?>
+            <img class="recette-photo" src="<?= RACINE_URL ?>assets/<?= htmlspecialchars($recette->getPhotoMain()) ?>" alt="<?= htmlspecialchars($recette->getTitle()) ?>" width="510" height="854" />
+        <?php endif; ?>
+    </div>
+    <h2 style="margin-top:50px;" class="etape-titre">Étapes : </h2>
+    <div class="recette-photo-step" >
+        <?php foreach ($etapes as $etape) : ?>
+            <?php if (!empty($etape->getStepPhoto())) : ?>
+                <img src="<?= RACINE_URL ?>assets/<?= htmlspecialchars($etape->getStepPhoto()) ?>" alt="Étape <?= $etape->getStepNumber() ?>" width="120" height="120" loading="lazy" />
+            <?php endif; ?>
+                        
+        <?php endforeach; ?>
+        
     </div>
 
+
+    <!-- les avis branchés sur la base (à faire)-->
     <section class="commentaires">
-        <h2>Nos avis</h2>
+        <h2>Nos avis : </h2>
 
         <ul>
+            <?php foreach ($comments as $comment) :?>
             <li class="commentaire">
-                <p class="commentaire-auteur">Julie M. <span>12 mars 2026</span></p>
+                <p class="commentaire-auteur"><?= htmlspecialchars($comment->get) ?>  ?></p>
                 <p>Testé ce week-end, un vrai régal, merci pour la recette !</p>
             </li>
             <li class="commentaire">
                 <p class="commentaire-auteur">Thomas D. <span>3 février 2026</span></p>
                 <p>Le cœur coulant est parfait, j'ai suivi les temps à la lettre.</p>
             </li>
+            <?php endforeach; ?>
         </ul>
-
+        <br>
+        <h2>Ajouter un commentaire : </h2>
         <form class="commentaire-form" method="post">
             <div class="form-field">
-                <label for="commentaire-sujet">Sujet (facultatif)</label>
-                <input type="text" id="commentaire-sujet" name="sujet" maxlength="120" />
+                <input type="text" id="commentaire-sujet" name="sujet" maxlength="120" placeholder="Sujet (facultatif)"/>
             </div>
             <div class="form-field">
-                <label for="commentaire-message">Votre commentaire</label>
-                <textarea id="commentaire-message" name="message" required minlength="3" maxlength="500"></textarea>
+                <textarea id="commentaire-message" name="message" required minlength="3" maxlength="500" placeholder="Votre commentaire ..."></textarea>
             </div>
             <button type="submit" class="btn-pill">Publier le commentaire</button>
         </form>

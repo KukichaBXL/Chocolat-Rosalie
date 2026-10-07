@@ -1,3 +1,5 @@
+/************************************************************ GENERAL *********************************************/
+
 :root {
   --bleu-nuit: #152138;
   --dore: #c8a95b;
@@ -20,6 +22,7 @@ body {
   font-weight: 800;
   color: var(--bleu-nuit);
   line-height: 1.3;
+  
 }
 
 img {
@@ -59,6 +62,7 @@ button {
   font-style: italic;
   font-weight: 400;
   font-size: 27px;
+  transition-duration: 0.4s;
 
   &:hover {
     background: var(--bleu-nuit);
@@ -66,7 +70,7 @@ button {
   }
 }
 
-/*  En-tête */
+/******************************************  HEADER ***************************************/
 
 .header-inner {
   display: grid;
@@ -133,7 +137,7 @@ button {
   }
 }
 
-/* Pied de page */
+/**************************** FOOTER *************************************/
 
 .site-footer {
   margin-top: 150px;
@@ -144,8 +148,8 @@ button {
 }
 
 .footer-inner {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
+  justify-content: space-between;
   gap: 40px;
   padding-top: 50px;
 }
@@ -156,7 +160,7 @@ button {
 
 .footer-nav {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   gap: 37px;
   font-size: 24px;
@@ -219,6 +223,7 @@ main:has(.contact-infos) + .site-footer {
   height: 573px;
   object-fit: cover;
   opacity: 0.86;
+  transition: transform 0.2s;
 }
 
 .intro {
@@ -356,27 +361,33 @@ main:has(.contact-infos) + .site-footer {
 }
 
 .contact-infos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: start;
   margin-top: 90px;
   padding-block: 120px 100px;
   background: var(--bleu-nuit);
   color: var(--dore);
 }
 
-.contact-infos-inner {
+/* .contact-infos-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 60px;
-}
+} */
 
 .contact-texte {
-  text-align: center;
+  background-color: #223355;
+  height: 40vh;
+  padding: 50px;
+  text-align: start;
   font-family: var(--police-texte);
   font-weight: 400;
-  font-size: 23px;
+  font-size: 18px;
 
   h2 {
-    margin-top: 40px;
     font-family: var(--police-italique);
     font-style: italic;
     font-size: 45px;
@@ -387,59 +398,170 @@ main:has(.contact-infos) + .site-footer {
   }
 }
 
-.contact-map {
-  width: 634px;
-  border-radius: 12px;
+#map {
+  width: 40vW;
+  height: 40vh;
 }
 
-/* À propos */
+/* ---------- À propos : l'histoire de la maison ---------- */
 
-.a-propos {
-  margin-top: 70px;
-  font-size: 20px;
+.histoire {
+  margin-top: 20px;
+  text-align: center;
+  font-family: var(--police-texte);
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.2;
 
-  h1,
+  /* "Maison Rosalie" en bleu nuit, puis "Depuis 1860" en doré sur la ligne du dessous */
+  h1 {
+    margin-bottom: 27px;
+    font-family: var(--police-italique);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 76px;
+
+    span {
+      display: block;
+      color: var(--dore);
+    }
+  }
+
+  /* "166 ans de savoir-faire" : même taille que le texte, mais dorée */
   h2 {
     font-size: inherit;
+    font-weight: inherit;
+    color: var(--dore);
+    margin-bottom: 27px;
   }
 
-  p,
-  h2 {
-    margin-top: 1.3em;
+  p {
+    margin-bottom: 20px;
   }
 
-  .a-propos-image {
-    margin-top: 45px;
+  p:last-child {
+    margin-bottom: 0;
   }
-}
 
-/* Liste des recettes */
-
-.recettes-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
-  margin-top: 60px;
-}
-
-.recette-card {
-  border-radius: 19px;
-  overflow: hidden;
-  background: var(--bleu-nuit);
-  color: white;
-
-  img {
-    width: 100%;
-    aspect-ratio: 4 / 3;
+  .histoire-image {
+    width: 419px;
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 419 / 279;
+    margin: 44px auto 44px;
+    border-radius: 66px;
     object-fit: cover;
   }
 }
 
+main:has(.histoire) + .site-footer {
+  margin-top: 80px;
+}
+
+@media (max-width: 768px) {
+  .histoire {
+    font-size: 19px;
+
+    h1 {
+      font-size: 52px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .histoire {
+    font-size: 17px;
+
+    h1 {
+      font-size: 40px;
+    }
+
+    .histoire-image {
+      border-radius: 44px;
+    }
+  }
+}
+
+/* LISTE DES RECETTES */
+
+.main-recette {
+  margin: 40px;
+  display: flex;
+  justify-content: center;
+
+}
+
+.main-img {
+  margin: 40px;
+  img{
+    width: 400px;
+    height: 600px;
+  }
+}
+
+.main-txt {
+  margin: 40px;
+  width: 40vw;
+  padding: 10px;
+
+  h1{
+    margin: 30px;
+    text-align: center;
+    color: var(--dore);
+    font-family: var(--police-italique);
+    font-weight: 200;
+    font-size: 65px;
+  }
+
+  p{
+    font-family: var(--police-texte);
+    font-size: 22px;
+    font-weight: 100;
+  }
+
+  .regale {
+    text-align: center;
+  }
+}
+
+.recettes-grid {
+  display: flex;
+  gap: 20px;
+}
+
+.recette-card {
+  
+  background: var(--bleu-nuit);
+  color: white;
+
+}
+
+.slide-active{
+  display: flex;
+}
+
 .recette-card-body {
+  background-size: cover;
+  background-position: center;
+  width: 100%;     
+  aspect-ratio: 1;   
+  height: auto;
+  overflow: hidden;
+}
+
+.recette-card-body-txt {
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding: 20px;
+  background-color: var(--bleu-nuit);
+  opacity: 0;
+  transform: translateY(200%);
+
+  transition: transform 0.5s ease, opacity 0.5s ease;;
+
+  /* position: relative;
+    top: 350px; */
 
   h2 {
     color: var(--dore);
@@ -451,6 +573,69 @@ main:has(.contact-infos) + .site-footer {
     color: var(--dore);
     font-size: 22px;
     text-align: center;
+    transition-duration: 0.4s;
+  }
+}
+
+.recette-btn:hover{
+   background-color: var(--dore);
+   color: var(--bleu-nuit);
+   
+}
+
+.recette-card-body:hover {
+  
+  .recette-card-body-txt{
+    display: flex;
+    opacity: 1;
+    transform: translateY(90%);
+    
+  }
+}
+
+/****************************** CARROUSEL  ********************************/
+
+.carousel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.carousel-viewport {
+  flex: 1;
+  overflow: hidden;
+}
+
+.recettes-grid {
+  display: flex;
+  gap: 20px;
+  transition: transform 0.6s ease-out;
+}
+
+.recette-card {
+   flex: 0 0 calc((100% - 40px) / 3); /* 3 cartes visibles, 40px = 2 écarts de 20px */
+}
+
+.carousel-btn {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--bleu-nuit);
+  border-radius: 50%;
+  background: none;
+  color: var(--bleu-nuit);
+  font-size: 32px;
+  line-height: 1;
+  transition: background 0.3s, color 0.3s;
+
+  &:hover:not(:disabled) {
+    background: var(--bleu-nuit);
+    color: var(--dore);
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: default;
   }
 }
 
@@ -494,12 +679,26 @@ main:has(.contact-infos) + .site-footer {
     list-style: disc;
   }
 }
-
 .recette-photo {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 15px;
+}
+.etape-titre{
+  font-family: var(--police-titre);
+  color: var(--bleu-nuit);
+  font-size: 32px;
+}
+.recette-photo-step{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  img{
+    object-fit: cover;
+    border-radius: 15px;
+  }
 }
 
 .commentaires {
@@ -543,6 +742,65 @@ main:has(.contact-infos) + .site-footer {
   }
 }
 
+/* ANIMATION DE PAGE ON SCROLL (ajouter reveal a nimporte quel bloque pour l'animer)*/
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/************************ CONNECTION ***************************/
+.connection-hub {
+  margin: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+}
+
+.img-connect {
+
+  img{
+    width: 25vw;
+    border-radius: 57px;
+  }
+}
+
+.form-connect {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  form {
+    margin: 30px 0;
+  }
+
+  h1 {
+    color: var(--dore);
+    font-family:  var(--police-italique);
+    font-size: 60px;
+    font-weight: 200;
+  }
+
+  p {
+    font-size: 20px;
+  }
+
+  .logo-connect {
+    margin-top: 20px;
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+  }
+}
+
+
 /* Tablette */
 
 @media (max-width: 1100px) {
@@ -550,12 +808,12 @@ main:has(.contact-infos) + .site-footer {
     gap: 25px;
   }
 
-  .recettes-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .recette-top {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .recette-card {
+    flex: 0 0 calc((100% - 20px) / 2); /* 2 cartes */
   }
 
   .contact-map {
@@ -570,6 +828,19 @@ main:has(.contact-infos) + .site-footer {
   .page-title h1 {
     font-size: 60px;
   }
+
+  .main-txt {
+    width: 70%;
+  }
+
+  .footer-nav {
+    flex-direction: column;
+  }
+
+  .connection-hub {
+    flex-direction: column;
+  }
+  
 }
 
 /* Tablette */
@@ -636,7 +907,7 @@ main:has(.contact-infos) + .site-footer {
     flex-direction: column;
   }
 
-  .contact-map {
+  .contact-map { 
     width: 100%;
   }
 
@@ -646,6 +917,27 @@ main:has(.contact-infos) + .site-footer {
 
   .page-title p {
     font-size: 22px;
+  }
+
+  .main-img {
+
+    img{
+      width: 700px;
+    }
+  }
+
+  .main-txt {
+    width: 100%;
+    position: relative;
+    bottom: 50px;
+    p{
+      font-size: 16px;
+    }
+    
+  }
+
+  .recette-card {
+    flex: 0 0 100%; /* 1 carte */
   }
 }
 
@@ -668,8 +960,18 @@ main:has(.contact-infos) + .site-footer {
     height: 250px;
   }
 
-  .recettes-grid {
-    grid-template-columns: 1fr;
+    .recette-card {
+    flex: 0 0 100%;
+  }
+
+  .recette-card-body {
+    width: 100%;
+  }
+
+  .carousel-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 24px;
   }
 
   .value-list img {

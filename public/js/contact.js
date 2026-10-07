@@ -9,6 +9,7 @@ const regles = {
     email: [/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, "L'adresse email n'est pas valide (exemple : nom@domaine.be)."],
     sujet: [/^.{0,120}$/, "Le sujet ne doit pas dépasser 120 caractères."],
     message: [/^.{3,500}$/s, "Le message doit contenir entre 3 et 500 caractères."],
+    
 };
 
 formulaire.addEventListener("submit", (event) => {
@@ -31,4 +32,6 @@ formulaire.addEventListener("submit", (event) => {
     if (!valide) {
         event.preventDefault();
     }
+    
 });
+
