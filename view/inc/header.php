@@ -45,6 +45,7 @@
                     <li><a href="<?= RACINE_URL ?>recettes" <?= $pg === 'recettes' || $pg === 'recette' ? 'class="active"' : '' ?>>Recettes</a></li>
                     <li><a href="<?= RACINE_URL ?>a-propos" <?= $pg === 'a-propos' ? 'class="active"' : '' ?>>À propos</a></li>
                     <li><a href="<?= RACINE_URL ?>contact" <?= $pg === 'contact' ? 'class="active"' : '' ?>>Contact</a></li>
+                    <li><a href="<?= RACINE_URL ?>connection" <?= $pg === 'connection' ? 'class="active"' : '' ?>>Connection</a></li>
                 </ul>
             </nav>
         </div>

@@ -9,6 +9,7 @@ const regles = {
     email: [/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, "L'adresse email n'est pas valide (exemple : nom@domaine.be)."],
     sujet: [/^.{0,120}$/, "Le sujet ne doit pas dépasser 120 caractères."],
     message: [/^.{3,500}$/s, "Le message doit contenir entre 3 et 500 caractères."],
+    
 };
 
 formulaire.addEventListener("submit", (event) => {
@@ -34,13 +35,3 @@ formulaire.addEventListener("submit", (event) => {
     
 });
 
-// MAP Location and display
-var map = L.map('map').setView([50.8503, 4.3517], 13);
-
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
-
-L.marker([50.8503, 4.3517]).addTo(map) // pointer sur la map 
-    .bindPopup('Nous sommes ici!')
-    .openPopup();
