@@ -3,3 +3,5 @@ config.php
 
 # ignore backup WorkBench
 data/recipes.sql
+data/mydb.sql
+data/chocolaterie-rosalie.sql
