@@ -14,11 +14,6 @@ function getUserInput() {
     const email = emailVal.value;
     const password = pwdVal.value;
 
-    if (!email || !password) {
-        console.log("Champ vide !");
-        return;
-    }
-
     emailVal.nextElementSibling.textContent =
         regMail.test(email) ? "" : "Mail invalide !";
 
