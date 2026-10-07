@@ -25,7 +25,7 @@ require RACINE_PATH . '/view/inc/header.php';
                 <span class="form-error" data-error-for="Password"></span>
             </div>
             <br>
-            <button id="btn-connect" class="btn-pill">connection</button>
+            <button id="btn-connect" class="btn-pill">Connexion</button>
         </form>
         <div class="line"></div>
         <br>
