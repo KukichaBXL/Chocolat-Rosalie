@@ -34,7 +34,7 @@
 
             <div class="header-right">
                 <button type="button" class="account-btn" aria-label="Se connecter ou créer un compte">
-                    <img src="<?= RACINE_URL ?>assets/icon-compte.svg" alt="" width="22" height="26" />
+                    <a href="<?= RACINE_URL ?>connection" <?= $pg === 'connection' ? 'class="active"' : '' ?>><img src="<?= RACINE_URL ?>assets/icon-compte.svg" alt="" width="22" height="26" /></a>
                 </button>
                 <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="menu-principal">Menu</button>
             </div>
@@ -45,7 +45,6 @@
                     <li><a href="<?= RACINE_URL ?>recettes" <?= $pg === 'recettes' || $pg === 'recette' ? 'class="active"' : '' ?>>Recettes</a></li>
                     <li><a href="<?= RACINE_URL ?>a-propos" <?= $pg === 'a-propos' ? 'class="active"' : '' ?>>À propos</a></li>
                     <li><a href="<?= RACINE_URL ?>contact" <?= $pg === 'contact' ? 'class="active"' : '' ?>>Contact</a></li>
-                    <li><a href="<?= RACINE_URL ?>connection" <?= $pg === 'connection' ? 'class="active"' : '' ?>>Connection</a></li>
                 </ul>
             </nav>
         </div>

@@ -24,9 +24,11 @@ require RACINE_PATH . '/view/inc/header.php';
                 <input type="text" id="pwd" name="pwd" placeholder="Mot de passe ..." />
                 <span class="form-error" data-error-for="Password"></span>
             </div>
+            <br>
             <button id="btn-connect" class="btn-pill">connection</button>
         </form>
         <div class="line"></div>
+        <br>
 
         <div class="txt-connect">
             <p>Accédez à votre Compte en 1 clic!</p>

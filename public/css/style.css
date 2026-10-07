@@ -131,8 +131,9 @@ button {
 
     &:hover,
     &.active {
-      color: black;
+      color: var(--dore);
       font-weight: 400;
+      
     }
   }
 }
@@ -772,6 +773,10 @@ main:has(.histoire) + .site-footer {
     font-family:  var(--police-italique);
     font-size: 60px;
     font-weight: 200;
+  }
+
+  .line {
+    border-bottom: 1px solid var(--dore) ;
   }
 
   p {
