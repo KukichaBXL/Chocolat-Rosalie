@@ -30,5 +30,6 @@
 
         <p class="copyright">© 2026 Maison Rosalie - Tous droits réservés</p>
     </footer>
+    <script src="./js/main.js"></script>
 </body>
 </html>
