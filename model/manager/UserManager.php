@@ -24,27 +24,6 @@ class UserManager implements ManagerInterface
     // renvoie null si l'email n'existe pas
     public function getByEmail(string $email): ?UserMapping
     {
-        $sql = "SELECT user_id, user_login, user_pwd, user_full_name, user_email, user_role
-            FROM user
-            WHERE user_login = :login";
-        $stmt = $this->connect->prepare($sql);
-        $stmt->bindValue(':login', $userMap->getUsername());
-        try{
-            $stmt->execute();
-        } catch (Exception $e) {
-            throw new Exception("Erreur lors de la connexion : " . $e->getMessage());
-        }
-
-        // si le login n'existe pas
-        if($stmt->rowCount() === 0) {
-            return null;
-        }
-        $user = $stmt->fetch();
-        // fermeture de la requête
-        $stmt->closeCursor();
-
-        // vérification du mot de passe avec le hash stocké en base
-        if(!password_verify($userMap->getPassword(), $user['user_pwd'])) {
         $sql = "SELECT id, username, email, password, role, created_at FROM users WHERE email = :email";
         $prepare = $this->connect->prepare($sql);
         $prepare->bindValue(':email', $email);
@@ -58,8 +37,7 @@ class UserManager implements ManagerInterface
         return new UserMapping($ligne);
     }
 
-    // un utilisateur grâce à son id, SANS son mot de passe
-    // renvoie null si l'id n'existe pas
+    // un utilisateur grâce à son id, SANS son mot de passe (pour une page de profil, par exemple)
     public function getById(int $id): ?UserMapping
     {
         $sql = "SELECT id, username, email, role, created_at FROM users WHERE id = :id";
@@ -73,32 +51,6 @@ class UserManager implements ManagerInterface
         }
         return new UserMapping($ligne);
     }
-        static public function sessionUser(UserMapping $user): void
-        {
-            // nouvel identifiant de session pour éviter la fixation de session
-            session_regenerate_id(true);
-            $_SESSION['user_id'] = $user->getUserId();
-            $_SESSION['user_login'] = $user->getUsername();
-            $_SESSION['user_full_name'] = $user->getUserFullName();
-            $_SESSION['user_role'] = $user->getUserRole();
-            unset($_SESSION['token']);
-            // redirection vers l'accueil
-            header('Location: '.RACINE_URL.'/');
-            exit;
-        }
-        static public function deconnectUser(): void
-        {
-            // destruction complète de la session
-            $_SESSION = [];
-            if (ini_get('session.use_cookies')) {
-                $params = session_get_cookie_params();
-                setcookie(session_name(), '', time() - 42000,
-                    $params['path'], $params['domain'], $params['secure'], $params['httponly']);
-            }
-            session_destroy();
-            header('Location: ' . RACINE_URL . '/');
-            exit;
-        }
 
     // ce nom d'utilisateur est-il déjà pris ?
     public function usernameExists(string $username): bool
@@ -119,7 +71,7 @@ class UserManager implements ManagerInterface
     }
 
     // crée un compte et renvoie l'utilisateur créé
-    // $passwordHash est DÉJÀ haché par password_hash() : on n'enregistre jamais un mot de passe en clair
+    // $passwordHash est DÉJÀ haché par password_hash()
     public function create(string $username, string $email, string $passwordHash): UserMapping
     {
         $sql = "INSERT INTO users (username, email, password) VALUES (:username, :email, :password)";
@@ -138,4 +90,44 @@ class UserManager implements ManagerInterface
         ]);
     }
 
+    // Protection contre les essais de connexion répétés 
+    // nombre d'échecs récents pour cette adresse IP et pour cet email
+    // renvoie ['ip' => nombre, 'email' => nombre]
+    public function countRecentFailures(string $ip, string $email, int $minutes): array
+    {
+        // un même marqueur (:ip, :email) ne peut servir qu'une fois dans une requête préparée : on les numérote
+        $sql = "SELECT COALESCE(SUM(ip = :ip1), 0) AS par_ip, COALESCE(SUM(email = :email1), 0) AS par_email
+                FROM login_attempt
+                WHERE attempted_at > NOW() - INTERVAL :minutes MINUTE
+                  AND (ip = :ip2 OR email = :email2)";
+        $prepare = $this->connect->prepare($sql);
+        $prepare->bindValue(':ip1', $ip);
+        $prepare->bindValue(':email1', $email);
+        $prepare->bindValue(':ip2', $ip);
+        $prepare->bindValue(':email2', $email);
+        $prepare->bindValue(':minutes', $minutes, MyPDO::PARAM_INT);
+        $prepare->execute();
+        $ligne = $prepare->fetch();
+
+        return ['ip' => (int) $ligne['par_ip'], 'email' => (int) $ligne['par_email']];
+    }
+
+    // enregistre une connexion ratée
+    public function addFailure(string $ip, string $email): void
+    {
+        $prepare = $this->connect->prepare("INSERT INTO login_attempt (ip, email) VALUES (:ip, :email)");
+        $prepare->bindValue(':ip', $ip);
+        $prepare->bindValue(':email', $email);
+        $prepare->execute();
+    }
+
+    // après une connexion réussie, on efface les échecs de ce compte
+    // (et au passage les échecs de plus d'un jour, pour ne pas remplir la table)
+    public function clearFailures(string $email): void
+    {
+        $sql = "DELETE FROM login_attempt WHERE email = :email OR attempted_at < NOW() - INTERVAL 1 DAY";
+        $prepare = $this->connect->prepare($sql);
+        $prepare->bindValue(':email', $email);
+        $prepare->execute();
+    }
 }

@@ -49,7 +49,7 @@ class CategoryMapping extends AbstractMapping
     }
 
     // Setter Description
-    public function setDescription(string $description): void
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
     }

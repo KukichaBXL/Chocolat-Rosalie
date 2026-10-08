@@ -18,6 +18,7 @@ class CommentMapping extends AbstractMapping
     protected ?string $comment_text = null;
     protected ?string $comment_status = null;
     protected ?string $created_at = null;
+    protected ?string $username = null;
 
 
      // Getter Comment ID
@@ -109,6 +110,17 @@ class CommentMapping extends AbstractMapping
     {
         $this->created_at = $created_at;
     }
+    
+    // Getter username
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
 
+    // Setter username
+    public function setUsername(string $username): void
+    {
+        $this->username = $username;
+    }
     
 }

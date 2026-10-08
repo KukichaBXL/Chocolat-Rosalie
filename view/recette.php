@@ -1,5 +1,6 @@
 <?php
 // path: view/recette.php
+use model\manager\CommentManager;
 use model\manager\IngredientManager;
 use model\manager\RecipeManager;
 use model\manager\StepManager;
@@ -18,6 +19,11 @@ if ($recette === null) {
 // les ingrédients et les étapes de CETTE recette
 $ingredients = (new IngredientManager($db))->getByRecipe($recette->getId());
 $etapes = (new StepManager($db))->getByRecipe($recette->getId());
+
+// les commentaires de la recette, du plus récent au plus ancien, 10 à la fois
+// "Voir plus d'avis" : ?avis=2 affiche 20 commentaires, ?avis=3 en affiche 30...
+$pageAvis = isset($_GET['avis']) ? max(1, min(50, (int) $_GET['avis'])) : 1;
+$commentaires = (new CommentManager($db))->getByRecipe($recette->getId(), CommentManager::PAGE_SIZE * $pageAvis, 0);
 
 $titre = $recette->getTitle();
 require RACINE_PATH.'/view/inc/header.php';
@@ -77,22 +83,35 @@ require RACINE_PATH.'/view/inc/header.php';
     </div>
 
 
-    <!-- les avis branchés sur la base (à faire)-->
+    
     <section class="commentaires">
-        <h2>Nos avis : </h2>
+        <h2 id="titre-avis">Nos avis : </h2>
 
-        <ul>
-            <?php foreach ($comments as $comment) :?>
-            <li class="commentaire">
-                <p class="commentaire-auteur"><?= htmlspecialchars($comment->get) ?>  ?></p>
-                <p>Testé ce week-end, un vrai régal, merci pour la recette !</p>
-            </li>
-            <li class="commentaire">
-                <p class="commentaire-auteur">Thomas D. <span>3 février 2026</span></p>
-                <p>Le cœur coulant est parfait, j'ai suivi les temps à la lettre.</p>
-            </li>
-            <?php endforeach; ?>
-        </ul>
+        <?php if ($commentaires['comments'] === []) : ?>
+            <p>Aucun avis pour l'instant. Soyez le premier à donner le vôtre !</p>
+        <?php else : ?>
+            <!-- du plus récent au plus ancien, par tranches de 10 -->
+            <ul>
+                <?php foreach ($commentaires['comments'] as $commentaire) : ?>
+                    <li class="commentaire">
+                        <p class="commentaire-auteur">
+                            <?= htmlspecialchars($commentaire->getUsername()) ?>
+                            <span><?= date('d/m/Y', strtotime($commentaire->getCreatedAt())) ?></span>
+                        </p>
+                        <?php if ($commentaire->getCommentTitle() !== null) : ?>
+                            <p><strong><?= htmlspecialchars($commentaire->getCommentTitle()) ?></strong></p>
+                        <?php endif; ?>
+                        <!-- htmlspecialchars : du code HTML ou JavaScript écrit dans un commentaire s'affiche comme du texte -->
+                        <p><?= htmlspecialchars($commentaire->getCommentText()) ?></p>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
+
+        <?php if ($commentaires['hasMore']) : ?>
+            <!-- "Voir plus" : un simple lien qui recharge la page avec 10 commentaires de plus -->
+            <a href="?avis=<?= $pageAvis + 1 ?>#titre-avis" class="btn-pill">Voir plus d'avis</a>
+        <?php endif; ?>
         <br>
         <h2>Ajouter un commentaire : </h2>
         <form class="commentaire-form" method="post">
