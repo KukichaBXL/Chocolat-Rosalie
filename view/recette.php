@@ -107,4 +107,6 @@ require RACINE_PATH.'/view/inc/header.php';
     </section>
 </article>
 
+
+
 <?php require RACINE_PATH.'/view/inc/footer.php'; ?>
