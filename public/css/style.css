@@ -915,6 +915,126 @@ main:has(.histoire) + .site-footer {
   }
 }
 
+/************************ POP-UP CONNEXION ***************************/
+/* à coller à la fin de style.css */
+
+.popup-connexion {
+  /* place la fenêtre sous l'icône compte, en haut à droite */
+  inset: 130px 24px auto auto;
+  width: min(380px, calc(100% - 48px));
+  margin: 0;
+  padding: 40px 30px 30px;
+  border: 1px solid var(--dore);
+  border-radius: 23px;
+  background: white;
+  color: var(--bleu-nuit);
+  text-align: center;
+
+  &::backdrop {
+    background: rgb(21 33 56 / 0.35); /* bleu nuit transparent */
+  }
+
+  h2 {
+    color: var(--dore);
+    font-family: var(--police-italique);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 45px;
+  }
+
+  > p {
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--dore);
+    font-size: 18px;
+  }
+
+  .connect-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    > span {
+      font-family: var(--police-texte);
+      font-weight: 400;
+      font-size: 16px;
+    }
+
+    .btn-pill {
+      align-self: center;
+      margin-top: 10px;
+      font-size: 22px;
+    }
+  }
+}
+
+.popup-fermer {
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  border: none;
+  background: none;
+  color: var(--bleu-nuit);
+  font-size: 30px;
+  line-height: 1;
+
+  &:hover {
+    color: var(--dore);
+  }
+}
+
+.popup-lien {
+  display: inline-block;
+  margin-top: 20px;
+  color: var(--gris);
+  font-family: var(--police-menu);
+  font-weight: 300;
+  font-size: 15px;
+  text-decoration: underline;
+
+  &:hover {
+    color: var(--dore);
+  }
+}
+
+@media (max-width: 480px) {
+  .popup-connexion {
+    inset: 80px 0 auto;
+    margin-inline: auto;
+  }
+}
+
+/************************ INSCRIPTION ***************************/
+/* à coller à la fin de style.css */
+
+.connect-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .btn-pill {
+    align-self: center;
+  }
+}
+
+/* "Déjà client ? Se connecter" : ouvre le pop-up du header */
+.deja-client {
+  margin-bottom: 20px;
+  font-family: var(--police-texte);
+  font-weight: 400;
+
+  button {
+    border: none;
+    background: none;
+    color: var(--dore);
+    text-decoration: underline;
+
+    &:hover {
+      color: var(--bleu-nuit);
+    }
+  }
+}
+
 
 /* Tablette */
 

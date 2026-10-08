@@ -1,6 +1,6 @@
 <?php
 // path: view/connection.php
-$titre = 'Recettes de chocolatier';
+$titre = 'Inscription';
 require RACINE_PATH . '/view/inc/header.php';
 ?>
 
@@ -11,29 +11,39 @@ require RACINE_PATH . '/view/inc/header.php';
     </div>
     <div class="form-connect">
 
-        <h1>Mon compte</h1>
-        <p>Nouveau client / Déja Client</p>
+        <h1>Créer un compte</h1>
+        <p>Nouveau client</p>
 
-        <form action="" class="connect-form">
-            <span>Veuillez renseigner votre email pour vous connecter ou créer un compte.</span>
+        <form action="" method="post" class="connect-form" novalidate>
+            <span>Choisissez votre email et un mot de passe pour créer votre compte.</span>
             <div class="form-field">
-                <input type="email" id="email" name="email" maxlength="120" autocomplete="email" placeholder="Email" />
+                <input type="email" id="email" name="email" required maxlength="120" autocomplete="email" placeholder="Email" />
                 <span class="form-error" data-error-for="email"></span>
             </div>
             <div class="form-field">
-                <input type="text" id="pwd" name="pwd" placeholder="Mot de passe ..." />
-                <span class="form-error" data-error-for="Password"></span>
+                <input type="password" id="pwd" name="pwd" required minlength="8" autocomplete="new-password" placeholder="Mot de passe (8 caractères min.)" />
+                <span class="form-error" data-error-for="pwd"></span>
+            </div>
+            <div class="form-field">
+                <input type="password" id="pwd-confirm" name="pwd_confirm" required minlength="8" autocomplete="new-password" placeholder="Confirmer le mot de passe" />
+                <span class="form-error" data-error-for="pwd-confirm"></span>
             </div>
             <br>
-            <button id="btn-connect" class="btn-pill">Connexion</button>
+            <button type="submit" id="btn-connect" class="btn-pill">Créer mon compte</button>
         </form>
+
+        <p class="deja-client">
+            Déjà client ?
+            <button type="button" popovertarget="popup-connexion">Se connecter</button>
+        </p>
+
         <div class="line"></div>
         <br>
 
         <div class="txt-connect">
-            <p>Accédez à votre Compte en 1 clic!</p>
-            <p>Plus besoin de créer un énième compte et un mot de passe.</p>
-            <p>Connectez-vous directement à votre compte en quelques secondes.</p>
+            <p>Inscrivez-vous en 1 clic !</p>
+            <p>Plus besoin de créer un énième mot de passe.</p>
+            <p>Utilisez directement l'un de vos comptes ci-dessous.</p>
         </div>
 
         <div class="logo-connect">

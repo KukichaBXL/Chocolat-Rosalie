@@ -33,10 +33,33 @@
             </a>
 
             <div class="header-right">
-                <button type="button" class="account-btn" aria-label="Se connecter ou créer un compte">
-                    <a href="<?= RACINE_URL ?>connection" <?= $pg === 'connection' ? 'class="active"' : '' ?>><img src="<?= RACINE_URL ?>assets/icon-compte.svg" alt="" width="22" height="26" /></a>
+                <button type="button" class="account-btn" popovertarget="popup-connexion" aria-label="Se connecter ou créer un compte">
+                    <img src="<?= RACINE_URL ?>assets/icon-compte.svg" alt="" width="22" height="26" />
                 </button>
                 <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="menu-principal">Menu</button>
+            </div>
+
+            <!-- Pop-up de connexion (ouvert par .account-btn, sans JS grâce à popover) -->
+            <div id="popup-connexion" class="popup-connexion" popover>
+                <button type="button" class="popup-fermer" popovertarget="popup-connexion" popovertargetaction="hide" aria-label="Fermer">&times;</button>
+
+                <h2>Mon compte</h2>
+                <p>Nouveau client / Déjà client</p>
+
+                <form action="" method="post" class="connect-form">
+                    <span>Renseignez votre email pour vous connecter ou créer un compte.</span>
+                    <div class="form-field">
+                        <input type="email" id="popup-email" name="email" maxlength="120" autocomplete="email" placeholder="Email" required />
+                        <span class="form-error" data-error-for="popup-email"></span>
+                    </div>
+                    <div class="form-field">
+                        <input type="password" id="popup-pwd" name="pwd" autocomplete="current-password" placeholder="Mot de passe ..." required />
+                        <span class="form-error" data-error-for="popup-pwd"></span>
+                    </div>
+                    <button type="submit" class="btn-pill">Connexion</button>
+                </form>
+
+                <a href="<?= RACINE_URL ?>connection" class="popup-lien">Inscription</a>
             </div>
 
             <nav class="main-nav" id="menu-principal" aria-label="Navigation principale">
