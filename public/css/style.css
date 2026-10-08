@@ -805,6 +805,116 @@ main:has(.histoire) + .site-footer {
   }
 }
 
+/************************ ADMIN ***************************/
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  max-width: 966px;
+
+  .btn-pill {
+    align-self: center;
+  }
+}
+
+.admin-bloc {
+  border: none;
+
+  legend {
+    margin-bottom: 20px;
+    color: var(--dore);
+    font-family: var(--police-italique);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 45px;
+  }
+}
+
+.admin-infos {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 40px;
+}
+
+.admin-champs {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  textarea {
+    height: 140px;
+  }
+}
+
+.admin-ligne {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* Emplacement photo : zone vide à retoucher */
+.photo-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+
+  input {
+    font-family: var(--police-menu);
+    font-weight: 300;
+    font-size: 15px;
+  }
+}
+
+.photo-vide {
+  display: block;
+  aspect-ratio: 4 / 3;
+  border: 1px dashed var(--dore);
+  border-radius: 15px;
+  background: #f7f3ea;
+}
+
+.photo-principale .photo-vide {
+  border-radius: 57px;
+}
+
+.admin-etapes {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  list-style: none;
+}
+
+.admin-etape {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 30px;
+  align-items: start;
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--dore);
+
+  textarea {
+    height: 165px;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-infos,
+  .admin-etape {
+    grid-template-columns: 1fr;
+  }
+
+  .photo-principale .photo-vide {
+    aspect-ratio: 4 / 3;
+    border-radius: 15px;
+  }
+
+  .admin-bloc legend {
+    font-size: 36px;
+  }
+}
+
 
 /* Tablette */
 

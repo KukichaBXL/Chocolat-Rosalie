@@ -34,7 +34,7 @@ try {
 }
 
 // les pages qui existent ; toute autre adresse affiche la page 404
-$pages = ['accueil', 'recettes', 'recette', 'a-propos', 'contact', 'connection'];
+$pages = ['accueil', 'recettes', 'recette', 'a-propos', 'contact', 'connection', 'admin'];
 
 if (in_array($pg, $pages)) {
     require RACINE_PATH.'/view/'.$pg.'.php';
