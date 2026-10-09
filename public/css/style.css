@@ -690,6 +690,8 @@ main:has(.histoire) + .site-footer {
   font-family: var(--police-titre);
   color: var(--bleu-nuit);
   font-size: 32px;
+  margin-top: 60px;
+  margin-bottom: 10px;
 }
 .recette-photo-step{
   display: flex;
@@ -700,6 +702,9 @@ main:has(.histoire) + .site-footer {
     object-fit: cover;
     border-radius: 15px;
   }
+}
+
+.etape-titre{
 }
 
 .commentaires {
