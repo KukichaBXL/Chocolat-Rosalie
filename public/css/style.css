@@ -1,4 +1,4 @@
-/************************************************************ GENERAL *********************************************/
+/* GENERAL  */
 
 :root {
   --bleu-nuit: #152138;
@@ -22,7 +22,6 @@ body {
   font-weight: 800;
   color: var(--bleu-nuit);
   line-height: 1.3;
-  
 }
 
 img {
@@ -133,7 +132,6 @@ button {
     &.active {
       color: var(--dore);
       font-weight: 400;
-      
     }
   }
 }
@@ -400,8 +398,19 @@ main:has(.contact-infos) + .site-footer {
 }
 
 #map {
-  width: 40vW;
+  width: 40vw;
   height: 40vh;
+}
+
+/* champ piège anti-spam du formulaire de contact  */
+.champ-piege {
+  position: absolute;
+  left: -9999px;
+}
+
+/* message général d'un formulaire */
+.form-feedback {
+  color: #a1272b;
 }
 
 /* ---------- À propos : l'histoire de la maison ---------- */
@@ -489,12 +498,11 @@ main:has(.histoire) + .site-footer {
   margin: 40px;
   display: flex;
   justify-content: center;
-
 }
 
 .main-img {
   margin: 40px;
-  img{
+  img {
     width: 400px;
     height: 600px;
   }
@@ -505,7 +513,7 @@ main:has(.histoire) + .site-footer {
   width: 40vw;
   padding: 10px;
 
-  h1{
+  h1 {
     margin: 30px;
     text-align: center;
     color: var(--dore);
@@ -514,7 +522,7 @@ main:has(.histoire) + .site-footer {
     font-size: 65px;
   }
 
-  p{
+  p {
     font-family: var(--police-texte);
     font-size: 22px;
     font-weight: 100;
@@ -531,21 +539,19 @@ main:has(.histoire) + .site-footer {
 }
 
 .recette-card {
-  
   background: var(--bleu-nuit);
   color: white;
-
 }
 
-.slide-active{
+.slide-active {
   display: flex;
 }
 
 .recette-card-body {
   background-size: cover;
   background-position: center;
-  width: 100%;     
-  aspect-ratio: 1;   
+  width: 100%;
+  aspect-ratio: 1;
   height: auto;
   overflow: hidden;
 }
@@ -559,7 +565,9 @@ main:has(.histoire) + .site-footer {
   opacity: 0;
   transform: translateY(200%);
 
-  transition: transform 0.5s ease, opacity 0.5s ease;;
+  transition:
+    transform 0.5s ease,
+    opacity 0.5s ease;
 
   /* position: relative;
     top: 350px; */
@@ -578,19 +586,16 @@ main:has(.histoire) + .site-footer {
   }
 }
 
-.recette-btn:hover{
-   background-color: var(--dore);
-   color: var(--bleu-nuit);
-   
+.recette-btn:hover {
+  background-color: var(--dore);
+  color: var(--bleu-nuit);
 }
 
 .recette-card-body:hover {
-  
-  .recette-card-body-txt{
+  .recette-card-body-txt {
     display: flex;
     opacity: 1;
     transform: translateY(90%);
-    
   }
 }
 
@@ -614,7 +619,7 @@ main:has(.histoire) + .site-footer {
 }
 
 .recette-card {
-   flex: 0 0 calc((100% - 40px) / 3); /* 3 cartes visibles, 40px = 2 écarts de 20px */
+  flex: 0 0 calc((100% - 40px) / 3); /* 3 cartes visibles, 40px = 2 écarts de 20px */
 }
 
 .carousel-btn {
@@ -627,7 +632,9 @@ main:has(.histoire) + .site-footer {
   color: var(--bleu-nuit);
   font-size: 32px;
   line-height: 1;
-  transition: background 0.3s, color 0.3s;
+  transition:
+    background 0.3s,
+    color 0.3s;
 
   &:hover:not(:disabled) {
     background: var(--bleu-nuit);
@@ -686,17 +693,17 @@ main:has(.histoire) + .site-footer {
   object-fit: cover;
   border-radius: 15px;
 }
-.etape-titre{
+.etape-titre {
   font-family: var(--police-titre);
   color: var(--bleu-nuit);
   font-size: 32px;
 }
-.recette-photo-step{
+.recette-photo-step {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 20px;
-  img{
+  img {
     object-fit: cover;
     border-radius: 15px;
   }
@@ -747,7 +754,9 @@ main:has(.histoire) + .site-footer {
 .reveal {
   opacity: 0;
   transform: translateY(40px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s ease;
 }
 
 .reveal.visible {
@@ -765,8 +774,7 @@ main:has(.histoire) + .site-footer {
 }
 
 .img-connect {
-
-  img{
+  img {
     width: 25vw;
     border-radius: 57px;
   }
@@ -784,13 +792,13 @@ main:has(.histoire) + .site-footer {
 
   h1 {
     color: var(--dore);
-    font-family:  var(--police-italique);
+    font-family: var(--police-italique);
     font-size: 60px;
     font-weight: 200;
   }
 
   .line {
-    border-bottom: 1px solid var(--dore) ;
+    border-bottom: 1px solid var(--dore);
   }
 
   p {
@@ -1035,7 +1043,6 @@ main:has(.histoire) + .site-footer {
   }
 }
 
-
 /* Tablette */
 
 @media (max-width: 1100px) {
@@ -1075,7 +1082,6 @@ main:has(.histoire) + .site-footer {
   .connection-hub {
     flex-direction: column;
   }
-  
 }
 
 /* Tablette */
@@ -1146,7 +1152,7 @@ main:has(.histoire) + .site-footer {
     flex-direction: column;
   }
 
-  .contact-map { 
+  .contact-map {
     width: 100%;
   }
 
@@ -1159,8 +1165,7 @@ main:has(.histoire) + .site-footer {
   }
 
   .main-img {
-
-    img{
+    img {
       width: 700px;
     }
   }
@@ -1169,10 +1174,9 @@ main:has(.histoire) + .site-footer {
     width: 100%;
     position: relative;
     bottom: 50px;
-    p{
+    p {
       font-size: 16px;
     }
-    
   }
 
   .recette-card {
@@ -1207,7 +1211,7 @@ main:has(.histoire) + .site-footer {
     }
   }
 
-    .recette-card {
+  .recette-card {
     flex: 0 0 100%;
   }
 
@@ -1236,5 +1240,76 @@ main:has(.histoire) + .site-footer {
 
   .recette-fiche .recette-surtitre {
     font-size: 36px;
+  }
+}
+
+/* comptes */
+
+/* message affiché une seule fois (connexion réussie, erreur...) */
+.alerte {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  z-index: 50;
+  max-width: calc(100% - 32px);
+  padding: 14px 28px;
+  border-radius: 64px;
+  background: var(--bleu-nuit);
+  color: var(--dore);
+  font-family: var(--police-menu);
+  text-align: center;
+  transform: translateX(-50%);
+  animation: alerte-disparait 6s forwards;
+}
+
+@keyframes alerte-disparait {
+  0%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* zone compte de l'en-tête quand on est connecté : le nom et le bouton Déconnexion */
+.compte-connecte {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.user-name {
+  color: var(--dore);
+  font-family: var(--police-menu);
+  font-weight: 500;
+}
+
+.logout-btn {
+  padding: 6px 14px;
+  border: 1px solid var(--bleu-nuit);
+  border-radius: 64px;
+  background: none;
+  font-family: var(--police-menu);
+  cursor: pointer;
+}
+
+/* petit écran (360 px) : la zone compte + le bouton Menu doivent tenir dans la largeur */
+@media (max-width: 480px) {
+  .compte-connecte {
+    gap: 4px;
+  }
+
+  .user-name {
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .logout-btn {
+    padding: 6px 10px;
+    font-size: 14px;
   }
 }
