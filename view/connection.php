@@ -7,27 +7,34 @@ require RACINE_PATH . '/view/inc/header.php';
 
 <section class="connection-hub reveal">
     <div class="img-connect">
-        <img src="./assets/valeur-creativite.jpg" alt="">
+        <img src="<?= RACINE_URL ?>assets/valeur-creativite.jpg" alt="">
     </div>
     <div class="form-connect">
 
         <h1>Créer un compte</h1>
         <p>Nouveau client</p>
 
-        <form action="" method="post" class="connect-form" novalidate>
-            <span>Choisissez votre email et un mot de passe pour créer votre compte.</span>
+        <form action="" method="post" class="connect-form" id="form-inscription" novalidate>
+            <input type="hidden" name="action" value="inscription" />
+            <?= champCsrf() ?>
+            <span>Choisissez un nom d'utilisateur, votre email et un mot de passe pour créer votre compte.</span>
             <div class="form-field">
-                <input type="email" id="email" name="email" required maxlength="120" autocomplete="email" placeholder="Email" />
-                <span class="form-error" data-error-for="email"></span>
+                <input type="text" id="username" name="username" required maxlength="30" autocomplete="username" placeholder="Nom d'utilisateur" value="<?= htmlspecialchars($_POST['username'] ?? '') ?>" />
+                <span class="form-error" data-error-for="username"><?= $erreurs['username'] ?? '' ?></span>
             </div>
             <div class="form-field">
-                <input type="password" id="pwd" name="pwd" required minlength="8" autocomplete="new-password" placeholder="Mot de passe (8 caractères min.)" />
-                <span class="form-error" data-error-for="pwd"></span>
+                <input type="email" id="email" name="email" required maxlength="120" autocomplete="email" placeholder="Email" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" />
+                <span class="form-error" data-error-for="email"><?= $erreurs['email'] ?? '' ?></span>
             </div>
             <div class="form-field">
-                <input type="password" id="pwd-confirm" name="pwd_confirm" required minlength="8" autocomplete="new-password" placeholder="Confirmer le mot de passe" />
-                <span class="form-error" data-error-for="pwd-confirm"></span>
+                <input type="password" id="pwd" name="pwd" required minlength="8" maxlength="72" autocomplete="new-password" placeholder="Mot de passe (8 caractères min.)" />
+                <span class="form-error" data-error-for="pwd"><?= $erreurs['pwd'] ?? '' ?></span>
             </div>
+            <div class="form-field">
+                <input type="password" id="pwd-confirm" name="pwd_confirm" required minlength="8" maxlength="72" autocomplete="new-password" placeholder="Confirmer le mot de passe" />
+                <span class="form-error" data-error-for="pwd-confirm"><?= $erreurs['pwd_confirm'] ?? '' ?></span>
+            </div>
+            <p>8 caractères minimum, avec une majuscule, une minuscule et un chiffre.</p>
             <br>
             <button type="submit" id="btn-connect" class="btn-pill">Créer mon compte</button>
         </form>
@@ -55,6 +62,6 @@ require RACINE_PATH . '/view/inc/header.php';
     </div>
 </section>
 
-<script src="./js/main.js"></script>
-<script src="./js/connection.js"></script>
+<script src="<?= RACINE_URL ?>js/main.js"></script>
+<script src="<?= RACINE_URL ?>js/connection.js"></script>
 <?php require RACINE_PATH . '/view/inc/footer.php'; ?>

@@ -1,27 +1,23 @@
 <?php
 // path: view/recettes.php
-use model\manager\RecipeManager;
-
+// $recettes (un tableau de RecipeMapping) est préparé par controller/PublicController.php
 $titre = 'Nos recettes';
-require RACINE_PATH.'/view/inc/header.php';
-
-// les recettes lues dans la base : un tableau d'objets RecipeMapping
-$recettes = (new RecipeManager($db))->getAll();
+require RACINE_PATH . '/view/inc/header.php';
 ?>
 
 <section class="main-recette reveal">
     <div class="main-img">
-    <img src="./assets/fourchette.webp" alt="recette">
+        <img src="<?= RACINE_URL ?>assets/fourchette.webp" alt="recette">
     </div>
     <div class="main-txt">
         <h1>Nos recettes</h1>
-        <p>Bienvenue dans notre espace dédié aux recettes ! 
-        Vous retrouverez ici toutes nos recettes maison, inspirées de l’univers de Rosalie et préparées avec soin. Des recettes gourmandes, savoureuses et accessibles, pour découvrir nos produits autrement et partager un petit bout de notre savoir-faire.
-        Que vous soyez à la recherche d’une idée pour vous régaler, d’une nouvelle recette à tester ou simplement curieux de découvrir nos créations, vous trouverez ici de quoi vous inspirer. Bonne découverte et surtout… </p>
+        <p>Bienvenue dans notre espace dédié aux recettes !
+            Vous retrouverez ici toutes nos recettes maison, inspirées de l’univers de Rosalie et préparées avec soin. Des recettes gourmandes, savoureuses et accessibles, pour découvrir nos produits autrement et partager un petit bout de notre savoir-faire.
+            Que vous soyez à la recherche d’une idée pour vous régaler, d’une nouvelle recette à tester ou simplement curieux de découvrir nos créations, vous trouverez ici de quoi vous inspirer. Bonne découverte et surtout… </p>
         <br>
         <p class="regale">Régalez-vous !</p>
     </div>
-    
+
 </section>
 
 <div class="carousel container">
@@ -46,7 +42,7 @@ $recettes = (new RecipeManager($db))->getAll();
     <button class="carousel-btn carousel-next" aria-label="Recette suivante">&#8250;</button>
 </div>
 
-<script src="./js/recettes.js"></script>
-<script src="./js/main.js"></script>
+<script src="<?= RACINE_URL ?>js/recettes.js"></script>
+<script src="<?= RACINE_URL ?>js/main.js"></script>
 
-<?php require RACINE_PATH.'/view/inc/footer.php'; ?>
+<?php require RACINE_PATH . '/view/inc/footer.php'; ?>

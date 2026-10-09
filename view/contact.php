@@ -1,7 +1,7 @@
 <?php
 // path: view/contact.php
 $titre = 'Contact';
-require RACINE_PATH.'/view/inc/header.php';
+require RACINE_PATH . '/view/inc/header.php';
 ?>
 
 <section class="container page-title reveal">
@@ -19,7 +19,7 @@ require RACINE_PATH.'/view/inc/header.php';
         <span class="form-error" data-error-for="email"></span>
     </div>
     <div class="form-field">
-        <input type="text" id="sujet" name="sujet" maxlength="120" placeholder="Sujet"/>
+        <input type="text" id="sujet" name="sujet" maxlength="120" placeholder="Sujet" />
         <span class="form-error" data-error-for="sujet"></span>
     </div>
     <div class="form-field message">
@@ -51,6 +51,6 @@ require RACINE_PATH.'/view/inc/header.php';
 
 
 <script src="<?= RACINE_URL ?>js/contact.js" defer></script>
-<script src="./js/main.js"></script>
+<script src="<?= RACINE_URL ?>js/main.js"></script>
 
-<?php require RACINE_PATH.'/view/inc/footer.php'; ?>
+<?php require RACINE_PATH . '/view/inc/footer.php'; ?>

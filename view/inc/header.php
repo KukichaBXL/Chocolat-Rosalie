@@ -1,9 +1,11 @@
 <?php
 // path: view/inc/header.php
-// $titre est défini en haut de chaque vue, $pg vient de public/index.php
+// $titre est défini en haut de chaque vue ; $pg, $utilisateur, $erreurs et $message viennent de public/index.php ;
+// $estAdmin vient de controller/RouterController.php (il n'existe pas sur la page d'erreur, d'où empty())
 ?>
 <!doctype html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -12,15 +14,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@800&family=Amiri&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Habibi&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet" />
-     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-     crossorigin=""/>
-      <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-     crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
     <link rel="stylesheet" href="<?= RACINE_URL ?>css/style.css" />
     <script src="<?= RACINE_URL ?>js/navigation.js" defer></script>
 </head>
+
 <body>
     <header class="site-header">
         <div class="container header-inner">
@@ -33,34 +36,55 @@
             </a>
 
             <div class="header-right">
-                <button type="button" class="account-btn" popovertarget="popup-connexion" aria-label="Se connecter ou créer un compte">
-                    <img src="<?= RACINE_URL ?>assets/icon-compte.svg" alt="" width="22" height="26" />
-                </button>
+                <?php if ($utilisateur === null) : ?>
+                    <button type="button" class="account-btn" popovertarget="popup-connexion" aria-label="Se connecter ou créer un compte">
+                        <img src="<?= RACINE_URL ?>assets/icon-compte.svg" alt="" width="22" height="26" />
+                    </button>
+                <?php else : ?>
+                    <!-- connecté : le nom et le bouton Déconnexion (un formulaire POST avec le jeton CSRF) -->
+                    <form method="post" class="compte-connecte">
+                        <span class="user-name"><?= htmlspecialchars($utilisateur['username']) ?></span>
+                        <input type="hidden" name="action" value="deconnexion" />
+                        <?= champCsrf() ?>
+                        <button type="submit" class="logout-btn">Déconnexion</button>
+                    </form>
+                <?php endif; ?>
                 <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="menu-principal">Menu</button>
             </div>
 
-            <!-- Pop-up de connexion (ouvert par .account-btn, sans JS grâce à popover) -->
-            <div id="popup-connexion" class="popup-connexion" popover>
-                <button type="button" class="popup-fermer" popovertarget="popup-connexion" popovertargetaction="hide" aria-label="Fermer">&times;</button>
+            <?php if ($utilisateur === null) : ?>
+                <!-- Pop-up de connexion (ouvert par .account-btn, sans JS grâce à popover) -->
+                <div id="popup-connexion" class="popup-connexion" popover>
+                    <button type="button" class="popup-fermer" popovertarget="popup-connexion" popovertargetaction="hide" aria-label="Fermer">&times;</button>
 
-                <h2>Mon compte</h2>
-                <p>Nouveau client / Déjà client</p>
+                    <h2>Mon compte</h2>
+                    <p>Nouveau client / Déjà client</p>
 
-                <form action="" method="post" class="connect-form">
-                    <span>Renseignez votre email pour vous connecter ou créer un compte.</span>
-                    <div class="form-field">
-                        <input type="email" id="popup-email" name="email" maxlength="120" autocomplete="email" placeholder="Email" required />
-                        <span class="form-error" data-error-for="popup-email"></span>
-                    </div>
-                    <div class="form-field">
-                        <input type="password" id="popup-pwd" name="pwd" autocomplete="current-password" placeholder="Mot de passe ..." required />
-                        <span class="form-error" data-error-for="popup-pwd"></span>
-                    </div>
-                    <button type="submit" class="btn-pill">Connexion</button>
-                </form>
+                    <form action="" method="post" class="connect-form">
+                        <input type="hidden" name="action" value="connexion" />
+                        <?= champCsrf() ?>
+                        <span>Renseignez votre email pour vous connecter ou créer un compte.</span>
+                        <div class="form-field">
+                            <input type="email" id="popup-email" name="email" maxlength="120" autocomplete="email" placeholder="Email" required value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" />
+                            <span class="form-error" data-error-for="popup-email"></span>
+                        </div>
+                        <div class="form-field">
+                            <input type="password" id="popup-pwd" name="pwd" autocomplete="current-password" placeholder="Mot de passe ..." required />
+                            <span class="form-error" data-error-for="popup-pwd"><?= $erreurs['connexion'] ?? '' ?></span>
+                        </div>
+                        <button type="submit" class="btn-pill">Connexion</button>
+                    </form>
 
-                <a href="<?= RACINE_URL ?>connection" class="popup-lien">Inscription</a>
-            </div>
+                    <a href="<?= RACINE_URL ?>connection" class="popup-lien">Inscription</a>
+                </div>
+
+                <?php if (isset($erreurs['connexion'])) : ?>
+                    <!-- la connexion vient d'échouer : on rouvre le pop-up pour montrer l'erreur -->
+                    <script>
+                        document.getElementById('popup-connexion').showPopover();
+                    </script>
+                <?php endif; ?>
+            <?php endif; ?>
 
             <nav class="main-nav" id="menu-principal" aria-label="Navigation principale">
                 <ul>
@@ -68,10 +92,15 @@
                     <li><a href="<?= RACINE_URL ?>recettes" <?= $pg === 'recettes' || $pg === 'recette' ? 'class="active"' : '' ?>>Recettes</a></li>
                     <li><a href="<?= RACINE_URL ?>a-propos" <?= $pg === 'a-propos' ? 'class="active"' : '' ?>>À propos</a></li>
                     <li><a href="<?= RACINE_URL ?>contact" <?= $pg === 'contact' ? 'class="active"' : '' ?>>Contact</a></li>
-                    <li><a href="<?= RACINE_URL ?>admin" <?= $pg === 'admin' ? 'class="active"' : '' ?>>Admin</a></li>
+                    <?php if (!empty($estAdmin)) : ?>
+                        <li><a href="<?= RACINE_URL ?>admin" <?= $pg === 'admin' ? 'class="active"' : '' ?>>Admin</a></li>
+                    <?php endif; ?>
                 </ul>
             </nav>
         </div>
     </header>
 
     <main>
+        <?php if (!empty($message)) : ?>
+            <p class="alerte" role="status"><?= htmlspecialchars($message) ?></p>
+        <?php endif; ?>
