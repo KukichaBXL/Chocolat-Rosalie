@@ -54,7 +54,11 @@ require RACINE_PATH.'/view/inc/header.php';
 
 <!-- LISTE DES TOP RECETTES  -->
 <div class="top-recip">
-    
+    <ul>
+        <?= foreach ($variable as $key => $value) {
+            # code...
+        } ?>
+    </ul>
 </div>
 
 
