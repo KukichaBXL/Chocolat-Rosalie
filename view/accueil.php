@@ -52,6 +52,12 @@ require RACINE_PATH.'/view/inc/header.php';
     <a href="<?= RACINE_URL ?>recettes" class="btn-pill">Découvrez nos recettes</a>
 </div>
 
+<!-- LISTE DES TOP RECETTES  -->
+<div class="top-recip">
+    <ul>
+    </ul>
+</div>
+
 
 <script src="./js/main.js"></script>
 
