@@ -4,7 +4,7 @@
 declare(strict_types=1);
 
 // Contrôleur public, en deux temps :
-//  si un formulaire a été envoyé (POST) : inscription, connexion
+//  si un formulaire a été envoyé (POST) : inscription, connexion, contact
 //  PRÉPARER les données de la page demandée avec les managers, puis inclure la vue
 
 
@@ -13,6 +13,7 @@ use model\manager\IngredientManager;
 use model\manager\RecipeManager;
 use model\manager\StepManager;
 use model\manager\UserManager;
+use model\manager\MessageContactManager;
 
 // formulaire envoyé 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -92,6 +93,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['message'] = 'Bonjour ' . $compte->getUsername() . ' !';
                 header('Location: ' . RACINE_URL);
                 exit;
+            case 'contact':
+                // champ piège invisible pour un humain : s'il est rempli, c'est un robot
+                // On répond "merci" sans rien enregistrer, pour ne pas lui dire qu'il est repéré
+                if (lireTexte('site_web') !== '') {
+                    $_SESSION['message'] = 'Merci, votre message a bien été envoyé.';
+                    header('Location: ' . RACINE_URL . 'contact');
+                    exit;
+                }
+
+                $nom = lireTexte('nom');
+                $email = lireTexte('email');
+                $sujet = lireTexte('sujet');
+                $texte = lireTexte('message');
+
+                if (preg_match('/^[\p{L}\s\'-]{2,80}$/u', $nom) !== 1) {
+                    $erreurs['nom'] = 'Le nom doit contenir entre 2 et 80 lettres.';
+                }
+                if (filter_var($email, FILTER_VALIDATE_EMAIL) === false || mb_strlen($email) > 120) {
+                    $erreurs['email'] = 'L\'adresse email n\'est pas valide (exemple : nom@domaine.be).';
+                }
+                if (mb_strlen($sujet) > 120) {
+                    $erreurs['sujet'] = 'Le sujet ne doit pas dépasser 120 caractères.';
+                }
+                if (mb_strlen($texte) < 3 || mb_strlen($texte) > 500) {
+                    $erreurs['message'] = 'Le message doit contenir entre 3 et 500 caractères.';
+                }
+
+                // anti-spam : 3 messages au maximum par tranche de 10 minutes et par visiteur
+                $envois = array_filter($_SESSION['contact_envois'] ?? [], fn($moment) => $moment > time() - 600);
+                if ($erreurs === [] && count($envois) >= 3) {
+                    $erreurs['general'] = 'Vous avez déjà envoyé 3 messages. Réessayez dans quelques minutes.';
+                }
+
+                if ($erreurs === []) {
+                    (new MessageContactManager($db))->add($nom, $email, $sujet === '' ? null : $sujet, $texte);
+                    $envois[] = time();
+                    $_SESSION['contact_envois'] = array_values($envois);
+                    $_SESSION['message'] = 'Merci, votre message a bien été envoyé. Nous vous répondrons rapidement.';
+                    header('Location: ' . RACINE_URL . 'contact');
+                    exit;
+                }
+                break;
         }
     }
 }
