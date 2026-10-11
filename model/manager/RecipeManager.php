@@ -19,7 +19,7 @@ class RecipeManager implements ManagerInterface
         $this->connect = $connect;
     }
 
-     public function getAll(): array
+    public function getAll(): array
     {
         $sql = "SELECT * FROM recipes ORDER BY title";
         $query = $this->connect->query($sql);
@@ -44,5 +44,33 @@ class RecipeManager implements ManagerInterface
             return null;
         }
         return new RecipeMapping($ligne);
+    }
+
+    // cette adresse (slug) est-elle déjà prise par une recette ?
+    public function slugExists(string $slug): bool
+    {
+        $prepare = $this->connect->prepare("SELECT 1 FROM recipes WHERE recipes_slug = :slug");
+        $prepare->bindValue(':slug', $slug);
+        $prepare->execute();
+        return $prepare->fetchColumn() !== false;
+    }
+
+    // ajoute une recette et renvoie son id
+    public function create(string $title, ?string $description, string $photo, int $prepareTime, int $cookTime, int $portions, string $difficulty, int $userId, string $slug): int
+    {
+        $sql = "INSERT INTO recipes (title, description, photo_main, prepare_time, cook_time, portions, difficulty, users_id, recipes_slug)
+                VALUES (:title, :description, :photo, :prepare, :cook, :portions, :difficulty, :user, :slug)";
+        $prepare = $this->connect->prepare($sql);
+        $prepare->bindValue(':title', $title);
+        $prepare->bindValue(':description', $description, $description === null ? MyPDO::PARAM_NULL : MyPDO::PARAM_STR);
+        $prepare->bindValue(':photo', $photo);
+        $prepare->bindValue(':prepare', $prepareTime, MyPDO::PARAM_INT);
+        $prepare->bindValue(':cook', $cookTime, MyPDO::PARAM_INT);
+        $prepare->bindValue(':portions', $portions, MyPDO::PARAM_INT);
+        $prepare->bindValue(':difficulty', $difficulty);
+        $prepare->bindValue(':user', $userId, MyPDO::PARAM_INT);
+        $prepare->bindValue(':slug', $slug);
+        $prepare->execute();
+        return (int) $this->connect->lastInsertId();
     }
 }

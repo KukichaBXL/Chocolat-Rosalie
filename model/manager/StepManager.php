@@ -4,6 +4,7 @@
 declare(strict_types=1);
 
 namespace model\manager;
+
 use model\interface\ManagerInterface;
 use model\mapping\StepMapping;
 use model\MyPDO;
@@ -30,5 +31,19 @@ class StepManager implements ManagerInterface
             $etapes[] = new StepMapping($ligne);
         }
         return $etapes;
+    }
+
+    // ajoute une étape à une recette
+    public function add(int $recipeId, int $number, string $description, ?string $photo): void
+    {
+        $sql = "INSERT INTO step (recipe_id, step_number, step_title, description, step_photo)
+                VALUES (:recipe, :number, :title, :description, :photo)";
+        $prepare = $this->connect->prepare($sql);
+        $prepare->bindValue(':recipe', $recipeId, MyPDO::PARAM_INT);
+        $prepare->bindValue(':number', $number, MyPDO::PARAM_INT);
+        $prepare->bindValue(':title', 'Étape ' . $number);
+        $prepare->bindValue(':description', $description);
+        $prepare->bindValue(':photo', $photo, $photo === null ? MyPDO::PARAM_NULL : MyPDO::PARAM_STR);
+        $prepare->execute();
     }
 }

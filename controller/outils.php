@@ -1,8 +1,8 @@
 <?php
 // path: controller/outils.php
-// Trois petites fonctions utilisées par les contrôleurs et les vues.
+// fonctions utilisées par les contrôleurs et les vues
 
-// champ caché du jeton anti-CSRF
+// champ caché du jeton anti-CSRF : à mettre dans chaque formulaire POST
 function champCsrf(): string
 {
     return '<input type="hidden" name="csrf_token" value="' . $_SESSION['csrf_token'] . '" />';
@@ -20,4 +20,122 @@ function lireTexte(string $cle): string
 {
     $valeur = $_POST[$cle] ?? '';
     return is_string($valeur) ? trim($valeur) : '';
+}
+
+// lit un nombre entier du formulaire entre $min et $max (null s'il est absent, mal écrit ou hors limites)
+function lireEntier(string $cle, int $min, int $max): ?int
+{
+    $valeur = filter_var(lireTexte($cle), FILTER_VALIDATE_INT);
+    return ($valeur === false || $valeur < $min || $valeur > $max) ? null : $valeur;
+}
+
+// ce que la personne avait tapé dans un champ, prêt à être remis dans le formulaire après une erreur
+function ancien(string $cle): string
+{
+    return htmlspecialchars(lireTexte($cle));
+}
+
+// transforme un titre en adresse : "Crème brûlée" donne "creme-brulee"
+function creerSlug(string $titre): string
+{
+    $slug = strtr(mb_strtolower($titre), [
+        'à' => 'a',
+        'â' => 'a',
+        'é' => 'e',
+        'è' => 'e',
+        'ê' => 'e',
+        'ë' => 'e',
+        'î' => 'i',
+        'ï' => 'i',
+        'ô' => 'o',
+        'ö' => 'o',
+        'ù' => 'u',
+        'û' => 'u',
+        'ü' => 'u',
+        'ç' => 'c',
+        'œ' => 'oe',
+    ]);
+    // tout ce qui n'est pas une lettre ou un chiffre devient un tiret
+    return trim(preg_replace('/[^a-z0-9]+/', '-', $slug), '-');
+}
+
+// Transforme le texte "un ingrédient par ligne" en tableau de ['name', 'quantity', 'unit'].
+//   "150 g de chocolat noir"  -> quantité 150, unité g,      nom "chocolat noir"
+function lireIngredients(string $texte): ?array
+{
+    // unité tapée => unité enregistrée (toujours au singulier)
+    $unites = [
+        'g' => 'g',
+        'kg' => 'kg',
+        'ml' => 'ml',
+        'cl' => 'cl',
+        'l' => 'l',
+        'pincée' => 'pincée',
+        'pincées' => 'pincée',
+        'gousse' => 'gousse',
+        'gousses' => 'gousse',
+        'sachet' => 'sachet',
+        'sachets' => 'sachet',
+        'cuillère à soupe' => 'cuillère à soupe',
+        'cuillères à soupe' => 'cuillère à soupe',
+        'cuillère à café' => 'cuillère à café',
+        'cuillères à café' => 'cuillère à café',
+    ];
+    // les unités les plus longues d'abord, pour que "cl" ne soit pas lu "c" puis "l"
+    uksort($unites, fn($a, $b) => mb_strlen($b) <=> mb_strlen($a));
+    $motifUnites = implode('|', array_map('preg_quote', array_keys($unites)));
+
+    $resultat = [];
+    foreach (preg_split('/\R/', $texte) as $ligne) {
+        $ligne = trim($ligne);
+        if ($ligne === '') {
+            continue;
+        }
+        $quantite = null;
+        $unite = null;
+        $nom = $ligne;
+
+        // "quantité [unité [de]] nom"
+        if (preg_match('/^(\d+(?:[.,]\d+)?|une?)\s*(?:(' . $motifUnites . ')\s+(?:de\s+|d\')?)?(.+)$/iu', $ligne, $m)) {
+            $quantite = mb_strtolower($m[1]) === 'un' || mb_strtolower($m[1]) === 'une' ? '1' : str_replace(',', '.', $m[1]);
+            $unite = $m[2] === '' ? null : $unites[mb_strtolower($m[2])];
+            $nom = trim($m[3]);
+            // une quantité de 0 n'a pas de sens (la base la refuse)
+            if ((float) $quantite <= 0) {
+                $quantite = null;
+                $unite = null;
+            }
+        }
+        if (mb_strlen($nom) > 100) {
+            return null;
+        }
+        $resultat[] = ['name' => $nom, 'quantity' => $quantite, 'unit' => $unite];
+    }
+    return count($resultat) > 40 ? null : $resultat;
+}
+
+// Enregistre une image envoyée par un formulaire dans public/assets/.
+// $fichier est une entrée de $_FILES. Renvoie ['nom' => nom du fichier ou null, 'erreur' => message ou null].
+// Règles du cahier : jpg, png ou webp, 300 Ko maximum.
+function enregistrerImage(array $fichier): array
+{
+    $erreur = $fichier['error'] ?? UPLOAD_ERR_NO_FILE;
+    if ($erreur === UPLOAD_ERR_NO_FILE) {
+        return ['nom' => null, 'erreur' => null]; // aucun fichier choisi
+    }
+    if ($erreur !== UPLOAD_ERR_OK || $fichier['size'] > 300 * 1024) {
+        return ['nom' => null, 'erreur' => 'L\'image doit faire 300 Ko au maximum.'];
+    }
+    // le VRAI type est lu dans le fichier : l'extension envoyée par le navigateur peut mentir
+    $types = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
+    $type = (new finfo(FILEINFO_MIME_TYPE))->file($fichier['tmp_name']);
+    if (!isset($types[$type]) || @getimagesize($fichier['tmp_name']) === false) {
+        return ['nom' => null, 'erreur' => 'L\'image doit être au format jpg, png ou webp.'];
+    }
+    // le nom est choisi par le serveur, jamais par l'utilisateur
+    $nom = 'recette-' . bin2hex(random_bytes(8)) . '.' . $types[$type];
+    if (!move_uploaded_file($fichier['tmp_name'], RACINE_PATH . '/public/assets/' . $nom)) {
+        return ['nom' => null, 'erreur' => 'L\'image n\'a pas pu être enregistrée.'];
+    }
+    return ['nom' => $nom, 'erreur' => null];
 }

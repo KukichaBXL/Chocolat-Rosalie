@@ -413,7 +413,7 @@ main:has(.contact-infos) + .site-footer {
   color: #a1272b;
 }
 
-/* ---------- À propos : l'histoire de la maison ---------- */
+/* À propos : l'histoire de la maison */
 
 .histoire {
   margin-top: 20px;
@@ -599,7 +599,7 @@ main:has(.histoire) + .site-footer {
   }
 }
 
-/****************************** CARROUSEL  ********************************/
+/* CARROUSEL */
 
 .carousel {
   display: flex;
@@ -764,7 +764,7 @@ main:has(.histoire) + .site-footer {
   transform: none;
 }
 
-/************************ CONNECTION ***************************/
+/* CONNECTION */
 .connection-hub {
   margin: 40px;
   display: flex;
@@ -813,7 +813,7 @@ main:has(.histoire) + .site-footer {
   }
 }
 
-/************************ ADMIN ***************************/
+/* ADMIN */
 
 .admin-form {
   display: flex;
@@ -923,8 +923,7 @@ main:has(.histoire) + .site-footer {
   }
 }
 
-/************************ POP-UP CONNEXION ***************************/
-/* à coller à la fin de style.css */
+/* POP-UP CONNEXION */
 
 .popup-connexion {
   /* place la fenêtre sous l'icône compte, en haut à droite */
@@ -1012,8 +1011,7 @@ main:has(.histoire) + .site-footer {
   }
 }
 
-/************************ INSCRIPTION ***************************/
-/* à coller à la fin de style.css */
+/* INSCRIPTION */
 
 .connect-form {
   display: flex;
@@ -1025,7 +1023,6 @@ main:has(.histoire) + .site-footer {
   }
 }
 
-/* "Déjà client ? Se connecter" : ouvre le pop-up du header */
 .deja-client {
   margin-bottom: 20px;
   font-family: var(--police-texte);
@@ -1180,7 +1177,7 @@ main:has(.histoire) + .site-footer {
   }
 
   .recette-card {
-    flex: 0 0 100%; /* 1 carte */
+    flex: 0 0 100%;
   }
 }
 
@@ -1312,4 +1309,20 @@ main:has(.histoire) + .site-footer {
     padding: 6px 10px;
     font-size: 14px;
   }
+}
+
+/* formulaire admin (liste déroulante)*/
+
+.form-field select {
+  padding: 12px 20px;
+  border: 1px solid var(--bleu-nuit);
+  border-radius: 23px;
+  background: #fff;
+  font-family: var(--police-texte);
+  font-size: 18px;
+}
+
+/* les photos d'étapes passent à la ligne sur petit écran */
+.recette-photo-step {
+  flex-wrap: wrap;
 }

@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 
 use model\manager\CommentManager;
+use model\manager\CategoryManager;
 use model\manager\IngredientManager;
 use model\manager\RecipeManager;
 use model\manager\StepManager;
@@ -180,6 +181,7 @@ switch ($pg) {
             header('Location: ' . RACINE_URL);
             exit;
         }
+        $categories = (new CategoryManager($db))->getAll();
         require RACINE_PATH . '/view/admin.php';
         break;
 
