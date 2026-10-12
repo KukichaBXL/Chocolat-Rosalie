@@ -6,7 +6,7 @@ declare(strict_types=1);
 // Contrôleur public, en deux temps :
 //   1. si un formulaire a été envoyé (POST) : inscription, connexion, contact
 //   2. PRÉPARER les données de la page demandée avec les managers, puis inclure la vue (les vues ne font qu'afficher)
-// Variables disponibles : $db, $pg, $utilisateur, $estAdmin, $erreurs (voir public/index.php et RouterController.php).
+
 
 use model\manager\CategoryManager;
 use model\manager\CommentManager;
@@ -142,6 +142,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// la liste des recettes pour le menu du header : chargée pour TOUTES les pages
+$recettesMenu = (new RecipeManager($db))->getAll();
+
 // ===== 2. Affichage de la page =====
 
 switch ($pg) {
@@ -149,8 +152,8 @@ switch ($pg) {
         require RACINE_PATH . '/view/accueil.php';
         break;
 
-    case 'recettes':
-        $recettes = (new RecipeManager($db))->getAll();
+    case 'recettes': // Pour evité de charger les recettes 2 fois sur la page recette a cause du dropdown
+        $recettes = $recettesMenu;
         require RACINE_PATH . '/view/recettes.php';
         break;
 
