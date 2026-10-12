@@ -1735,3 +1735,336 @@ a.user-name:hover {
 .recette-masquee {
   opacity: 0.5;
 }
+
+/* Administration en onglets  */
+
+.admin-onglets {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 24px;
+  margin-top: 16px;
+
+  a {
+    padding: 6px 2px;
+    border-bottom: 2px solid transparent;
+    color: var(--bleu-nuit);
+    font-family: var(--police-menu);
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  a:hover,
+  a.active {
+    border-bottom-color: var(--dore);
+  }
+}
+
+.aide {
+  margin-bottom: 12px;
+  font-family: var(--police-menu);
+  font-weight: 400;
+  font-size: 14px;
+}
+
+/* ----- la fiche (texte plus petit, plus d'air) ----- */
+.recette-top {
+  grid-template-columns: minmax(0, 520px) 1fr;
+  gap: 32px;
+  align-items: stretch;
+}
+
+.recette-fiche {
+  display: flex;
+  flex-direction: column;
+  padding: 28px 32px 22px;
+  font-size: 16px;
+  line-height: 1.55;
+
+  h1 {
+    margin-bottom: 14px;
+    font-family: var(--police-italique);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 26px;
+    line-height: 1.25;
+    text-align: center;
+    color: var(--dore);
+  }
+
+  h2 {
+    margin-block: 22px 8px;
+    font-family: var(--police-texte);
+    font-weight: 400;
+    font-size: 16px;
+  }
+
+  p,
+  li {
+    font-family: var(--police-texte);
+    font-weight: 400;
+  }
+
+  ul,
+  ol {
+    padding-left: 22px;
+  }
+
+  li + li {
+    margin-top: 4px;
+  }
+}
+
+.recette-fiche .recette-description {
+  margin-top: 6px;
+  opacity: 0.9;
+}
+
+.recette-fiche .recette-infos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 4px 12px;
+    border: 1px solid rgb(255 255 255 / 25%);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 8%);
+    font-family: var(--police-menu);
+    font-size: 13px;
+  }
+
+  i {
+    color: var(--dore);
+  }
+
+  .recette-categorie {
+    border-color: var(--dore);
+    color: var(--dore);
+  }
+
+  .note-moyenne {
+    color: var(--dore);
+  }
+}
+
+/* logo de la maison : en bas à droite de la fiche */
+.recette-fiche .fiche-logo {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+  padding-top: 22px;
+
+  img {
+    width: 36px;
+    height: 36px;
+    opacity: 0.95;
+  }
+}
+
+/*  le bas de page : autres recettes à gauche, avis à droite  */
+.recette-bas > * {
+  min-width: 0;
+}
+
+.recette-bas {
+  display: grid;
+  grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+  gap: 48px;
+  align-items: start;
+  margin-top: 70px;
+
+  h2 {
+    margin-bottom: 18px;
+    font-family: var(--police-italique);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 24px;
+    text-align: center;
+  }
+}
+
+/* un carrousel = une piste qui défile + deux flèches */
+.carrousel-corps {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.carrousel-piste {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  list-style: none;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  > li {
+    flex: 0 0 100%;
+    scroll-snap-align: center;
+  }
+}
+
+.carrousel-fleche {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--bleu-nuit);
+  border-radius: 50%;
+  background: none;
+  color: var(--bleu-nuit);
+  font-size: 24px;
+  line-height: 1;
+  transition-duration: 0.3s;
+
+  &:hover:not(:disabled) {
+    background: var(--bleu-nuit);
+    color: var(--dore);
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+/* carte « autre recette » : photo, nom, étoiles */
+.autre-recette {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding-inline: 4px;
+  text-align: center;
+
+  img {
+    width: 100%;
+    max-width: 200px;
+    height: 150px;
+    border-radius: 12px;
+    object-fit: cover;
+  }
+
+  .autre-titre {
+    font-family: var(--police-texte);
+    font-weight: 400;
+    font-size: 15px;
+  }
+
+  .note-etoiles {
+    color: var(--dore);
+    letter-spacing: 2px;
+  }
+}
+
+/* avis : une bulle à la fois */
+.avis-bloc .carrousel-piste > li {
+  padding: 4px;
+}
+
+.avis-bloc .commentaire {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 150px;
+  padding: 22px 28px;
+  border: 0;
+  border-radius: 28px;
+  background: rgb(200 169 91 / 30%);
+  font-family: var(--police-texte);
+  font-weight: 400;
+  font-size: 16px;
+  text-align: center;
+
+  .commentaire-auteur {
+    font-size: 15px;
+  }
+
+  button {
+    align-self: center;
+    margin-top: auto;
+  }
+}
+
+.avis-bloc .commentaire-masque {
+  background: rgb(0 0 0 / 8%);
+}
+
+.avis-bloc #voir-plus {
+  display: block;
+  width: fit-content;
+  margin: 16px auto 0;
+  padding: 8px 22px;
+  font-size: 18px;
+}
+
+#aucun-avis {
+  margin-bottom: 12px;
+  text-align: center;
+  font-family: var(--police-texte);
+  font-weight: 400;
+}
+
+/* juste en dessous : donner son avis */
+.participer {
+  max-width: 640px;
+  margin: 60px auto 0;
+  text-align: center;
+
+  h2 {
+    margin-bottom: 14px;
+    font-family: var(--police-italique);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 24px;
+  }
+
+  .commentaire-form {
+    margin-inline: auto;
+    text-align: left;
+  }
+
+  .invitation-avis .btn-pill {
+    margin: 4px;
+  }
+}
+
+/* téléphone et tablette : tout en une colonne */
+@media (max-width: 900px) {
+  .recette-top,
+  .recette-bas {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .recette-bas {
+    gap: 40px;
+    margin-top: 50px;
+  }
+
+  .recette-fiche {
+    padding: 22px 20px 18px;
+  }
+}
+
+.participer .etoiles {
+  justify-content: center;
+}

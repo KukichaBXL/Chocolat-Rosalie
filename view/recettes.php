@@ -42,7 +42,7 @@ require RACINE_PATH . '/view/inc/header.php';
     <button class="carousel-btn carousel-next" aria-label="Recette suivante">&#8250;</button>
 </div>
 
-<script src="<?= RACINE_URL ?>js/recettes.js"></script>
+<script src="<?= RACINE_URL ?>js/carrousel.js"></script>
 <script src="<?= RACINE_URL ?>js/main.js"></script>
 
 <?php require RACINE_PATH . '/view/inc/footer.php'; ?>

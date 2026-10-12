@@ -162,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verifierCsrf()) {
                 $recetteManager->setStatus($idRecette, 'publiée');
                 $_SESSION['message'] = 'La recette est de nouveau visible.';
             }
-            header('Location: ' . RACINE_URL . 'admin#recettes');
+            header('Location: ' . RACINE_URL . 'admin/recettes');
             exit;
 
             // masquer un commentaire : il reste dans la base, seul son statut change
@@ -179,7 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verifierCsrf()) {
                 $commentaireManager->setStatus($idCommentaire, 'publié');
                 $_SESSION['message'] = 'Le commentaire est de nouveau visible.';
             }
-            header('Location: ' . RACINE_URL . 'admin#commentaires');
+            header('Location: ' . RACINE_URL . 'admin/commentaires');
             exit;
     }
 }

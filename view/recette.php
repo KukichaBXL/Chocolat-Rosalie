@@ -8,29 +8,28 @@ require RACINE_PATH . '/view/inc/header.php';
 <article class="container recette">
     <div class="recette-top">
         <div class="recette-fiche">
-            <p class="recette-surtitre">Recette</p>
-            <h1><?= htmlspecialchars($recette->getTitle()) ?></h1>
-            <?php if ($recette->getCategoryTitle() !== null) : ?>
-                <?php
-                // petite icône (Font Awesome) selon la catégorie
-                $icones = ['Gâteaux' => 'fa-birthday-cake', 'Mousses' => 'fa-cloud', 'Boissons' => 'fa-coffee', 'Glacé' => 'fa-snowflake-o'];
-                $icone = $icones[$recette->getCategoryTitle()] ?? 'fa-cutlery';
-                ?>
-                <p class="recette-categorie"><i class="fa <?= $icone ?>" aria-hidden="true"></i> <?= htmlspecialchars($recette->getCategoryTitle()) ?></p>
-            <?php endif; ?>
-            <!-- la note moyenne (le vote se fait plus bas, avec les commentaires) -->
-            <p class="note-moyenne">
-                ★ <span id="note-moyenne"><?= $stats['average'] === null ? '–' : number_format($stats['average'], 1, ',') ?></span>/5
-                · <span id="note-votes"><?= $stats['votes'] ?></span> avis
-            </p>
-            <p><?= htmlspecialchars($recette->getDescription() ?? '') ?></p>
+            <h1><span>Recette</span> <?= htmlspecialchars($recette->getTitle()) ?> <span>de Rosalie</span></h1>
 
+            <!-- une ligne de repères : catégorie, note moyenne, durées, difficulté -->
             <ul class="recette-infos">
-                <li><i class="fa fa-clock-o" aria-hidden="true"></i> Préparation : <?= $recette->getPrepareTime() ?> min</li>
-                <li><i class="fa fa-fire" aria-hidden="true"></i> Cuisson : <?= $recette->getCookTime() ?> min</li>
-                <li><i class="fa fa-hourglass-end" aria-hidden="true"></i> Total : <?= $recette->getTotalTime() ?> min</li>
-                <li><i class="fa fa-signal" aria-hidden="true"></i> Difficulté : <?= htmlspecialchars($recette->getDifficulty()) ?></li>
+                <?php if ($recette->getCategoryTitle() !== null) : ?>
+                    <?php
+                    // petite icône (Font Awesome) selon la catégorie
+                    $icones = ['Gâteaux' => 'fa-birthday-cake', 'Mousses' => 'fa-cloud', 'Boissons' => 'fa-coffee', 'Glacé' => 'fa-snowflake-o'];
+                    $icone = $icones[$recette->getCategoryTitle()] ?? 'fa-cutlery';
+                    ?>
+                    <li class="recette-categorie"><i class="fa <?= $icone ?>" aria-hidden="true"></i> <?= htmlspecialchars($recette->getCategoryTitle()) ?></li>
+                <?php endif; ?>
+                <!-- la note moyenne (le vote se fait plus bas, avec les commentaires) -->
+                <li class="note-moyenne">★ <span id="note-moyenne"><?= $stats['average'] === null ? '–' : number_format($stats['average'], 1, ',') ?></span>/5 · <span id="note-votes"><?= $stats['votes'] ?></span> avis</li>
+                <li><i class="fa fa-clock-o" aria-hidden="true"></i> <?= $recette->getPrepareTime() ?> min</li>
+                <li><i class="fa fa-fire" aria-hidden="true"></i> <?= $recette->getCookTime() ?> min</li>
+                <li><i class="fa fa-signal" aria-hidden="true"></i> <?= htmlspecialchars($recette->getDifficulty()) ?></li>
             </ul>
+
+            <?php if (!empty($recette->getDescription())) : ?>
+                <p class="recette-description"><?= htmlspecialchars($recette->getDescription()) ?></p>
+            <?php endif; ?>
 
             <h2>Ingrédients — <?= $recette->getPortions() ?> personne(s)</h2>
             <?php if ($ingredients === []) : ?>
@@ -56,6 +55,11 @@ require RACINE_PATH . '/view/inc/header.php';
                     <?php endforeach; ?>
                 </ol>
             <?php endif; ?>
+
+            <!-- le logo de la maison, en bas de la fiche -->
+            <p class="fiche-logo">
+                <img src="<?= RACINE_URL ?>assets/logo.png" alt="" width="36" height="36" />
+            </p>
         </div>
 
         <?php if (!empty($recette->getPhotoMain())) : ?>
@@ -75,45 +79,77 @@ require RACINE_PATH . '/view/inc/header.php';
 
 
 
-    <section class="commentaires" id="commentaires"
-        data-recipe="<?= $recette->getId() ?>"
-        data-csrf="<?= $_SESSION['csrf_token'] ?>"
-        data-url="<?= RACINE_URL ?>api/">
-        <h2 id="titre-avis">Nos avis : </h2>
+    <!-- sous les photos des étapes : à gauche les autres recettes, à droite les avis (deux carrousels) -->
+    <div class="recette-bas">
+        <section class="divers-recettes carrousel" aria-label="Nos divers recettes">
+            <h2>Nos divers recettes</h2>
+            <div class="carrousel-corps">
+                <button type="button" class="carrousel-fleche carrousel-prec" aria-label="Recette précédente">&#8249;</button>
+                <ul class="carrousel-piste">
+                    <?php foreach ($recettesMenu as $autre) : ?>
+                        <?php if ($autre->getId() !== $recette->getId()) : ?>
+                            <li class="carrousel-item">
+                                <a href="<?= RACINE_URL ?>recette/<?= htmlspecialchars($autre->getRecipesSlug()) ?>" class="autre-recette">
+                                    <?php if (!empty($autre->getPhotoMain())) : ?>
+                                        <img src="<?= RACINE_URL ?>assets/<?= htmlspecialchars($autre->getPhotoMain()) ?>" alt="" width="200" height="150" loading="lazy" />
+                                    <?php endif; ?>
+                                    <span class="autre-titre"><?= htmlspecialchars($autre->getTitle()) ?></span>
+                                    <span class="note-etoiles" aria-label="Note moyenne : <?= $autre->getAverage() ?? 'aucune' ?> sur 5"><?= etoiles($autre->getAverage()) ?></span>
+                                </a>
+                            </li>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </ul>
+                <button type="button" class="carrousel-fleche carrousel-suiv" aria-label="Recette suivante">&#8250;</button>
+            </div>
+        </section>
 
-        <p id="aucun-avis" <?= $commentaires['comments'] === [] ? '' : 'hidden' ?>>Aucun avis pour l'instant. Soyez le premier à donner le vôtre !</p>
+        <section class="avis-bloc carrousel" id="commentaires"
+            data-recipe="<?= $recette->getId() ?>"
+            data-csrf="<?= $_SESSION['csrf_token'] ?>"
+            data-url="<?= RACINE_URL ?>api/">
+            <h2 id="titre-avis">Nos avis :</h2>
 
-        <!-- du plus récent au plus ancien, par tranches de 10 ; avis.js ajoute et retire des <li> sans recharger la page -->
-        <ul id="liste-avis">
-            <?php foreach ($commentaires['comments'] as $commentaire) : ?>
-                <li class="commentaire<?= $commentaire->getCommentStatus() === 'banni' ? ' commentaire-masque' : '' ?>" data-id="<?= $commentaire->getCommentId() ?>" data-author="<?= $commentaire->getAuthorId() ?>">
-                    <p class="commentaire-auteur">
-                        <?= htmlspecialchars($commentaire->getUsername()) ?>
-                        <span><?= date('d/m/Y', strtotime($commentaire->getCreatedAt())) ?></span>
-                        <!-- la note que cet auteur a donnée à la recette (vide s'il n'a pas noté) -->
-                        <span class="commentaire-note"><?= $commentaire->getRate() === null ? '' : str_repeat('★', $commentaire->getRate()) . str_repeat('☆', 5 - $commentaire->getRate()) ?></span>
-                    </p>
-                    <?php if ($commentaire->getCommentTitle() !== null) : ?>
-                        <p><strong><?= htmlspecialchars($commentaire->getCommentTitle()) ?></strong></p>
-                    <?php endif; ?>
-                    <!-- htmlspecialchars : du code HTML ou JavaScript écrit dans un commentaire s'affiche comme du texte -->
-                    <p><?= htmlspecialchars($commentaire->getCommentText()) ?></p>
-                    <?php if ($commentaire->getCommentStatus() === 'banni') : ?>
-                        <!-- un commentaire masqué n'est lu que par l'administrateur, qui peut le réafficher -->
-                        <p class="commentaire-info">Commentaire masqué : les visiteurs ne le voient pas.</p>
-                        <button type="button" class="reafficher-avis">Réafficher</button>
-                    <?php elseif ($utilisateur !== null && ($commentaire->getAuthorId() === $utilisateur['id'] || $estAdmin)) : ?>
-                        <button type="button" class="supprimer-avis"><?= $commentaire->getAuthorId() === $utilisateur['id'] ? 'Supprimer' : 'Masquer' ?></button>
-                    <?php endif; ?>
-                </li>
-            <?php endforeach; ?>
-        </ul>
+            <p id="aucun-avis" <?= $commentaires['comments'] === [] ? '' : 'hidden' ?>>Aucun avis pour l'instant. Soyez le premier à donner le vôtre !</p>
 
-        <?php if ($commentaires['hasMore']) : ?>
-            <!-- sans JavaScript, ce lien recharge la page avec 10 commentaires de plus ; avis.js le remplace par un chargement sans rechargement -->
-            <a href="?avis=<?= $pageAvis + 1 ?>#titre-avis" class="btn-pill" id="voir-plus">Voir plus d'avis</a>
-        <?php endif; ?>
+            <div class="carrousel-corps">
+                <button type="button" class="carrousel-fleche carrousel-prec" aria-label="Avis précédent">&#8249;</button>
+                <!-- du plus récent au plus ancien ; avis.js ajoute et retire des <li> sans recharger la page -->
+                <ul id="liste-avis" class="carrousel-piste">
+                    <?php foreach ($commentaires['comments'] as $commentaire) : ?>
+                        <li class="commentaire<?= $commentaire->getCommentStatus() === 'banni' ? ' commentaire-masque' : '' ?>" data-id="<?= $commentaire->getCommentId() ?>" data-author="<?= $commentaire->getAuthorId() ?>">
+                            <p class="commentaire-auteur">
+                                <?= htmlspecialchars($commentaire->getUsername()) ?>
+                                <span><?= date('d/m/Y', strtotime($commentaire->getCreatedAt())) ?></span>
+                                <!-- la note que cet auteur a donnée à la recette (vide s'il n'a pas noté) -->
+                                <span class="commentaire-note"><?= $commentaire->getRate() === null ? '' : str_repeat('★', $commentaire->getRate()) . str_repeat('☆', 5 - $commentaire->getRate()) ?></span>
+                            </p>
+                            <?php if ($commentaire->getCommentTitle() !== null) : ?>
+                                <p><strong><?= htmlspecialchars($commentaire->getCommentTitle()) ?></strong></p>
+                            <?php endif; ?>
+                            <!-- htmlspecialchars : du code HTML ou JavaScript écrit dans un commentaire s'affiche comme du texte -->
+                            <p><?= htmlspecialchars($commentaire->getCommentText()) ?></p>
+                            <?php if ($commentaire->getCommentStatus() === 'banni') : ?>
+                                <!-- un commentaire masqué n'est lu que par l'administrateur, qui peut le réafficher -->
+                                <p class="commentaire-info">Commentaire masqué : les visiteurs ne le voient pas.</p>
+                                <button type="button" class="reafficher-avis">Réafficher</button>
+                            <?php elseif ($utilisateur !== null && ($commentaire->getAuthorId() === $utilisateur['id'] || $estAdmin)) : ?>
+                                <button type="button" class="supprimer-avis"><?= $commentaire->getAuthorId() === $utilisateur['id'] ? 'Supprimer' : 'Masquer' ?></button>
+                            <?php endif; ?>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+                <button type="button" class="carrousel-fleche carrousel-suiv" aria-label="Avis suivant">&#8250;</button>
+            </div>
+            <?php if ($commentaires['hasMore']) : ?>
+                <!-- sans JavaScript, ce lien recharge la page avec 10 commentaires de plus ; avis.js le remplace par un chargement sans rechargement -->
+                <a href="?avis=<?= $pageAvis + 1 ?>#titre-avis" class="btn-pill" id="voir-plus">Voir plus d'avis</a>
+            <?php endif; ?>
+        </section>
+    </div>
 
+    <!-- juste en dessous : donner son avis (note + commentaire) ou se connecter -->
+    <section class="participer">
         <!-- les visiteurs ne voient ni le vote ni le formulaire : seulement une invitation à se connecter ou à s'inscrire -->
         <?php if ($utilisateur === null) : ?>
             <h2 id="votre-note">Donnez votre avis : </h2>
@@ -126,7 +162,7 @@ require RACINE_PATH . '/view/inc/header.php';
             </div>
         <?php else : ?>
             <!-- votre note : une seule par personne, modifiable à tout moment, avec ou sans commentaire.
-                 notation.js l'envoie à /api/noter sans recharger la page -->
+             notation.js l'envoie à /api/noter sans recharger la page -->
             <h2 id="votre-note">Votre note : </h2>
             <div class="notation" id="notation"
                 data-url="<?= RACINE_URL ?>api/noter"
@@ -157,29 +193,11 @@ require RACINE_PATH . '/view/inc/header.php';
             </form>
         <?php endif; ?>
     </section>
-
-    <!-- liens vers les autres recettes (la liste du menu, sans la recette en cours) -->
-    <nav class="autres-recettes" aria-label="Autres recettes">
-        <h2>Découvrez aussi</h2>
-        <ul>
-            <?php foreach ($recettesMenu as $autre) : ?>
-                <?php if ($autre->getId() !== $recette->getId()) : ?>
-                    <li>
-                        <a href="<?= RACINE_URL ?>recette/<?= htmlspecialchars($autre->getRecipesSlug()) ?>" class="autre-recette">
-                            <?php if (!empty($autre->getPhotoMain())) : ?>
-                                <img src="<?= RACINE_URL ?>assets/<?= htmlspecialchars($autre->getPhotoMain()) ?>" alt="" width="200" height="130" loading="lazy" />
-                            <?php endif; ?>
-                            <span><?= htmlspecialchars($autre->getTitle()) ?></span>
-                        </a>
-                    </li>
-                <?php endif; ?>
-            <?php endforeach; ?>
-        </ul>
-    </nav>
 </article>
 
 
 
 <script src="<?= RACINE_URL ?>js/notation.js"></script>
 <script src="<?= RACINE_URL ?>js/avis.js"></script>
+<script src="<?= RACINE_URL ?>js/carrousel.js"></script>
 <?php require RACINE_PATH . '/view/inc/footer.php'; ?>

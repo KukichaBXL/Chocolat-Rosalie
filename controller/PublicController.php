@@ -192,9 +192,33 @@ switch ($pg) {
             header('Location: ' . RACINE_URL);
             exit;
         }
-        $categories = (new CategoryManager($db))->getAll();
-        $recettes = (new RecipeManager($db))->getAll(true); // true : avec les recettes masquées
-        $commentairesAdmin = (new CommentManager($db))->getAllForAdmin(50);
+
+        // chaque onglet a son adresse (/admin/recettes...) : on ne charge que les données de l'onglet affiché
+        $onglets = [
+            'recettes' => 'Recettes',
+            'ajouter' => 'Ajouter une recette',
+            'commentaires' => 'Commentaires',
+            'messages' => 'Messages',
+        ];
+        $onglet = $_GET['slug'] ?? 'recettes';
+        if (!is_string($onglet) || !isset($onglets[$onglet])) {
+            $onglet = 'recettes';
+        }
+
+        switch ($onglet) {
+            case 'recettes':
+                $recettes = (new RecipeManager($db))->getAll(true); // true : avec les recettes masquées
+                break;
+            case 'ajouter':
+                $categories = (new CategoryManager($db))->getAll();
+                break;
+            case 'commentaires':
+                $commentairesAdmin = (new CommentManager($db))->getAllForAdmin(50);
+                break;
+            case 'messages':
+                $messages = (new MessageContactManager($db))->getAll(100);
+                break;
+        }
         require RACINE_PATH . '/view/admin.php';
         break;
 
