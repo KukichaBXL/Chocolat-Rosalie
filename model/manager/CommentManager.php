@@ -102,4 +102,35 @@ class CommentManager implements ManagerInterface
         $prepare->execute();
         return (int) $prepare->fetchColumn();
     }
+
+    // tous les commentaires (publiés ET masqués) avec le titre de leur recette 
+    public function getAllForAdmin(int $limit): array
+    {
+        $sql = "SELECT c.comment_id, c.author_id, c.recipe_id, c.comment_title, c.comment_text,
+                     c.comment_status, c.created_at, u.username, r.title AS recipe_title
+               FROM comments c
+                JOIN users u ON u.id = c.author_id
+               JOIN recipes r ON r.id = c.recipe_id
+                ORDER BY c.created_at DESC, c.comment_id DESC
+               LIMIT :limit";
+        $prepare = $this->connect->prepare($sql);
+        $prepare->bindValue(':limit', $limit, MyPDO::PARAM_INT);
+        $prepare->execute();
+
+        $commentaires = [];
+        foreach ($prepare->fetchAll() as $ligne) {
+            $commentaires[] = new CommentMapping($ligne);
+        }
+        return $commentaires;
+    }
+
+    // masque ou réaffiche un commentaire SANS le supprimer : $status vaut 'banni' (masqué) ou 'publié'
+    // un commentaire 'banni' n'apparaît plus sur la fiche recette (getByRecipe ne lit que les 'publié')
+    public function setStatus(int $commentId, string $status): void
+    {
+        $prepare = $this->connect->prepare("UPDATE comments SET comment_status = :status WHERE comment_id = :id");
+        $prepare->bindValue(':status', $status);
+        $prepare->bindValue(':id', $commentId, MyPDO::PARAM_INT);
+        $prepare->execute();
+    }
 }
