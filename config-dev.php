@@ -17,3 +17,5 @@ const RACINE_PATH = __DIR__;
 // URL racine de notre site pour le navigateur (jusqu'au dossier public)
 // évite les problèmes de chemins relatifs qui sont liés à la réécriture des URLs
 const RACINE_URL = "http://rosalie/";
+// const RACINE_URL = "http://chocolat-rosalie.local/"; // Virtual host pour le mac de TIRO 
+

@@ -1,15 +1,14 @@
 <?php
 // path: view/accueil.php
 $titre = 'Recettes de chocolatier';
-require RACINE_PATH.'/view/inc/header.php';
+require RACINE_PATH . '/view/inc/header.php';
 ?>
 
 <section class="hero reveal">
     <img
         src="<?= RACINE_URL ?>assets/hero-accueil.webp"
         alt="Une chocolatière garnit des bonbons au chocolat à la poche à douille dans l'atelier"
-        width="1280" height="573"
-    />
+        width="1280" height="573" />
 </section>
 
 <section class="intro container reveal">
@@ -52,7 +51,13 @@ require RACINE_PATH.'/view/inc/header.php';
     <a href="<?= RACINE_URL ?>recettes" class="btn-pill">Découvrez nos recettes</a>
 </div>
 
+<!-- LISTE DES TOP RECETTES  -->
+<div class="top-recip">
+    <ul>
+    </ul>
+</div>
 
-<script src="./js/main.js"></script>
 
-<?php require RACINE_PATH.'/view/inc/footer.php'; ?>
+<script src="<?= RACINE_URL ?>js/main.js"></script>
+
+<?php require RACINE_PATH . '/view/inc/footer.php'; ?>

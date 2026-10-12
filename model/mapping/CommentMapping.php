@@ -21,7 +21,7 @@ class CommentMapping extends AbstractMapping
     protected ?string $username = null;
 
 
-     // Getter Comment ID
+    // Getter Comment ID
     public function getCommentId(): ?int
     {
         return $this->comment_id;
@@ -35,7 +35,7 @@ class CommentMapping extends AbstractMapping
         $this->comment_id = $comment_id;
     }
 
-     // Getter Author ID
+    // Getter Author ID
     public function getAuthorId(): ?int
     {
         return $this->author_id;
@@ -49,7 +49,7 @@ class CommentMapping extends AbstractMapping
         $this->author_id = $author_id;
     }
 
-     // Getter Recipe ID
+    // Getter Recipe ID
     public function getRecipeId(): ?int
     {
         return $this->recipe_id;
@@ -70,7 +70,7 @@ class CommentMapping extends AbstractMapping
     }
 
     // Setter Comment title
-    public function setCommentTitle(string $comment_title): void
+    public function setCommentTitle(?string $comment_title): void
     {
         $this->comment_title = $comment_title;
     }
@@ -110,7 +110,7 @@ class CommentMapping extends AbstractMapping
     {
         $this->created_at = $created_at;
     }
-    
+
     // Getter username
     public function getUsername(): ?string
     {
@@ -122,5 +122,4 @@ class CommentMapping extends AbstractMapping
     {
         $this->username = $username;
     }
-    
 }
