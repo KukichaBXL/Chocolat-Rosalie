@@ -12,6 +12,7 @@ use model\manager\CategoryManager;
 use model\manager\CommentManager;
 use model\manager\IngredientManager;
 use model\manager\MessageContactManager;
+use model\manager\RatingManager;
 use model\manager\RecipeManager;
 use model\manager\StepManager;
 use model\manager\UserManager;
@@ -167,6 +168,11 @@ switch ($pg) {
 
         $ingredients = (new IngredientManager($db))->getByRecipe($recette->getId());
         $etapes = (new StepManager($db))->getByRecipe($recette->getId());
+
+        // la note : moyenne, nombre de votes, et la note de la personne connectée (null si elle n'a pas voté)
+        $noteManager = new RatingManager($db);
+        $stats = $noteManager->getStats($recette->getId());
+        $maNote = $utilisateur === null ? null : $noteManager->getUserRate($utilisateur['id'], $recette->getId());
 
         // 10 commentaires à la fois : ?avis=2 en affiche 20, ?avis=3 en affiche 30...
         $pageAvis = isset($_GET['avis']) ? max(1, min(50, (int) $_GET['avis'])) : 1;
