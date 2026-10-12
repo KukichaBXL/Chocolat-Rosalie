@@ -4,19 +4,19 @@
 declare(strict_types=1);
 
 // Contrôleur public, en deux temps :
-//  si un formulaire a été envoyé (POST) : inscription, connexion, contact
-//  PRÉPARER les données de la page demandée avec les managers, puis inclure la vue
+//   1. si un formulaire a été envoyé (POST) : inscription, connexion, contact
+//   2. PRÉPARER les données de la page demandée avec les managers, puis inclure la vue (les vues ne font qu'afficher)
+// Variables disponibles : $db, $pg, $utilisateur, $estAdmin, $erreurs (voir public/index.php et RouterController.php).
 
-
-use model\manager\CommentManager;
 use model\manager\CategoryManager;
+use model\manager\CommentManager;
 use model\manager\IngredientManager;
+use model\manager\MessageContactManager;
 use model\manager\RecipeManager;
 use model\manager\StepManager;
 use model\manager\UserManager;
-use model\manager\MessageContactManager;
 
-// formulaire envoyé 
+// ===== 1. Un formulaire a été envoyé =====
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // formulaire sans jeton valide : on arrête tout
     if (!verifierCsrf()) {
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $motDePasse = is_string($_POST['pwd'] ?? null) ? $_POST['pwd'] : '';
                 $confirmation = is_string($_POST['pwd_confirm'] ?? null) ? $_POST['pwd_confirm'] : '';
 
-                // on vérifie chaque champ
+                // 1) on vérifie chaque champ
                 if (preg_match('/^[\p{L}\p{N}._-]{3,30}$/u', $pseudo) !== 1) {
                     $erreurs['username'] = 'Le nom d\'utilisateur doit contenir de 3 à 30 lettres, chiffres, points, tirets ou soulignés.';
                 }
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $erreurs['pwd_confirm'] = 'Les deux mots de passe ne sont pas identiques.';
                 }
 
-                // le nom et l'email ne doivent pas déjà exister
+                // 2) le nom et l'email ne doivent pas déjà exister
                 $userManager = new UserManager($db);
                 if (!isset($erreurs['username']) && $userManager->usernameExists($pseudo)) {
                     $erreurs['username'] = 'Ce nom d\'utilisateur est déjà pris.';
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $erreurs['email'] = 'Un compte existe déjà avec cette adresse email.';
                 }
 
-                // tout est bon : on crée le compte (mot de passe haché) et on connecte la personne
+                // 3) tout est bon : on crée le compte (mot de passe haché) et on connecte la personne
                 if ($erreurs === []) {
                     $nouveau = $userManager->create($pseudo, $email, password_hash($motDePasse, PASSWORD_DEFAULT));
                     session_regenerate_id(true); // nouvel identifiant de session à la connexion
@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $ip = $_SERVER['REMOTE_ADDR'] ?? 'inconnue';
                 $userManager = new UserManager($db);
 
-                // trop d'échecs récents (5 pour cet email ou 20 pour cette adresse IP en 15 minutes)
+                // trop d'échecs récents (5 pour cet email ou 20 pour cette adresse IP en 15 minutes) : on bloque
                 $echecs = $userManager->countRecentFailures($ip, $email, 15);
                 if ($echecs['email'] >= 5 || $echecs['ip'] >= 20) {
                     $erreurs['connexion'] = 'Trop de tentatives. Réessayez dans 15 minutes.';
@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
 
                 $compte = $userManager->getByEmail($email);
-                // le même message que l'email ou le mot de passe soit faux 
+                // le même message que l'email ou le mot de passe soit faux : on ne révèle rien
                 if ($compte === null || !password_verify($motDePasse, $compte->getPassword())) {
                     $userManager->addFailure($ip, $email);
                     $erreurs['connexion'] = 'Email ou mot de passe incorrect.';
@@ -94,9 +94,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['message'] = 'Bonjour ' . $compte->getUsername() . ' !';
                 header('Location: ' . RACINE_URL);
                 exit;
+
             case 'contact':
-                // champ piège invisible pour un humain : s'il est rempli, c'est un robot
-                // On répond "merci" sans rien enregistrer, pour ne pas lui dire qu'il est repéré
+                // champ piège invisible pour un humain : s'il est rempli, c'est un robot.
+                // On répond "merci" sans rien enregistrer, pour ne pas lui dire qu'il est repéré.
                 if (lireTexte('site_web') !== '') {
                     $_SESSION['message'] = 'Merci, votre message a bien été envoyé.';
                     header('Location: ' . RACINE_URL . 'contact');
@@ -140,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Affichage de la page
+// ===== 2. Affichage de la page =====
 
 switch ($pg) {
     case 'accueil':
@@ -152,7 +153,7 @@ switch ($pg) {
         require RACINE_PATH . '/view/recettes.php';
         break;
 
-    // recette 
+    // une recette : /recette/mousse-au-chocolat
     case 'recette':
         $slug = $_GET['slug'] ?? '';
         $recette = is_string($slug) ? (new RecipeManager($db))->getOneBySlug($slug) : null;
@@ -174,7 +175,7 @@ switch ($pg) {
         require RACINE_PATH . '/view/recette.php';
         break;
 
-    // admin
+    // l'administration : réservée aux administrateurs
     case 'admin':
         if (!$estAdmin) {
             $_SESSION['message'] = 'Cette page est réservée aux administrateurs.';
@@ -182,6 +183,8 @@ switch ($pg) {
             exit;
         }
         $categories = (new CategoryManager($db))->getAll();
+        $recettes = (new RecipeManager($db))->getAll();
+        $commentairesAdmin = (new CommentManager($db))->getAllForAdmin(50);
         require RACINE_PATH . '/view/admin.php';
         break;
 
