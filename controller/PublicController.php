@@ -140,6 +140,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+
+// la liste des recettes pour le menu du header : chargée pour TOUTES les pages
+
+$recettesMenu = (new RecipeManager($db))->getAll();
+
 // Affichage de la page
 
 switch ($pg) {
@@ -147,8 +152,8 @@ switch ($pg) {
         require RACINE_PATH . '/view/accueil.php';
         break;
 
-    case 'recettes':
-        $recettes = (new RecipeManager($db))->getAll();
+    case 'recettes':// Pour evité de charger les recettes 2 fois sur la page recette a cause du dropdown
+        $recettes = $recettesMenu;
         require RACINE_PATH . '/view/recettes.php';
         break;
 

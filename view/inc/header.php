@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
         crossorigin="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""></script>
@@ -89,7 +90,22 @@
             <nav class="main-nav" id="menu-principal" aria-label="Navigation principale">
                 <ul>
                     <li><a href="<?= RACINE_URL ?>" <?= $pg === 'accueil' ? 'class="active"' : '' ?>>Accueil</a></li>
-                    <li><a href="<?= RACINE_URL ?>recettes" <?= $pg === 'recettes' || $pg === 'recette' ? 'class="active"' : '' ?>>Recettes</a></li>
+
+                    <!-- DROPDOWN MENU  -->
+                    <li class="dropdown">
+                        <a href="<?= RACINE_URL ?>recettes" <?= $pg === 'recettes' || $pg === 'recette' ? 'class="active"' : '' ?>>Recettes </a>
+                        <i class="fa fa-caret-down"></i>
+                        <?php if (!empty($recettesMenu)) : ?>
+                            <div class="dropdown-content">
+                                <?php foreach ($recettesMenu ?? [] as $r) : ?><!--  ?? [] = si la liste n'existe pas, prend une liste vide  -->
+                                    <a href="<?= RACINE_URL ?>recette/<?= htmlspecialchars($r->getRecipesSlug()) ?>">
+                                    <?= htmlspecialchars($r->getTitle()) ?>
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                    </li>
+
                     <li><a href="<?= RACINE_URL ?>a-propos" <?= $pg === 'a-propos' ? 'class="active"' : '' ?>>À propos</a></li>
                     <li><a href="<?= RACINE_URL ?>contact" <?= $pg === 'contact' ? 'class="active"' : '' ?>>Contact</a></li>
                     <?php if (!empty($estAdmin)) : ?>
