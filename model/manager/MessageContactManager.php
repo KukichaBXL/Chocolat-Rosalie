@@ -7,6 +7,7 @@ namespace model\manager;
 
 use model\interface\ManagerInterface;
 use model\MyPDO;
+use model\mapping\MessageContactMapping;
 
 // Requêtes sur `message_contact`
 class MessageContactManager implements ManagerInterface
@@ -29,5 +30,19 @@ class MessageContactManager implements ManagerInterface
         $prepare->bindValue(':subject', $subject, $subject === null ? MyPDO::PARAM_NULL : MyPDO::PARAM_STR);
         $prepare->bindValue(':message', $message);
         $prepare->execute();
+    }
+
+    // les derniers messages reçus, le plus récent en premier
+    public function getAll(int $limit): array
+    {
+        $prepare = $this->connect->prepare("SELECT * FROM message_contact ORDER BY date DESC, id DESC LIMIT :limite");
+        $prepare->bindValue(':limite', $limit, MyPDO::PARAM_INT);
+        $prepare->execute();
+
+        $messages = [];
+        foreach ($prepare->fetchAll() as $ligne) {
+            $messages[] = new MessageContactMapping($ligne);
+        }
+        return $messages;
     }
 }
