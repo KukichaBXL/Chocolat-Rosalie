@@ -11,7 +11,7 @@ use Exception;
 
 // une ligne de la table `recipes`
 class RecipeMapping extends AbstractMapping
-{   
+{
     // Champs du mapping
     protected ?int $id = null;
     protected ?string $title = null;
@@ -24,6 +24,11 @@ class RecipeMapping extends AbstractMapping
     protected ?string $difficulty = null;
     protected ?int $users_id = null;
     protected ?string $recipes_slug = null;
+    // calculés par la requête de RecipeManager (pas des colonnes de la table)
+    protected ?int $total_time = null;
+    protected ?float $average = null;
+    protected int $votes = 0;
+    protected ?string $category_title = null;
     // MAX
     // protected ?string $PhotoStep = null;
 
@@ -44,7 +49,7 @@ class RecipeMapping extends AbstractMapping
     }
 
     // Getter
-    public function getTitle (): ?string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -59,13 +64,13 @@ class RecipeMapping extends AbstractMapping
     }
 
     // Getter 
-    public function getDescription (): ?string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
     // Setter
-    public function setDescription(?string $description): void 
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
     }
@@ -156,5 +161,47 @@ class RecipeMapping extends AbstractMapping
     public function setRecipesSlug(string $recipes_slug): void
     {
         $this->recipes_slug = $recipes_slug;
+    }
+
+    // ----- champs calculés par la requête SQL (ils ne sont pas dans la table `recipes`) -----
+
+    // temps total en minutes : préparation + cuisson, calculé par la base
+    public function getTotalTime(): ?int
+    {
+        return $this->total_time;
+    }
+    public function setTotalTime(int $total_time): void
+    {
+        $this->total_time = $total_time;
+    }
+
+    // note moyenne (une décimale), null s'il n'y a aucun vote
+    public function getAverage(): ?float
+    {
+        return $this->average;
+    }
+    public function setAverage(?string $average): void
+    {
+        $this->average = $average === null ? null : (float) $average;
+    }
+
+    // nombre de votes
+    public function getVotes(): int
+    {
+        return $this->votes;
+    }
+    public function setVotes(int $votes): void
+    {
+        $this->votes = $votes;
+    }
+
+    // titre de la catégorie (ou des catégories séparées par une virgule)
+    public function getCategoryTitle(): ?string
+    {
+        return $this->category_title;
+    }
+    public function setCategoryTitle(?string $category_title): void
+    {
+        $this->category_title = $category_title;
     }
 }

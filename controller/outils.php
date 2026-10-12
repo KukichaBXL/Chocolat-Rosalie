@@ -1,5 +1,6 @@
 <?php
 // path: controller/outils.php
+// Petites fonctions utilisées par les contrôleurs et les vues.
 
 // champ caché du jeton anti-CSRF : à mettre dans chaque formulaire POST
 function champCsrf(): string
@@ -7,7 +8,7 @@ function champCsrf(): string
     return '<input type="hidden" name="csrf_token" value="' . $_SESSION['csrf_token'] . '" />';
 }
 
-// le jeton reçu est-il celui de la session ?
+// le jeton reçu est-il celui de la session ? (sinon la requête vient peut-être d'un autre site)
 function verifierCsrf(): bool
 {
     $jeton = $_POST['csrf_token'] ?? '';
@@ -59,6 +60,11 @@ function creerSlug(string $titre): string
 }
 
 // Transforme le texte "un ingrédient par ligne" en tableau de ['name', 'quantity', 'unit'].
+//   "150 g de chocolat noir"  -> quantité 150, unité g,      nom "chocolat noir"
+//   "1 pincée de sel"         -> quantité 1,   unité pincée, nom "sel"
+//   "4 œufs"                  -> quantité 4,   sans unité,   nom "œufs"
+//   "beurre"                  -> sans quantité, sans unité,  nom "beurre"
+// Renvoie null s'il y a plus de 40 lignes ou une ligne de plus de 100 caractères.
 function lireIngredients(string $texte): ?array
 {
     // unité tapée => unité enregistrée (toujours au singulier)
@@ -155,6 +161,13 @@ function repondreJson(int $code, bool $succes, string $message, array $donnees =
     ], JSON_UNESCAPED_UNICODE);
     exit;
 }
+// une note sur 5 en étoiles : etoiles(4.3) donne "★★★★☆" (la note est arrondie à l'étoile la plus proche)
+function etoiles(?float $note): string
+{
+    $pleines = (int) round($note ?? 0);
+    return str_repeat('★', $pleines) . str_repeat('☆', 5 - $pleines);
+}
+
 
 function adresseDeRetour(): string
 {

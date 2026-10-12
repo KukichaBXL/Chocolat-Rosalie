@@ -1518,3 +1518,83 @@ main:has(.histoire) + .site-footer {
   font-family: var(--police-texte);
   cursor: pointer;
 }
+
+/*  Top 3 et cartes avec notes  */
+
+/* --- les étoiles (texte ★☆) --- */
+.note-etoiles {
+  color: var(--dore);
+}
+
+/* --- top 3 de l'accueil : 3 colonnes sur ordinateur, 1 sur mobile --- */
+.top3 {
+  margin-top: 80px;
+}
+
+.top3 h2 {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.top3-liste {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  list-style: none;
+}
+
+.top3-carte {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  padding: 20px;
+  border: 1px solid var(--dore);
+  border-radius: 23px;
+  text-align: center;
+
+  img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 15px;
+  }
+}
+
+.top3-rang {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--dore);
+  color: #fff;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .top3-liste {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* page recette */
+.recette-categorie {
+  color: var(--dore);
+  font-style: italic;
+}
+
+.autres-recettes {
+  margin-top: 50px;
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px 30px;
+    list-style: none;
+  }
+}

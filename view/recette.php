@@ -10,6 +10,9 @@ require RACINE_PATH . '/view/inc/header.php';
         <div class="recette-fiche">
             <p class="recette-surtitre">Recette</p>
             <h1><?= htmlspecialchars($recette->getTitle()) ?></h1>
+            <?php if ($recette->getCategoryTitle() !== null) : ?>
+                <p class="recette-categorie"><?= htmlspecialchars($recette->getCategoryTitle()) ?></p>
+            <?php endif; ?>
             <!-- la note moyenne (le vote se fait plus bas, avec les commentaires) -->
             <p class="note-moyenne">
                 ★ <span id="note-moyenne"><?= $stats['average'] === null ? '–' : number_format($stats['average'], 1, ',') ?></span>/5
@@ -20,6 +23,7 @@ require RACINE_PATH . '/view/inc/header.php';
             <p>
                 Préparation : <?= $recette->getPrepareTime() ?> min ·
                 Cuisson : <?= $recette->getCookTime() ?> min ·
+                Total : <?= $recette->getTotalTime() ?> min ·
                 Difficulté : <?= htmlspecialchars($recette->getDifficulty()) ?>
             </p>
 
@@ -144,6 +148,18 @@ require RACINE_PATH . '/view/inc/header.php';
             </form>
         <?php endif; ?>
     </section>
+
+    <!-- liens vers les autres recettes (la liste du menu, sans la recette en cours) -->
+    <nav class="autres-recettes" aria-label="Autres recettes">
+        <h2>Découvrez aussi</h2>
+        <ul>
+            <?php foreach ($recettesMenu as $autre) : ?>
+                <?php if ($autre->getId() !== $recette->getId()) : ?>
+                    <li><a href="<?= RACINE_URL ?>recette/<?= htmlspecialchars($autre->getRecipesSlug()) ?>"><?= htmlspecialchars($autre->getTitle()) ?></a></li>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </ul>
+    </nav>
 </article>
 
 

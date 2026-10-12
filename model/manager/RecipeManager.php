@@ -19,22 +19,28 @@ class RecipeManager implements ManagerInterface
         $this->connect = $connect;
     }
 
+    // La requête de lecture d'une recette, avec ce qu'il faut pour l'affichage :
+    // temps total (BE-14), note moyenne, nombre de votes et catégorie. Tout est calculé par la base.
+    private const SELECT_AVEC_NOTES = "SELECT r.*,
+                r.prepare_time + r.cook_time AS total_time,
+                (SELECT ROUND(AVG(rate), 1) FROM rating WHERE recipe_id = r.id) AS average,
+                (SELECT COUNT(*) FROM rating WHERE recipe_id = r.id) AS votes,
+                (SELECT GROUP_CONCAT(c.title ORDER BY c.title SEPARATOR ', ')
+                   FROM recipes_has_category rc JOIN category c ON c.id = rc.category_id
+                  WHERE rc.recipes_id = r.id) AS category_title
+            FROM recipes r";
+
+    // toutes les recettes, par ordre alphabétique
     public function getAll(): array
     {
-        $sql = "SELECT * FROM recipes ORDER BY title";
-        $query = $this->connect->query($sql);
-
-        $recettes = [];
-        foreach ($query->fetchAll() as $ligne) {
-            $recettes[] = new RecipeMapping($ligne);
-        }
-        return $recettes;
+        $query = $this->connect->query(self::SELECT_AVEC_NOTES . " ORDER BY r.title");
+        return $this->versMappings($query->fetchAll());
     }
 
+    // une recette grâce à son adresse (slug), ou null si elle n'existe pas
     public function getOneBySlug(string $slug): ?RecipeMapping
     {
-        $sql = "SELECT * FROM recipes WHERE recipes_slug = :slug";
-        $prepare = $this->connect->prepare($sql);
+        $prepare = $this->connect->prepare(self::SELECT_AVEC_NOTES . " WHERE r.recipes_slug = :slug");
         $prepare->bindValue(':slug', $slug);
         $prepare->execute();
 
@@ -44,6 +50,25 @@ class RecipeManager implements ManagerInterface
             return null;
         }
         return new RecipeMapping($ligne);
+    }
+
+    // le top 3 (BE-30) : 1) note moyenne décroissante, 2) à égalité plus de votes, 3) encore à égalité la plus récente.
+    // Les recettes sans vote passent après celles qui en ont : s'il y a moins de 3 recettes notées,
+    // le top est complété avec les recettes les plus récentes.
+    public function getTop3(): array
+    {
+        $sql = self::SELECT_AVEC_NOTES . " ORDER BY votes > 0 DESC, average DESC, votes DESC, r.created_at DESC, r.id DESC LIMIT 3";
+        return $this->versMappings($this->connect->query($sql)->fetchAll());
+    }
+
+    // transforme des lignes SQL en objets RecipeMapping
+    private function versMappings(array $lignes): array
+    {
+        $recettes = [];
+        foreach ($lignes as $ligne) {
+            $recettes[] = new RecipeMapping($ligne);
+        }
+        return $recettes;
     }
 
     // cette adresse (slug) est-elle déjà prise par une recette ?
