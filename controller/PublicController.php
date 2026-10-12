@@ -149,7 +149,6 @@ $recettesMenu = (new RecipeManager($db))->getAll();
 
 switch ($pg) {
     case 'accueil':
-        $top3 = (new RecipeManager($db))->getTop3();
         require RACINE_PATH . '/view/accueil.php';
         break;
 
@@ -196,6 +195,17 @@ switch ($pg) {
         $recettes = (new RecipeManager($db))->getAll();
         $commentairesAdmin = (new CommentManager($db))->getAllForAdmin(50);
         require RACINE_PATH . '/view/admin.php';
+        break;
+
+    // le compte de la personne connectée (changer son mot de passe)
+    case 'compte':
+        if ($utilisateur === null) {
+            $_SESSION['message'] = 'Connectez-vous pour accéder à votre compte.';
+            header('Location: ' . RACINE_URL);
+            exit;
+        }
+        $monCompte = (new UserManager($db))->getById($utilisateur['id']);
+        require RACINE_PATH . '/view/compte.php';
         break;
 
     // pages sans données à préparer
