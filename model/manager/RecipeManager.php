@@ -73,4 +73,22 @@ class RecipeManager implements ManagerInterface
         $prepare->execute();
         return (int) $this->connect->lastInsertId();
     }
+
+    // cette recette existe-t-elle ?
+    public function exists(int $recipeId): bool
+    {
+        $prepare = $this->connect->prepare("SELECT 1 FROM recipes WHERE id = :id");
+        $prepare->bindValue(':id', $recipeId, MyPDO::PARAM_INT);
+        $prepare->execute();
+        return $prepare->fetchColumn() !== false;
+    }
+
+    // supprime une recette
+    // ses ingrédients, étapes, notes, commentaires et catégories partent avec elle (ON DELETE CASCADE dans la base)
+    public function delete(int $recipeId): void
+    {
+        $prepare = $this->connect->prepare("DELETE FROM recipes WHERE id = :id");
+        $prepare->bindValue(':id', $recipeId, MyPDO::PARAM_INT);
+        $prepare->execute();
+    }
 }
