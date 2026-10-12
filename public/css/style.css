@@ -698,6 +698,7 @@ main:has(.histoire) + .site-footer {
   justify-content: center;
   align-items: center;
   gap: 20px;
+  /* background-color: red; */
   img{
     object-fit: cover;
     border-radius: 15px;
@@ -1181,8 +1182,55 @@ main:has(.histoire) + .site-footer {
     
   }
 
+
+
+
+
+  /* MAX */
+  .main-recette {
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0;
+  }
+
+  .main-img {
+    margin: 20px 0;
+    width: 100%;
+
+    img {
+      width: 100%;
+      max-width: 400px;       /* ne dépasse pas sa taille desktop */
+      height: auto;           /* annule le 600px fixe */
+      aspect-ratio: 2 / 3;    /* garde les proportions 400×600 */
+      object-fit: cover;      /* recadre au lieu d'étirer */
+      margin-inline: auto;
+    }
+  }
+  .main-txt {
+    width: 100%;
+    margin: 0;
+    /* position: relative + bottom: 50px supprimés : ils décalaient le texte vers le haut */
+
+    h1 {
+      font-size: 45px;
+      margin: 20px 0;
+    }
+
+    p {
+      font-size: 16px;
+    }
+  }
+  /* MAX */
+
+
   .recette-card {
     flex: 0 0 100%; /* 1 carte */
+  }
+  .recette-photo-step{
+    align-items: start; /* max */
+    flex-direction: row; /* max */
+    flex-wrap: wrap; /* max */
+    
   }
 }
 
@@ -1243,7 +1291,7 @@ main:has(.histoire) + .site-footer {
   .recette-fiche .recette-surtitre {
     font-size: 36px;
   }
-  .recette-photo-step{
+  /* .recette-photo-step{
     background-color: red;
-  }
+  } */
 }
