@@ -30,3 +30,12 @@ document.getElementById('ajouter-etape').addEventListener('click', () => {
     brancherApercu(photo);
     listeEtapes.appendChild(copie);
 });
+
+// demande une confirmation avant une suppression : <form data-confirm="Question ?">
+document.querySelectorAll('form[data-confirm]').forEach((formulaire) => {
+    formulaire.addEventListener('submit', (e) => {
+        if (!confirm(formulaire.dataset.confirm)) {
+            e.preventDefault();
+        }
+    });
+});
