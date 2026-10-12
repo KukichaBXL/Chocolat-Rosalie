@@ -17,7 +17,8 @@ class CommentManager implements ManagerInterface
 
     // la requête de lecture : le nom de l'auteur est dans la table `users`, d'où le JOIN
     private const SELECT_AVEC_AUTEUR = "SELECT c.comment_id, c.author_id, c.recipe_id, c.comment_title, c.comment_text,
-                       c.comment_status, c.created_at, u.username
+                       c.comment_status, c.created_at, u.username,
+                       (SELECT rate FROM rating WHERE user_id = c.author_id AND recipe_id = c.recipe_id) AS rate
                 FROM comments c
                 JOIN users u ON u.id = c.author_id";
 
@@ -103,16 +104,16 @@ class CommentManager implements ManagerInterface
         return (int) $prepare->fetchColumn();
     }
 
-    // tous les commentaires (publiés ET masqués) avec le titre de leur recette 
+    // tous les commentaires (publiés ET masqués) avec le titre de leur recette : pour la page admin
     public function getAllForAdmin(int $limit): array
     {
         $sql = "SELECT c.comment_id, c.author_id, c.recipe_id, c.comment_title, c.comment_text,
-                     c.comment_status, c.created_at, u.username, r.title AS recipe_title
-               FROM comments c
+                       c.comment_status, c.created_at, u.username, r.title AS recipe_title
+                FROM comments c
                 JOIN users u ON u.id = c.author_id
-               JOIN recipes r ON r.id = c.recipe_id
+                JOIN recipes r ON r.id = c.recipe_id
                 ORDER BY c.created_at DESC, c.comment_id DESC
-               LIMIT :limit";
+                LIMIT :limit";
         $prepare = $this->connect->prepare($sql);
         $prepare->bindValue(':limit', $limit, MyPDO::PARAM_INT);
         $prepare->execute();
