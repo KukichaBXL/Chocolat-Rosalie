@@ -108,7 +108,7 @@ require RACINE_PATH . '/view/inc/header.php';
                 <p>Connectez-vous ou créez un compte pour noter cette recette et laisser un commentaire.</p>
                 <p>
                     <button type="button" class="btn-pill" popovertarget="popup-connexion">Se connecter</button>
-                    <a href="<?= RACINE_URL ?>connection" class="btn-pill">S'inscrire</a>
+                    <a href="<?= RACINE_URL ?>connection?retour=<?= urlencode($_SERVER['REQUEST_URI']) ?>" class="btn-pill">S'inscrire</a>
                 </p>
             </div>
         <?php else : ?>

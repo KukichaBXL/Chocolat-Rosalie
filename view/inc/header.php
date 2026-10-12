@@ -63,6 +63,8 @@
 
                     <form action="" method="post" class="connect-form">
                         <input type="hidden" name="action" value="connexion" />
+                        <!-- la page où revenir après la connexion -->
+                        <input type="hidden" name="retour" value="<?= htmlspecialchars($_SERVER['REQUEST_URI']) ?>" />
                         <?= champCsrf() ?>
                         <span>Renseignez votre email pour vous connecter ou créer un compte.</span>
                         <div class="form-field">

@@ -7,7 +7,7 @@ require RACINE_PATH . '/view/inc/header.php';
 
 <section class="connection-hub reveal">
     <div class="img-connect">
-        <img src="<?= RACINE_URL ?>assets/valeur-creativite.jpg" alt="">
+        <img src="<?= RACINE_URL ?>assets/valeur-creativite.webp" alt="">
     </div>
     <div class="form-connect">
 
@@ -16,6 +16,8 @@ require RACINE_PATH . '/view/inc/header.php';
 
         <form action="" method="post" class="connect-form" id="form-inscription" novalidate>
             <input type="hidden" name="action" value="inscription" />
+            <!-- la page où revenir après l'inscription (envoyée par le lien « S'inscrire » d'une recette) -->
+            <input type="hidden" name="retour" value="<?= htmlspecialchars($_POST['retour'] ?? $_GET['retour'] ?? '') ?>" />
             <?= champCsrf() ?>
             <span>Choisissez un nom d'utilisateur, votre email et un mot de passe pour créer votre compte.</span>
             <div class="form-field">
