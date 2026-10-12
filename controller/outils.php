@@ -1,6 +1,5 @@
 <?php
 // path: controller/outils.php
-// fonctions utilisées par les contrôleurs et les vues
 
 // champ caché du jeton anti-CSRF : à mettre dans chaque formulaire POST
 function champCsrf(): string
@@ -60,7 +59,6 @@ function creerSlug(string $titre): string
 }
 
 // Transforme le texte "un ingrédient par ligne" en tableau de ['name', 'quantity', 'unit'].
-//   "150 g de chocolat noir"  -> quantité 150, unité g,      nom "chocolat noir"
 function lireIngredients(string $texte): ?array
 {
     // unité tapée => unité enregistrée (toujours au singulier)
@@ -138,4 +136,22 @@ function enregistrerImage(array $fichier): array
         return ['nom' => null, 'erreur' => 'L\'image n\'a pas pu être enregistrée.'];
     }
     return ['nom' => $nom, 'erreur' => null];
+}
+
+// Répond en JSON et arrête le script. La structure est la même pour toutes les réponses de l'API :
+//   { "success": true/false, "message": "...", "data": { ... }, "errors": { champ: "message" } }
+// $code est le code HTTP : 200 réussi, 201 créé, 400 données invalides, 401 non connecté,
+// 403 interdit, 404 introuvable, 405 mauvaise méthode, 429 trop de demandes, 500 erreur du serveur.
+function repondreJson(int $code, bool $succes, string $message, array $donnees = [], array $erreurs = []): never
+{
+    http_response_code($code);
+    header('Content-Type: application/json; charset=utf-8');
+    // (object) : un tableau vide doit devenir {} et pas []
+    echo json_encode([
+        'success' => $succes,
+        'message' => $message,
+        'data' => (object) $donnees,
+        'errors' => (object) $erreurs,
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
 }
