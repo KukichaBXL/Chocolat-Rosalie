@@ -27,6 +27,7 @@ body {
 img {
   display: block;
   max-width: 100%;
+  height: auto;
 }
 
 a {
@@ -155,6 +156,8 @@ button {
 
 .footer-logo {
   width: 183px;
+  align-self: flex-start; 
+  flex-shrink: 0; 
 }
 
 .footer-nav {
@@ -505,6 +508,7 @@ main:has(.histoire) + .site-footer {
   img {
     width: 400px;
     height: 600px;
+    object-fit: cover;
   }
 }
 
@@ -697,16 +701,21 @@ main:has(.histoire) + .site-footer {
   font-family: var(--police-titre);
   color: var(--bleu-nuit);
   font-size: 32px;
+  margin-top: 60px;
+  margin-bottom: 10px;
 }
 .recette-photo-step {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 20px;
-  img {
+  img{
     object-fit: cover;
     border-radius: 15px;
   }
+}
+
+.etape-titre{
 }
 
 .commentaires {
@@ -1161,23 +1170,49 @@ main:has(.histoire) + .site-footer {
     font-size: 22px;
   }
 
-  .main-img {
-    img {
-      width: 700px;
-    }
+  .main-recette {
+    flex-direction: column-reverse;
+    align-items: center;
+    margin: 20px 0;
   }
 
+  .main-img {
+    margin: 20px 0;
+    width: 100%;
+
+    img {
+      width: 100%;
+      max-width: 400px;
+      height: auto;
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
+      margin-inline: auto;
+    }
+  }
   .main-txt {
     width: 100%;
-    position: relative;
-    bottom: 50px;
+    margin: 0;
+    padding: 0 80px; 
+
+    h1 {
+      font-size: 45px;
+      margin: 20px 0;
+    }
+
     p {
       font-size: 16px;
     }
   }
 
+
   .recette-card {
     flex: 0 0 100%;
+  }
+  .recette-photo-step{
+    align-items: start;
+    flex-direction: row; 
+    flex-wrap: wrap;
+    
   }
 }
 
@@ -1238,6 +1273,7 @@ main:has(.histoire) + .site-footer {
   .recette-fiche .recette-surtitre {
     font-size: 36px;
   }
+
 }
 
 /* comptes */
