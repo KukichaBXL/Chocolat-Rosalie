@@ -180,7 +180,7 @@ switch ($pg) {
 
         // 10 commentaires à la fois : ?avis=2 en affiche 20, ?avis=3 en affiche 30...
         $pageAvis = isset($_GET['avis']) ? max(1, min(50, (int) $_GET['avis'])) : 1;
-        $commentaires = (new CommentManager($db))->getByRecipe($recette->getId(), CommentManager::PAGE_SIZE * $pageAvis, 0);
+        $commentaires = (new CommentManager($db))->getByRecipe($recette->getId(), CommentManager::PAGE_SIZE * $pageAvis, 0, $estAdmin);
 
         require RACINE_PATH . '/view/recette.php';
         break;

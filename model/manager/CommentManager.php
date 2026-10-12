@@ -30,10 +30,12 @@ class CommentManager implements ManagerInterface
     }
 
     // les commentaires publiés d'UNE recette, du plus récent au plus ancien
-    public function getByRecipe(int $recipeId, int $limit, int $offset): array
+    // $avecMasques = true (administrateur) : on lit aussi les commentaires masqués, pour pouvoir les réafficher
+    public function getByRecipe(int $recipeId, int $limit, int $offset, bool $avecMasques = false): array
     {
+        $condition = $avecMasques ? "" : " AND c.comment_status = 'publié'";
         $sql = self::SELECT_AVEC_AUTEUR . "
-                WHERE c.recipe_id = :recipe AND c.comment_status = 'publié'
+                WHERE c.recipe_id = :recipe" . $condition . "
                 ORDER BY c.created_at DESC, c.comment_id DESC
                 LIMIT :limit OFFSET :offset";
         $prepare = $this->connect->prepare($sql);
