@@ -1,6 +1,6 @@
 <?php
 // path: view/admin.php
-// Variables : $categories, $recettes, $commentairesAdmin et $erreurs
+// Variables : $categories, $recettes, $commentairesAdmin et $erreurs (préparées par PublicController).
 $titre = 'Administration';
 require RACINE_PATH . '/view/inc/header.php';
 
@@ -20,20 +20,27 @@ $textesEtapes = is_array($_POST['etape_texte'] ?? null) ? array_values($_POST['e
             <tr>
                 <th>Titre</th>
                 <th>Difficulté</th>
+                <th>Statut</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($recettes as $recette) : ?>
-                <tr>
-                    <td><a href="<?= RACINE_URL ?>recette/<?= htmlspecialchars($recette->getRecipesSlug()) ?>"><?= htmlspecialchars($recette->getTitle()) ?></a></td>
+                <?php $masquee = $recette->getRecipeStatus() === 'masquée'; ?>
+                <tr class="<?= $masquee ? 'recette-masquee' : '' ?>">
+                    <?php if ($masquee) : ?>
+                        <td><?= htmlspecialchars($recette->getTitle()) ?></td>
+                    <?php else : ?>
+                        <td><a href="<?= RACINE_URL ?>recette/<?= htmlspecialchars($recette->getRecipesSlug()) ?>"><?= htmlspecialchars($recette->getTitle()) ?></a></td>
+                    <?php endif; ?>
                     <td><?= htmlspecialchars($recette->getDifficulty()) ?></td>
+                    <td><?= $masquee ? 'Masquée' : 'Visible' ?></td>
                     <td>
-                        <form method="post" data-confirm="Supprimer cette recette, ses étapes, ses notes et ses commentaires ?">
-                            <input type="hidden" name="action" value="supprimer-recette" />
+                        <form method="post">
+                            <input type="hidden" name="action" value="<?= $masquee ? 'afficher-recette' : 'masquer-recette' ?>" />
                             <input type="hidden" name="recipe_id" value="<?= $recette->getId() ?>" />
                             <?= champCsrf() ?>
-                            <button type="submit" class="btn-danger">Supprimer</button>
+                            <button type="submit"><?= $masquee ? 'Réafficher' : 'Masquer' ?></button>
                         </form>
                     </td>
                 </tr>

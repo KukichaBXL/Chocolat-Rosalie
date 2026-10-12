@@ -193,7 +193,7 @@ switch ($pg) {
             exit;
         }
         $categories = (new CategoryManager($db))->getAll();
-        $recettes = (new RecipeManager($db))->getAll();
+        $recettes = (new RecipeManager($db))->getAll(true); // true : avec les recettes masquées
         $commentairesAdmin = (new CommentManager($db))->getAllForAdmin(50);
         require RACINE_PATH . '/view/admin.php';
         break;

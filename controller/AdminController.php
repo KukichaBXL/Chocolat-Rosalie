@@ -148,14 +148,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verifierCsrf()) {
             header('Location: ' . RACINE_URL . 'recette/' . $slug);
             exit;
 
-        case 'supprimer-recette':
+            // masquer une recette : elle reste dans la base (avec ses étapes, notes et commentaires), seul son statut change
+        case 'masquer-recette':
+        case 'afficher-recette':
             $idRecette = lireEntier('recipe_id', 1, PHP_INT_MAX);
             $recetteManager = new RecipeManager($db);
-            if ($idRecette === null || !$recetteManager->exists($idRecette)) {
+            if ($idRecette === null || !$recetteManager->exists($idRecette, true)) {
                 $_SESSION['message'] = 'Cette recette n\'existe pas.';
+            } elseif (lireTexte('action') === 'masquer-recette') {
+                $recetteManager->setStatus($idRecette, 'masquée');
+                $_SESSION['message'] = 'La recette est masquée : elle n\'apparaît plus sur le site.';
             } else {
-                $recetteManager->delete($idRecette);
-                $_SESSION['message'] = 'La recette est supprimée (avec ses étapes, notes et commentaires).';
+                $recetteManager->setStatus($idRecette, 'publiée');
+                $_SESSION['message'] = 'La recette est de nouveau visible.';
             }
             header('Location: ' . RACINE_URL . 'admin#recettes');
             exit;

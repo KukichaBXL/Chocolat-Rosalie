@@ -1731,3 +1731,7 @@ a.user-name:hover {
 .commentaire-info {
   font-style: italic;
 }
+
+.recette-masquee {
+  opacity: 0.5;
+}
