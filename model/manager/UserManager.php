@@ -70,6 +70,16 @@ class UserManager implements ManagerInterface
         return $prepare->fetchColumn() !== false;
     }
 
+    // enregistre un nouveau mot de passe
+    // $passwordHash est DÉJÀ haché par password_hash()
+    public function updatePassword(int $id, string $passwordHash): void
+    {
+        $prepare = $this->connect->prepare("UPDATE users SET password = :password WHERE id = :id");
+        $prepare->bindValue(':password', $passwordHash);
+        $prepare->bindValue(':id', $id, MyPDO::PARAM_INT);
+        $prepare->execute();
+    }
+
     // crée un compte et renvoie l'utilisateur créé
     // $passwordHash est DÉJÀ haché par password_hash()
     public function create(string $username, string $email, string $passwordHash): UserMapping
