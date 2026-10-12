@@ -30,17 +30,19 @@ class RecipeManager implements ManagerInterface
                   WHERE rc.recipes_id = r.id) AS category_title
             FROM recipes r";
 
-    // toutes les recettes, par ordre alphabétique
-    public function getAll(): array
+    // les recettes affichées sur le site, par ordre alphabétique.
+    // $avecMasquees = true : TOUTES les recettes, y compris les masquées (pour la page d'administration)
+    public function getAll(bool $avecMasquees = false): array
     {
-        $query = $this->connect->query(self::SELECT_AVEC_NOTES . " ORDER BY r.title");
+        $condition = $avecMasquees ? "" : " WHERE r.recipe_status = 'publiée'";
+        $query = $this->connect->query(self::SELECT_AVEC_NOTES . $condition . " ORDER BY r.title");
         return $this->versMappings($query->fetchAll());
     }
 
     // une recette grâce à son adresse (slug), ou null si elle n'existe pas
     public function getOneBySlug(string $slug): ?RecipeMapping
     {
-        $prepare = $this->connect->prepare(self::SELECT_AVEC_NOTES . " WHERE r.recipes_slug = :slug");
+        $prepare = $this->connect->prepare(self::SELECT_AVEC_NOTES . " WHERE r.recipes_slug = :slug AND r.recipe_status = 'publiée'");
         $prepare->bindValue(':slug', $slug);
         $prepare->execute();
 
@@ -57,7 +59,7 @@ class RecipeManager implements ManagerInterface
     // le top est complété avec les recettes les plus récentes.
     public function getTop3(): array
     {
-        $sql = self::SELECT_AVEC_NOTES . " ORDER BY votes > 0 DESC, average DESC, votes DESC, r.created_at DESC, r.id DESC LIMIT 3";
+        $sql = self::SELECT_AVEC_NOTES . " WHERE r.recipe_status = 'publiée' ORDER BY votes > 0 DESC, average DESC, votes DESC, r.created_at DESC, r.id DESC LIMIT 3";
         return $this->versMappings($this->connect->query($sql)->fetchAll());
     }
 
@@ -99,20 +101,23 @@ class RecipeManager implements ManagerInterface
         return (int) $this->connect->lastInsertId();
     }
 
-    // cette recette existe-t-elle ?
-    public function exists(int $recipeId): bool
+    // cette recette existe-t-elle sur le site ? Une recette masquée compte comme absente,
+    // sauf si $avecMasquees vaut true (pour l'administration)
+    public function exists(int $recipeId, bool $avecMasquees = false): bool
     {
-        $prepare = $this->connect->prepare("SELECT 1 FROM recipes WHERE id = :id");
+        $sql = $avecMasquees ? "SELECT 1 FROM recipes WHERE id = :id" : "SELECT 1 FROM recipes WHERE id = :id AND recipe_status = 'publiée'";
+        $prepare = $this->connect->prepare($sql);
         $prepare->bindValue(':id', $recipeId, MyPDO::PARAM_INT);
         $prepare->execute();
         return $prepare->fetchColumn() !== false;
     }
 
-    // supprime une recette
-    // ses ingrédients, étapes, notes, commentaires et catégories partent avec elle (ON DELETE CASCADE dans la base)
-    public function delete(int $recipeId): void
+    // masque ou réaffiche une recette SANS la supprimer : $statut vaut 'masquée' ou 'publiée'
+    // (ses étapes, notes et commentaires restent dans la base)
+    public function setStatus(int $recipeId, string $statut): void
     {
-        $prepare = $this->connect->prepare("DELETE FROM recipes WHERE id = :id");
+        $prepare = $this->connect->prepare("UPDATE recipes SET recipe_status = :statut WHERE id = :id");
+        $prepare->bindValue(':statut', $statut);
         $prepare->bindValue(':id', $recipeId, MyPDO::PARAM_INT);
         $prepare->execute();
     }

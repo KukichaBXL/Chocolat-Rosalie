@@ -24,6 +24,7 @@ class RecipeMapping extends AbstractMapping
     protected ?string $difficulty = null;
     protected ?int $users_id = null;
     protected ?string $recipes_slug = null;
+    protected string $recipe_status = 'publiée';   // 'publiée' ou 'masquée' (cachée du site par l'administrateur)
     // calculés par la requête de RecipeManager (pas des colonnes de la table)
     protected ?int $total_time = null;
     protected ?float $average = null;
@@ -203,5 +204,17 @@ class RecipeMapping extends AbstractMapping
     public function setCategoryTitle(?string $category_title): void
     {
         $this->category_title = $category_title;
+    }
+
+    // Getter recipe_status
+    public function getRecipeStatus(): string
+    {
+        return $this->recipe_status;
+    }
+
+    // Setter recipe_status
+    public function setRecipeStatus(string $recipe_status): void
+    {
+        $this->recipe_status = $recipe_status;
     }
 }
