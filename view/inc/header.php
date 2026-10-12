@@ -44,7 +44,7 @@
                 <?php else : ?>
                     <!-- connecté : le nom et le bouton Déconnexion (un formulaire POST avec le jeton CSRF) -->
                     <form method="post" class="compte-connecte">
-                        <span class="user-name"><?= htmlspecialchars($utilisateur['username']) ?></span>
+                        <a href="<?= RACINE_URL ?>compte" class="user-name"><?= htmlspecialchars($utilisateur['username']) ?></a>
                         <input type="hidden" name="action" value="deconnexion" />
                         <?= champCsrf() ?>
                         <button type="submit" class="logout-btn">Déconnexion</button>
@@ -112,6 +112,9 @@
                     <li><a href="<?= RACINE_URL ?>contact" <?= $pg === 'contact' ? 'class="active"' : '' ?>>Contact</a></li>
                     <?php if (!empty($estAdmin)) : ?>
                         <li><a href="<?= RACINE_URL ?>admin" <?= $pg === 'admin' ? 'class="active"' : '' ?>>Admin</a></li>
+                    <?php elseif ($utilisateur !== null) : ?>
+                        <!-- une personne connectée (non administrateur) voit « Mon compte » à la place de « Admin » -->
+                        <li><a href="<?= RACINE_URL ?>compte" <?= $pg === 'compte' ? 'class="active"' : '' ?>>Mon compte</a></li>
                     <?php endif; ?>
                 </ul>
             </nav>

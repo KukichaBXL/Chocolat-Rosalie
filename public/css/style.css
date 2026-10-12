@@ -1598,3 +1598,50 @@ main:has(.histoire) + .site-footer {
     list-style: none;
   }
 }
+/* panel */
+
+a.user-name {
+  text-decoration: none;
+}
+
+a.user-name:hover {
+  text-decoration: underline;
+}
+
+/* Menu à 5 entrées (avec « Mon compte » ou « Admin ») */
+/* les liens ne passent jamais sur 2 lignes */
+.main-nav a {
+  white-space: nowrap;
+}
+
+.main-nav ul {
+  gap: 32px;
+}
+
+@media (max-width: 1400px) {
+  .main-nav a {
+    font-size: 20px;
+  }
+
+  .main-nav ul {
+    gap: 24px;
+  }
+
+  .brand-name {
+    font-size: 38px;
+  }
+
+  .brand-tagline {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .main-nav a {
+    font-size: 18px;
+  }
+
+  .main-nav ul {
+    gap: 16px;
+  }
+}
