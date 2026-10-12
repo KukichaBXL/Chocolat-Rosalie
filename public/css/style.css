@@ -156,8 +156,8 @@ button {
 
 .footer-logo {
   width: 183px;
-  align-self: flex-start; 
-  flex-shrink: 0; 
+  align-self: flex-start;
+  flex-shrink: 0;
 }
 
 .footer-nav {
@@ -709,13 +709,13 @@ main:has(.histoire) + .site-footer {
   justify-content: center;
   align-items: center;
   gap: 20px;
-  img{
+  img {
     object-fit: cover;
     border-radius: 15px;
   }
 }
 
-.etape-titre{
+.etape-titre {
 }
 
 .commentaires {
@@ -1192,7 +1192,7 @@ main:has(.histoire) + .site-footer {
   .main-txt {
     width: 100%;
     margin: 0;
-    padding: 0 80px; 
+    padding: 0 80px;
 
     h1 {
       font-size: 45px;
@@ -1204,15 +1204,13 @@ main:has(.histoire) + .site-footer {
     }
   }
 
-
   .recette-card {
     flex: 0 0 100%;
   }
-  .recette-photo-step{
+  .recette-photo-step {
     align-items: start;
-    flex-direction: row; 
+    flex-direction: row;
     flex-wrap: wrap;
-    
   }
 }
 
@@ -1273,7 +1271,6 @@ main:has(.histoire) + .site-footer {
   .recette-fiche .recette-surtitre {
     font-size: 36px;
   }
-
 }
 
 /* comptes */
@@ -1361,4 +1358,50 @@ main:has(.histoire) + .site-footer {
 /* les photos d'étapes passent à la ligne sur petit écran */
 .recette-photo-step {
   flex-wrap: wrap;
+}
+
+/* listes de l'administration */
+
+.admin-section {
+  margin-bottom: 50px;
+  overflow-x: auto; /* sur mobile, le tableau défile dans son bloc, pas la page */
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--police-texte);
+
+  th,
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--dore);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  button {
+    padding: 6px 16px;
+    border: 1px solid var(--bleu-nuit);
+    border-radius: 20px;
+    background: transparent;
+    font-family: var(--police-texte);
+    cursor: pointer;
+  }
+
+  .btn-danger {
+    border-color: #a32020;
+    color: #a32020;
+  }
+}
+
+/* un commentaire masqué est grisé */
+.commentaire-masque {
+  opacity: 0.5;
+}
+
+@media (max-width: 768px) {
+  .admin-table {
+    font-size: 14px;
+  }
 }
