@@ -19,6 +19,8 @@ class CommentMapping extends AbstractMapping
     protected ?string $comment_status = null;
     protected ?string $created_at = null;
     protected ?string $username = null;
+    protected ?int $rate = null; // la note de l'auteur pour cette recette
+    protected ?string $recipe_title = null; // rempli seulement pour la page admin
 
 
     // Getter Comment ID
@@ -121,5 +123,29 @@ class CommentMapping extends AbstractMapping
     public function setUsername(string $username): void
     {
         $this->username = $username;
+    }
+
+    // Getter recipe_title
+    public function getRecipeTitle(): ?string
+    {
+        return $this->recipe_title;
+    }
+
+    // Setter recipe_title
+    public function setRecipeTitle(string $recipe_title): void
+    {
+        $this->recipe_title = $recipe_title;
+    }
+
+    // Getter rate
+    public function getRate(): ?int
+    {
+        return $this->rate;
+    }
+
+    // Setter rate
+    public function setRate(?int $rate): void
+    {
+        $this->rate = $rate;
     }
 }

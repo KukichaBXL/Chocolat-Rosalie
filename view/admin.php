@@ -1,6 +1,6 @@
 <?php
 // path: view/admin.php
-// Variables : $categories (liste des catégories), $erreurs (messages d'erreur du formulaire).
+// Variables : $categories, $recettes, $commentairesAdmin et $erreurs
 $titre = 'Administration';
 require RACINE_PATH . '/view/inc/header.php';
 
@@ -9,7 +9,79 @@ $textesEtapes = is_array($_POST['etape_texte'] ?? null) ? array_values($_POST['e
 ?>
 
 <section class="container page-title">
-    <h1>Ajouter une recette</h1>
+    <h1>Administration</h1>
+    <p><a href="#recettes">Recettes</a> · <a href="#commentaires">Commentaires</a> · <a href="#ajouter">Ajouter une recette</a></p>
+</section>
+
+<section class="container admin-section" id="recettes">
+    <h2>Les recettes (<?= count($recettes) ?>)</h2>
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Titre</th>
+                <th>Difficulté</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($recettes as $recette) : ?>
+                <tr>
+                    <td><a href="<?= RACINE_URL ?>recette/<?= htmlspecialchars($recette->getRecipesSlug()) ?>"><?= htmlspecialchars($recette->getTitle()) ?></a></td>
+                    <td><?= htmlspecialchars($recette->getDifficulty()) ?></td>
+                    <td>
+                        <form method="post" data-confirm="Supprimer cette recette, ses étapes, ses notes et ses commentaires ?">
+                            <input type="hidden" name="action" value="supprimer-recette" />
+                            <input type="hidden" name="recipe_id" value="<?= $recette->getId() ?>" />
+                            <?= champCsrf() ?>
+                            <button type="submit" class="btn-danger">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</section>
+
+<section class="container admin-section" id="commentaires">
+    <h2>Les commentaires</h2>
+    <?php if ($commentairesAdmin === []) : ?>
+        <p>Aucun commentaire pour le moment.</p>
+    <?php else : ?>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Recette</th>
+                    <th>Auteur</th>
+                    <th>Commentaire</th>
+                    <th>Statut</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($commentairesAdmin as $commentaire) : ?>
+                    <?php $masque = $commentaire->getCommentStatus() === 'banni'; ?>
+                    <tr class="<?= $masque ? 'commentaire-masque' : '' ?>">
+                        <td><?= htmlspecialchars($commentaire->getRecipeTitle()) ?></td>
+                        <td><?= htmlspecialchars($commentaire->getUsername()) ?></td>
+                        <td><?= htmlspecialchars($commentaire->getCommentText()) ?></td>
+                        <td><?= $masque ? 'Masqué' : 'Visible' ?></td>
+                        <td>
+                            <form method="post">
+                                <input type="hidden" name="action" value="<?= $masque ? 'afficher-commentaire' : 'masquer-commentaire' ?>" />
+                                <input type="hidden" name="comment_id" value="<?= $commentaire->getCommentId() ?>" />
+                                <?= champCsrf() ?>
+                                <button type="submit"><?= $masque ? 'Réafficher' : 'Masquer' ?></button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
+</section>
+
+<section class="container page-title" id="ajouter">
+    <h2>Ajouter une recette</h2>
     <p>Remplissez la fiche, puis ajoutez les photos (jpg, png ou webp, 300 Ko maximum).</p>
 </section>
 

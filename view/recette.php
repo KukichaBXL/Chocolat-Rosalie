@@ -10,7 +10,13 @@ require RACINE_PATH . '/view/inc/header.php';
         <div class="recette-fiche">
             <p class="recette-surtitre">Recette</p>
             <h1><?= htmlspecialchars($recette->getTitle()) ?></h1>
+            <!-- la note moyenne (le vote se fait plus bas, avec les commentaires) -->
+            <p class="note-moyenne">
+                ★ <span id="note-moyenne"><?= $stats['average'] === null ? '–' : number_format($stats['average'], 1, ',') ?></span>/5
+                · <span id="note-votes"><?= $stats['votes'] ?></span> avis
+            </p>
             <p><?= htmlspecialchars($recette->getDescription() ?? '') ?></p>
+
             <p>
                 Préparation : <?= $recette->getPrepareTime() ?> min ·
                 Cuisson : <?= $recette->getCookTime() ?> min ·
@@ -48,7 +54,7 @@ require RACINE_PATH . '/view/inc/header.php';
         <?php endif; ?>
     </div>
     <h2 style="" class="etape-titre">Étapes : </h2>
-    <div class="recette-photo-step" >
+    <div class="recette-photo-step">
         <?php foreach ($etapes as $etape) : ?>
             <?php if (!empty($etape->getStepPhoto())) : ?>
                 <img src="<?= RACINE_URL ?>assets/<?= htmlspecialchars($etape->getStepPhoto()) ?>" alt="Étape <?= $etape->getStepNumber() ?>" width="100" height="100" loading="lazy" />
@@ -60,48 +66,88 @@ require RACINE_PATH . '/view/inc/header.php';
 
 
 
-    <section class="commentaires">
+    <section class="commentaires" id="commentaires"
+        data-recipe="<?= $recette->getId() ?>"
+        data-csrf="<?= $_SESSION['csrf_token'] ?>"
+        data-url="<?= RACINE_URL ?>api/">
         <h2 id="titre-avis">Nos avis : </h2>
 
-        <?php if ($commentaires['comments'] === []) : ?>
-            <p>Aucun avis pour l'instant. Soyez le premier à donner le vôtre !</p>
-        <?php else : ?>
-            <!-- du plus récent au plus ancien, par tranches de 10 -->
-            <ul>
-                <?php foreach ($commentaires['comments'] as $commentaire) : ?>
-                    <li class="commentaire">
-                        <p class="commentaire-auteur">
-                            <?= htmlspecialchars($commentaire->getUsername()) ?>
-                            <span><?= date('d/m/Y', strtotime($commentaire->getCreatedAt())) ?></span>
-                        </p>
-                        <?php if ($commentaire->getCommentTitle() !== null) : ?>
-                            <p><strong><?= htmlspecialchars($commentaire->getCommentTitle()) ?></strong></p>
-                        <?php endif; ?>
-                        <!-- htmlspecialchars : du code HTML ou JavaScript écrit dans un commentaire s'affiche comme du texte -->
-                        <p><?= htmlspecialchars($commentaire->getCommentText()) ?></p>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-        <?php endif; ?>
+        <p id="aucun-avis" <?= $commentaires['comments'] === [] ? '' : 'hidden' ?>>Aucun avis pour l'instant. Soyez le premier à donner le vôtre !</p>
+
+        <!-- du plus récent au plus ancien, par tranches de 10 ; avis.js ajoute et retire des <li> sans recharger la page -->
+        <ul id="liste-avis">
+            <?php foreach ($commentaires['comments'] as $commentaire) : ?>
+                <li class="commentaire" data-id="<?= $commentaire->getCommentId() ?>" data-author="<?= $commentaire->getAuthorId() ?>">
+                    <p class="commentaire-auteur">
+                        <?= htmlspecialchars($commentaire->getUsername()) ?>
+                        <span><?= date('d/m/Y', strtotime($commentaire->getCreatedAt())) ?></span>
+                        <!-- la note que cet auteur a donnée à la recette (vide s'il n'a pas noté) -->
+                        <span class="commentaire-note"><?= $commentaire->getRate() === null ? '' : str_repeat('★', $commentaire->getRate()) . str_repeat('☆', 5 - $commentaire->getRate()) ?></span>
+                    </p>
+                    <?php if ($commentaire->getCommentTitle() !== null) : ?>
+                        <p><strong><?= htmlspecialchars($commentaire->getCommentTitle()) ?></strong></p>
+                    <?php endif; ?>
+                    <!-- htmlspecialchars : du code HTML ou JavaScript écrit dans un commentaire s'affiche comme du texte -->
+                    <p><?= htmlspecialchars($commentaire->getCommentText()) ?></p>
+                    <?php if ($utilisateur !== null && ($commentaire->getAuthorId() === $utilisateur['id'] || $estAdmin)) : ?>
+                        <button type="button" class="supprimer-avis"><?= $commentaire->getAuthorId() === $utilisateur['id'] ? 'Supprimer' : 'Masquer' ?></button>
+                    <?php endif; ?>
+                </li>
+            <?php endforeach; ?>
+        </ul>
 
         <?php if ($commentaires['hasMore']) : ?>
-            <!-- "Voir plus" : un simple lien qui recharge la page avec 10 commentaires de plus -->
-            <a href="?avis=<?= $pageAvis + 1 ?>#titre-avis" class="btn-pill">Voir plus d'avis</a>
+            <!-- sans JavaScript, ce lien recharge la page avec 10 commentaires de plus ; avis.js le remplace par un chargement sans rechargement -->
+            <a href="?avis=<?= $pageAvis + 1 ?>#titre-avis" class="btn-pill" id="voir-plus">Voir plus d'avis</a>
         <?php endif; ?>
-        <br>
-        <h2>Ajouter un commentaire : </h2>
-        <form class="commentaire-form" method="post">
-            <div class="form-field">
-                <input type="text" id="commentaire-sujet" name="sujet" maxlength="120" placeholder="Sujet (facultatif)" />
+
+        <!-- les visiteurs ne voient ni le vote ni le formulaire : seulement une invitation à se connecter ou à s'inscrire -->
+        <?php if ($utilisateur === null) : ?>
+            <h2 id="votre-note">Donnez votre avis : </h2>
+            <div class="invitation-avis">
+                <p>Connectez-vous ou créez un compte pour noter cette recette et laisser un commentaire.</p>
+                <p>
+                    <button type="button" class="btn-pill" popovertarget="popup-connexion">Se connecter</button>
+                    <a href="<?= RACINE_URL ?>connection" class="btn-pill">S'inscrire</a>
+                </p>
             </div>
-            <div class="form-field">
-                <textarea id="commentaire-message" name="message" required minlength="3" maxlength="500" placeholder="Votre commentaire ..."></textarea>
+        <?php else : ?>
+            <!-- votre note : une seule par personne, modifiable à tout moment, avec ou sans commentaire.
+                 notation.js l'envoie à /api/noter sans recharger la page -->
+            <h2 id="votre-note">Votre note : </h2>
+            <div class="notation" id="notation"
+                data-url="<?= RACINE_URL ?>api/noter"
+                data-recipe="<?= $recette->getId() ?>"
+                data-csrf="<?= $_SESSION['csrf_token'] ?>"
+                data-user="<?= $utilisateur['id'] ?? 0 ?>"
+                data-note="<?= $maNote ?? 0 ?>">
+                <div class="etoiles" role="group" aria-label="Votre note">
+                    <?php for ($i = 1; $i <= 5; $i++) : ?>
+                        <button type="button" class="etoile" data-valeur="<?= $i ?>" aria-label="<?= $i ?> sur 5">★</button>
+                    <?php endfor; ?>
+                </div>
+                <p class="note-message" id="note-message" role="status">
+                    <?= $maNote === null ? 'Cliquez sur une étoile pour noter. Le commentaire est facultatif.' : 'Votre note : ' . $maNote . '/5. Cliquez sur une autre étoile pour la modifier.' ?>
+                </p>
             </div>
-            <button type="submit" class="btn-pill">Publier le commentaire</button>
-        </form>
+
+            <h2>Ajouter un commentaire (facultatif) : </h2>
+            <form class="commentaire-form" id="form-avis" novalidate>
+                <div class="form-field">
+                    <input type="text" name="title" maxlength="120" placeholder="Sujet (facultatif)" />
+                </div>
+                <div class="form-field">
+                    <textarea name="text" required maxlength="500" placeholder="Votre commentaire ..."></textarea>
+                </div>
+                <p class="form-feedback" id="avis-message" role="status"></p>
+                <button type="submit" class="btn-pill">Publier le commentaire</button>
+            </form>
+        <?php endif; ?>
     </section>
 </article>
 
 
 
+<script src="<?= RACINE_URL ?>js/notation.js"></script>
+<script src="<?= RACINE_URL ?>js/avis.js"></script>
 <?php require RACINE_PATH . '/view/inc/footer.php'; ?>

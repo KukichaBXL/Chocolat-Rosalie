@@ -99,7 +99,7 @@
                             <div class="dropdown-content">
                                 <?php foreach ($recettesMenu ?? [] as $r) : ?><!--  ?? [] = si la liste n'existe pas, prend une liste vide  -->
                                     <a href="<?= RACINE_URL ?>recette/<?= htmlspecialchars($r->getRecipesSlug()) ?>">
-                                    <?= htmlspecialchars($r->getTitle()) ?>
+                                        <?= htmlspecialchars($r->getTitle()) ?>
                                     </a>
                                 <?php endforeach; ?>
                             </div>

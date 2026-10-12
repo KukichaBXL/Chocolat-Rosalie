@@ -5,3 +5,5 @@ config.php
 data/recipes.sql
 data/mydb.sql
 data/chocolaterie-rosalie.sql
+
+logs/erreurs.log
