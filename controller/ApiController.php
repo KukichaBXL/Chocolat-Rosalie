@@ -28,6 +28,8 @@ function commentaireEnTableau(CommentMapping $commentaire, ?array $utilisateur, 
         // le texte du bouton : l'auteur supprime, l'administrateur masque
         'deleteLabel' => $utilisateur !== null && $commentaire->getAuthorId() === $utilisateur['id'] ? 'Supprimer' : 'Masquer',
         'canDelete' => $utilisateur !== null && ($commentaire->getAuthorId() === $utilisateur['id'] || $estAdmin),
+        // vrai si l'administrateur a masqué ce commentaire (seul l'administrateur reçoit les commentaires masqués)
+        'masque' => $commentaire->getCommentStatus() === 'banni',
     ];
 }
 
@@ -86,7 +88,7 @@ switch ($route) {
         if (!(new RecipeManager($db))->exists($idRecette)) {
             repondreJson(404, false, 'Cette recette n\'existe pas.');
         }
-        $resultat = (new CommentManager($db))->getByRecipe($idRecette, CommentManager::PAGE_SIZE, $decalage);
+        $resultat = (new CommentManager($db))->getByRecipe($idRecette, CommentManager::PAGE_SIZE, $decalage, $estAdmin);
         repondreJson(200, true, 'Commentaires chargés.', [
             'comments' => array_map(fn($c) => commentaireEnTableau($c, $utilisateur, $estAdmin), $resultat['comments']),
             'hasMore' => $resultat['hasMore'],
@@ -164,7 +166,40 @@ switch ($route) {
             repondreJson(200, true, 'Le commentaire est supprimé.', ['id' => $idCommentaire]);
         }
         $commentaireManager->setStatus($idCommentaire, 'banni');
-        repondreJson(200, true, 'Le commentaire est masqué.', ['id' => $idCommentaire]);
+        // on renvoie le commentaire : l'administrateur le voit grisé, avec un bouton « Réafficher »
+        repondreJson(200, true, 'Le commentaire est masqué.', [
+            'id' => $idCommentaire,
+            'comment' => commentaireEnTableau($commentaireManager->getById($idCommentaire), $utilisateur, $estAdmin),
+        ]);
+
+        // ===== POST /api/reafficher-commentaire : remettre un commentaire masqué (administrateur) =====
+    case 'reafficher-commentaire':
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            repondreJson(405, false, 'Cette adresse accepte seulement la méthode POST.');
+        }
+        if ($utilisateur === null) {
+            repondreJson(401, false, 'Connectez-vous pour réafficher un commentaire.');
+        }
+        if (!$estAdmin) {
+            repondreJson(403, false, 'Seul un administrateur peut réafficher un commentaire.');
+        }
+        if (!verifierCsrf()) {
+            repondreJson(403, false, 'Formulaire expiré. Rechargez la page.');
+        }
+
+        $idCommentaire = lireEntier('comment_id', 1, PHP_INT_MAX);
+        if ($idCommentaire === null) {
+            repondreJson(400, false, 'Données invalides.', [], ['comment_id' => 'Commentaire invalide.']);
+        }
+        $commentaireManager = new CommentManager($db);
+        if ($commentaireManager->getById($idCommentaire) === null) {
+            repondreJson(404, false, 'Ce commentaire n\'existe pas.');
+        }
+        $commentaireManager->setStatus($idCommentaire, 'publié');
+        repondreJson(200, true, 'Le commentaire est de nouveau visible.', [
+            'id' => $idCommentaire,
+            'comment' => commentaireEnTableau($commentaireManager->getById($idCommentaire), $utilisateur, $estAdmin),
+        ]);
 
     default:
         repondreJson(404, false, 'Cette adresse n\'existe pas.');

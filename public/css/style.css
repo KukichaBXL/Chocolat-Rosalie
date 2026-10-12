@@ -1721,3 +1721,13 @@ a.user-name:hover {
     transform: translateY(-4px);
   }
 }
+
+/* sur la page d'une recette, l'administrateur voit les commentaires masqués */
+.commentaire-masque {
+  opacity: 0.55;
+  border-left: 4px solid var(--dore);
+}
+
+.commentaire-info {
+  font-style: italic;
+}

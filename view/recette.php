@@ -86,7 +86,7 @@ require RACINE_PATH . '/view/inc/header.php';
         <!-- du plus récent au plus ancien, par tranches de 10 ; avis.js ajoute et retire des <li> sans recharger la page -->
         <ul id="liste-avis">
             <?php foreach ($commentaires['comments'] as $commentaire) : ?>
-                <li class="commentaire" data-id="<?= $commentaire->getCommentId() ?>" data-author="<?= $commentaire->getAuthorId() ?>">
+                <li class="commentaire<?= $commentaire->getCommentStatus() === 'banni' ? ' commentaire-masque' : '' ?>" data-id="<?= $commentaire->getCommentId() ?>" data-author="<?= $commentaire->getAuthorId() ?>">
                     <p class="commentaire-auteur">
                         <?= htmlspecialchars($commentaire->getUsername()) ?>
                         <span><?= date('d/m/Y', strtotime($commentaire->getCreatedAt())) ?></span>
@@ -98,7 +98,11 @@ require RACINE_PATH . '/view/inc/header.php';
                     <?php endif; ?>
                     <!-- htmlspecialchars : du code HTML ou JavaScript écrit dans un commentaire s'affiche comme du texte -->
                     <p><?= htmlspecialchars($commentaire->getCommentText()) ?></p>
-                    <?php if ($utilisateur !== null && ($commentaire->getAuthorId() === $utilisateur['id'] || $estAdmin)) : ?>
+                    <?php if ($commentaire->getCommentStatus() === 'banni') : ?>
+                        <!-- un commentaire masqué n'est lu que par l'administrateur, qui peut le réafficher -->
+                        <p class="commentaire-info">Commentaire masqué : les visiteurs ne le voient pas.</p>
+                        <button type="button" class="reafficher-avis">Réafficher</button>
+                    <?php elseif ($utilisateur !== null && ($commentaire->getAuthorId() === $utilisateur['id'] || $estAdmin)) : ?>
                         <button type="button" class="supprimer-avis"><?= $commentaire->getAuthorId() === $utilisateur['id'] ? 'Supprimer' : 'Masquer' ?></button>
                     <?php endif; ?>
                 </li>

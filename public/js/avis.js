@@ -30,7 +30,7 @@ if (section) {
     // textContent (et non innerHTML) : un commentaire contenant du HTML ou du JavaScript s'affiche comme du simple texte
     function creerCommentaire(c) {
         const li = document.createElement('li');
-        li.className = 'commentaire';
+        li.className = c.masque ? 'commentaire commentaire-masque' : 'commentaire';
         li.dataset.id = c.id;
         li.dataset.author = c.authorId;
 
@@ -59,7 +59,18 @@ if (section) {
         texte.textContent = c.text;
         li.appendChild(texte);
 
-        if (c.canDelete) {
+        if (c.masque) {
+            // masqué : seul l'administrateur le reçoit, avec un bouton pour le réafficher
+            const info = document.createElement('p');
+            info.className = 'commentaire-info';
+            info.textContent = 'Commentaire masqué : les visiteurs ne le voient pas.';
+            li.appendChild(info);
+            const reafficher = document.createElement('button');
+            reafficher.type = 'button';
+            reafficher.className = 'reafficher-avis';
+            reafficher.textContent = 'Réafficher';
+            li.appendChild(reafficher);
+        } else if (c.canDelete) {
             const bouton = document.createElement('button');
             bouton.type = 'button';
             bouton.className = 'supprimer-avis';
@@ -102,9 +113,27 @@ if (section) {
         const donnees = new FormData();
         donnees.append('comment_id', li.dataset.id);
         const json = await appeler('supprimer-commentaire', donnees);
-        if (json.success) {
+        if (json.success && json.data.comment) {
+            li.replaceWith(creerCommentaire(json.data.comment)); // masqué par l'administrateur : il reste là, grisé
+        } else if (json.success) {
             li.remove();
             aucunAvis.hidden = liste.children.length > 0;
+        } else {
+            alert(json.message);
+        }
+    });
+
+    // ----- réafficher un commentaire masqué (administrateur) -----
+    liste.addEventListener('click', async (e) => {
+        if (!e.target.classList.contains('reafficher-avis')) {
+            return;
+        }
+        const li = e.target.closest('li');
+        const donnees = new FormData();
+        donnees.append('comment_id', li.dataset.id);
+        const json = await appeler('reafficher-commentaire', donnees);
+        if (json.success) {
+            li.replaceWith(creerCommentaire(json.data.comment));
         } else {
             alert(json.message);
         }
