@@ -452,36 +452,27 @@ main:has(.contact-infos) + .site-footer {
 }
 
 /* À propos : l'histoire de la maison */
+.about-title {
+  text-align: center;
+  margin-bottom: 27px;
+  font-family: var(--police-italique);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 76px;
+
+  span {
+    display: block;
+    color: var(--dore);
+  }
+}
+
 
 .histoire {
   margin-top: 20px;
-  text-align: center;
   font-family: var(--police-texte);
   font-weight: 400;
   font-size: 22px;
   line-height: 1.2;
-
-  /* "Maison Rosalie" en bleu nuit, puis "Depuis 1860" en doré sur la ligne du dessous */
-  h1 {
-    margin-bottom: 27px;
-    font-family: var(--police-italique);
-    font-style: italic;
-    font-weight: 400;
-    font-size: 76px;
-
-    span {
-      display: block;
-      color: var(--dore);
-    }
-  }
-
-  /* "166 ans de savoir-faire" : même taille que le texte, mais dorée */
-  h2 {
-    font-size: inherit;
-    font-weight: inherit;
-    color: var(--dore);
-    margin-bottom: 27px;
-  }
 
   p {
     margin-bottom: 20px;
@@ -490,16 +481,115 @@ main:has(.contact-infos) + .site-footer {
   p:last-child {
     margin-bottom: 0;
   }
+}
 
-  .histoire-image {
-    width: 419px;
-    max-width: 100%;
-    height: auto;
-    aspect-ratio: 419 / 279;
-    margin: 44px auto 44px;
-    border-radius: 66px;
-    object-fit: cover;
+.about-top {
+  display: flex;
+  gap: 20px;
+  justify-content: space-around;
+  align-items: center;
+  padding: 30px;
+
+
+  .about-top-txt {
+    width: 40vw;
   }
+
+  .about-txt-start {
+    font-family: var(--police-italique);
+    font-size: 40px;
+    color: var(--dore);
+  }
+
+  .about-top-txt-citation {
+    font-family: var(--police-italique);
+    font-size: 24px;
+    background-color: #fbf9f5;
+    border: 1px solid rgba(196, 151, 74, 0.2);
+    padding: 20px;
+  }
+
+}
+.line {
+  margin: 20px;
+  border: 1px solid var(--dore);
+}
+
+.about-bottom {
+  text-align: center;
+
+  img {
+    width: 600px;
+    margin: 40px auto;
+    border-radius: 15px;
+  }
+
+  .about-bottom-end {
+    font-family: var(--police-italique);
+    font-size: 40px;
+    color: var(--dore);
+  }
+}
+/* CARD STAT  */
+
+.heritage-stats-section {
+  max-width: 960px;
+  margin: 50px auto 60px auto;
+  padding: 0 20px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.stat-card {
+  background-color: #fbf9f5;
+  border: 1px solid rgba(196, 151, 74, 0.2);
+  border-radius: 4px;
+  padding: 36px 24px 30px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(196, 151, 74, 0.12);
+}
+
+.stat-icon {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 14px;
+  color: var(--color-gold);
+}
+
+.stat-number {
+  font-size: 38px;
+  font-weight: 500;
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+
+.stat-subtitle {
+  font-size: 11px;
+  letter-spacing: 2px;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.stat-description {
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0;
 }
 
 main:has(.histoire) + .site-footer {
