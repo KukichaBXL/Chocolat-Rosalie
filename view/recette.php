@@ -11,7 +11,12 @@ require RACINE_PATH . '/view/inc/header.php';
             <p class="recette-surtitre">Recette</p>
             <h1><?= htmlspecialchars($recette->getTitle()) ?></h1>
             <?php if ($recette->getCategoryTitle() !== null) : ?>
-                <p class="recette-categorie"><?= htmlspecialchars($recette->getCategoryTitle()) ?></p>
+                <?php
+                // petite icône (Font Awesome) selon la catégorie
+                $icones = ['Gâteaux' => 'fa-birthday-cake', 'Mousses' => 'fa-cloud', 'Boissons' => 'fa-coffee', 'Glacé' => 'fa-snowflake-o'];
+                $icone = $icones[$recette->getCategoryTitle()] ?? 'fa-cutlery';
+                ?>
+                <p class="recette-categorie"><i class="fa <?= $icone ?>" aria-hidden="true"></i> <?= htmlspecialchars($recette->getCategoryTitle()) ?></p>
             <?php endif; ?>
             <!-- la note moyenne (le vote se fait plus bas, avec les commentaires) -->
             <p class="note-moyenne">
@@ -20,12 +25,12 @@ require RACINE_PATH . '/view/inc/header.php';
             </p>
             <p><?= htmlspecialchars($recette->getDescription() ?? '') ?></p>
 
-            <p>
-                Préparation : <?= $recette->getPrepareTime() ?> min ·
-                Cuisson : <?= $recette->getCookTime() ?> min ·
-                Total : <?= $recette->getTotalTime() ?> min ·
-                Difficulté : <?= htmlspecialchars($recette->getDifficulty()) ?>
-            </p>
+            <ul class="recette-infos">
+                <li><i class="fa fa-clock-o" aria-hidden="true"></i> Préparation : <?= $recette->getPrepareTime() ?> min</li>
+                <li><i class="fa fa-fire" aria-hidden="true"></i> Cuisson : <?= $recette->getCookTime() ?> min</li>
+                <li><i class="fa fa-hourglass-end" aria-hidden="true"></i> Total : <?= $recette->getTotalTime() ?> min</li>
+                <li><i class="fa fa-signal" aria-hidden="true"></i> Difficulté : <?= htmlspecialchars($recette->getDifficulty()) ?></li>
+            </ul>
 
             <h2>Ingrédients — <?= $recette->getPortions() ?> personne(s)</h2>
             <?php if ($ingredients === []) : ?>
@@ -155,7 +160,14 @@ require RACINE_PATH . '/view/inc/header.php';
         <ul>
             <?php foreach ($recettesMenu as $autre) : ?>
                 <?php if ($autre->getId() !== $recette->getId()) : ?>
-                    <li><a href="<?= RACINE_URL ?>recette/<?= htmlspecialchars($autre->getRecipesSlug()) ?>"><?= htmlspecialchars($autre->getTitle()) ?></a></li>
+                    <li>
+                        <a href="<?= RACINE_URL ?>recette/<?= htmlspecialchars($autre->getRecipesSlug()) ?>" class="autre-recette">
+                            <?php if (!empty($autre->getPhotoMain())) : ?>
+                                <img src="<?= RACINE_URL ?>assets/<?= htmlspecialchars($autre->getPhotoMain()) ?>" alt="" width="200" height="130" loading="lazy" />
+                            <?php endif; ?>
+                            <span><?= htmlspecialchars($autre->getTitle()) ?></span>
+                        </a>
+                    </li>
                 <?php endif; ?>
             <?php endforeach; ?>
         </ul>
