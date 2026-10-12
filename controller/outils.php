@@ -155,3 +155,20 @@ function repondreJson(int $code, bool $succes, string $message, array $donnees =
     ], JSON_UNESCAPED_UNICODE);
     exit;
 }
+
+function adresseDeRetour(): string
+{
+    $retour = lireTexte('retour');
+    $racine = parse_url(RACINE_URL, PHP_URL_PATH);      // "/" ou "/2026/choco1/"
+    // que des caractères d'une adresse du site (pas de ":" ni de "\" ni de "//" : pas d'autre site possible)
+    if (preg_match('#^[A-Za-z0-9/_.?=&%-]*$#', $retour) !== 1 || str_contains($retour, '//') || !str_starts_with($retour, $racine)) {
+        return RACINE_URL;
+    }
+    $page = substr($retour, strlen($racine));
+    // revenir sur la page de connexion n'a pas de sens
+    if ($page === '' || str_starts_with($page, 'connection')) {
+        return RACINE_URL;
+    }
+    // sur une recette, on revient directement à la zone « Votre note » / commentaires
+    return RACINE_URL . $page . (str_starts_with($page, 'recette/') ? '#votre-note' : '');
+}

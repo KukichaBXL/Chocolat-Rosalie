@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     session_regenerate_id(true); // nouvel identifiant de session à la connexion
                     $_SESSION['user'] = ['id' => $nouveau->getId(), 'username' => $nouveau->getUsername()];
                     $_SESSION['message'] = 'Bienvenue ' . $pseudo . ', votre compte est créé.';
-                    header('Location: ' . RACINE_URL);
+                    header('Location: ' . adresseDeRetour());
                     exit;
                 }
                 // s'il y a des erreurs, on continue : la page /connection s'affiche avec les messages
@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 session_regenerate_id(true); // nouvel identifiant de session à la connexion
                 $_SESSION['user'] = ['id' => $compte->getId(), 'username' => $compte->getUsername()];
                 $_SESSION['message'] = 'Bonjour ' . $compte->getUsername() . ' !';
-                header('Location: ' . RACINE_URL);
+                header('Location: ' . adresseDeRetour());
                 exit;
 
             case 'contact':
