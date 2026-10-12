@@ -1166,6 +1166,7 @@ main:has(.histoire) + .site-footer {
   .main-img {
 
     img{
+      /* object-fit: cover;  */
       width: 700px;
     }
   }
@@ -1241,5 +1242,8 @@ main:has(.histoire) + .site-footer {
 
   .recette-fiche .recette-surtitre {
     font-size: 36px;
+  }
+  .recette-photo-step{
+    background-color: red;
   }
 }
