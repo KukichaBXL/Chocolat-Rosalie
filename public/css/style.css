@@ -712,6 +712,8 @@ main:has(.histoire) + .site-footer {
   img{
     object-fit: cover;
     border-radius: 15px;
+    width: 100px;
+    height: 100px;
   }
 }
 
@@ -1362,3 +1364,18 @@ main:has(.histoire) + .site-footer {
 .recette-photo-step {
   flex-wrap: wrap;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
