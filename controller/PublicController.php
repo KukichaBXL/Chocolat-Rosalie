@@ -149,6 +149,7 @@ $recettesMenu = (new RecipeManager($db))->getAll();
 
 switch ($pg) {
     case 'accueil':
+        $top3 = (new RecipeManager($db))->getTop3();
         require RACINE_PATH . '/view/accueil.php';
         break;
 
