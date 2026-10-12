@@ -747,6 +747,8 @@ main:has(.histoire) + .site-footer {
   img {
     object-fit: cover;
     border-radius: 15px;
+    width: 100px;
+    height: 100px;
   }
 }
 
