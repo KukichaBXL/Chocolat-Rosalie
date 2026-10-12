@@ -1405,3 +1405,79 @@ main:has(.histoire) + .site-footer {
     font-size: 14px;
   }
 }
+
+/*  Étape 7 : notation par étoiles */
+
+.note-moyenne {
+  font-weight: 700;
+}
+
+.etoiles {
+  display: flex;
+  gap: 4px;
+}
+
+.etoile {
+  border: none;
+  background: none;
+  color: #bdb6a4; /* étoile vide */
+  font-size: 32px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.etoile.active {
+  color: var(--dore); /* étoile pleine */
+}
+
+.etoile:focus-visible {
+  outline: 2px solid var(--dore);
+}
+
+.note-message {
+  min-height: 26px;
+}
+
+/* "connectez-vous" */
+.lien-connexion {
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* le vote est dans la zone commentaires, sous la liste des avis */
+.notation {
+  margin: 8px 0 24px;
+}
+
+/* les étoiles de l'auteur, à côté de la date du commentaire */
+.commentaire-note {
+  margin-left: 8px;
+  color: var(--dore);
+  letter-spacing: 2px;
+}
+
+/* bloc affiché aux visiteurs à la place du vote et du formulaire */
+.invitation-avis {
+  margin: 8px 0 24px;
+}
+
+/*  Étape 8 : commentaires */
+
+.commentaire {
+  position: relative;
+}
+
+/* bouton "Supprimer" d'un commentaire */
+.supprimer-avis {
+  padding: 4px 14px;
+  border: 1px solid #a32020;
+  border-radius: 20px;
+  background: transparent;
+  color: #a32020;
+  font-family: var(--police-texte);
+  cursor: pointer;
+}
