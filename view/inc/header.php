@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="<?= RACINE_URL ?>css/style.css" />
     <script src="<?= RACINE_URL ?>js/navigation.js" defer></script>
     <script src="<?= RACINE_URL ?>js/recherche.js" defer></script>
+    <script src="<?= RACINE_URL ?>js/theme.js" defer></script>
     <!-- dark mode : appliqué avant l'affichage pour éviter un flash blanc -->
     <script>
         try {
@@ -67,7 +68,7 @@
                         <button type="submit" class="logout-btn">Déconnexion</button>
                     </form>
                 <?php endif; ?>
-                 <button type="button" class="theme-toggle" aria-label="Changer de thème (clair / sombre)">
+                <button type="button" class="theme-toggle" aria-label="Changer de thème (clair / sombre)">
                     <i class="fa fa-moon-o" aria-hidden="true"></i>
                 </button>
                 <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="menu-principal">Menu</button>
