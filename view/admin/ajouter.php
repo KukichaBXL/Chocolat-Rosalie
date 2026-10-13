@@ -8,7 +8,7 @@ $textesEtapes = is_array($_POST['etape_texte'] ?? null) ? array_values($_POST['e
 
 <section class="container page-title">
     <h2>Ajouter une recette</h2>
-    <p>Remplissez la fiche, puis ajoutez les photos (jpg, png ou webp, 300 Ko maximum).</p>
+    <p>Remplissez la fiche. Les photos sont facultatives (jpg, png ou webp, 300 Ko maximum) : sans photo, une image par défaut est utilisée.</p>
 </section>
 
 <form class="container admin-form" method="post" enctype="multipart/form-data" novalidate>
@@ -20,7 +20,7 @@ $textesEtapes = is_array($_POST['etape_texte'] ?? null) ? array_values($_POST['e
         <div class="admin-infos">
             <label class="photo-slot photo-principale">
                 <span class="photo-vide"></span>
-                <input type="file" name="photo" accept="image/jpeg,image/png,image/webp" required />
+                <input type="file" name="photo" accept="image/jpeg,image/png,image/webp" />
                 <span class="form-error"><?= $erreurs['photo'] ?? '' ?></span>
             </label>
 

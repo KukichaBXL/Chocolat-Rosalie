@@ -76,7 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verifierCsrf()) {
                 if ($photo['erreur'] !== null) {
                     $erreurs['photo'] = $photo['erreur'];
                 } elseif ($photo['nom'] === null) {
-                    $erreurs['photo'] = 'Ajoutez la photo de la recette.';
+                    // photo facultative (démo, ajout rapide) : une image par défaut est utilisée
+                    $photo['nom'] = 'atelier.webp';
                 } else {
                     $fichiersEnregistres[] = $photo['nom'];
                 }
