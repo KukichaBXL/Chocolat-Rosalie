@@ -75,6 +75,27 @@ switch ($route) {
             'votes' => $stats['votes'],
         ]);
 
+        // ===== GET /api/recherche?q=choc : la recherche en temps réel (titre, catégorie ou ingrédient) =====
+    case 'recherche':
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            repondreJson(405, false, 'Cette adresse accepte seulement la méthode GET.');
+        }
+        $texte = $_GET['q'] ?? '';
+        $texte = is_string($texte) ? trim($texte) : '';
+        $longueur = mb_strlen($texte);
+        if ($longueur < 2 || $longueur > 50) {
+            repondreJson(400, false, 'Tapez entre 2 et 50 caractères.', [], ['q' => 'Tapez entre 2 et 50 caractères.']);
+        }
+        $trouvees = (new RecipeManager($db))->search($texte);
+        repondreJson(200, true, count($trouvees) . ' recette(s) trouvée(s).', [
+            'recipes' => array_map(fn($r) => [
+                'title' => $r->getTitle(),
+                'slug' => $r->getRecipesSlug(),
+                'photo' => $r->getPhotoMain(),
+                'category' => $r->getCategoryTitle(),
+            ], $trouvees),
+        ]);
+
         // ===== GET /api/commentaires?recipe_id=1&offset=10 : 10 commentaires de plus =====
     case 'commentaires':
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {

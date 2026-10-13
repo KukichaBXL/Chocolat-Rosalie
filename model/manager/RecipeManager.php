@@ -63,6 +63,27 @@ class RecipeManager implements ManagerInterface
         return $this->versMappings($this->connect->query($sql)->fetchAll());
     }
 
+    // la recherche en temps réel : les recettes dont le titre, la catégorie ou un ingrédient contient le texte tapé.
+    // Les caractères spéciaux du LIKE (% et _) sont neutralisés pour qu'ils soient cherchés comme du texte normal.
+    public function search(string $texte, int $limite = 6): array
+    {
+        $motif = '%' . addcslashes($texte, '%_\\') . '%';
+        $sql = self::SELECT_AVEC_NOTES . " WHERE r.recipe_status = 'publiée' AND (
+                    r.title LIKE :t
+                 OR EXISTS (SELECT 1 FROM recipes_has_category rc JOIN category c ON c.id = rc.category_id
+                             WHERE rc.recipes_id = r.id AND c.title LIKE :c)
+                 OR EXISTS (SELECT 1 FROM recipes_ingredient ri JOIN ingredient i ON i.id = ri.ingredient_id
+                             WHERE ri.recipe_id = r.id AND i.name LIKE :i)
+                ) ORDER BY r.title LIMIT :limite";
+        $prepare = $this->connect->prepare($sql);
+        $prepare->bindValue(':t', $motif);
+        $prepare->bindValue(':c', $motif);
+        $prepare->bindValue(':i', $motif);
+        $prepare->bindValue(':limite', $limite, \PDO::PARAM_INT);
+        $prepare->execute();
+        return $this->versMappings($prepare->fetchAll());
+    }
+
     // transforme des lignes SQL en objets RecipeMapping
     private function versMappings(array $lignes): array
     {

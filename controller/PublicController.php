@@ -235,6 +235,7 @@ switch ($pg) {
 
     // pages sans données à préparer
     case 'a-propos':
+    case 'mentions-legales':
     case 'contact':
     case 'connection':
         require RACINE_PATH . '/view/' . $pg . '.php';
