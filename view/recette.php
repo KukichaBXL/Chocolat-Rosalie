@@ -226,8 +226,7 @@ require RACINE_PATH . '/view/inc/header.php';
 </article>
 
 
-
-<script src="<?= RACINE_URL ?>js/notation.js"></script>
+<script src="js/main.js"></script>
 <script src="<?= RACINE_URL ?>js/avis.js"></script>
 <script src="<?= RACINE_URL ?>js/portions.js"></script>
 <script src="<?= RACINE_URL ?>js/carrousel.js"></script>
