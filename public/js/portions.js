@@ -65,7 +65,7 @@ if (bloc) {
             el.textContent = libelle(el.dataset.nom, Number(el.dataset.qte) * facteur, el.dataset.unite);
         });
         sortie.textContent = nb;
-        mot.textContent = nb > 1 ? 'personnes' : 'personne';
+        mot.textContent = nb > 1 ? 'portions' : 'portion';
         moins.disabled = nb <= 1;
         plus.disabled = nb >= 50;
     }
