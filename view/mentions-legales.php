@@ -35,4 +35,5 @@ require RACINE_PATH . '/view/inc/header.php';
     <h2>Propriété intellectuelle</h2>
     <p>Les textes, photographies, logo et recettes ont été créés par l'équipe du projet. Toute reproduction sans autorisation est interdite.</p>
 </section>
+<script src="<?= RACINE_URL ?>js/main.js"></script>
 <?php require RACINE_PATH . '/view/inc/footer.php'; ?>

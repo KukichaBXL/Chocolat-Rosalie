@@ -19,3 +19,4 @@ require RACINE_PATH . '/view/inc/header.php';
 <?php require RACINE_PATH . '/view/admin/' . $onglet . '.php'; ?>
 
 <?php require RACINE_PATH . '/view/inc/footer.php'; ?>
+<script src="<?= RACINE_URL ?>js/main.js"></script>

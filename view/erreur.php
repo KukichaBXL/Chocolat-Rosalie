@@ -13,3 +13,4 @@ require RACINE_PATH . '/view/inc/header.php';
 </section>
 
 <?php require RACINE_PATH . '/view/inc/footer.php'; ?>
+<script src="<?= RACINE_URL ?>js/main.js"></script>
