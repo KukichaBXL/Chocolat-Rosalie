@@ -48,6 +48,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($motDePasse !== $confirmation) {
                     $erreurs['pwd_confirm'] = 'Les deux mots de passe ne sont pas identiques.';
                 }
+                // consentement RGPD obligatoire
+                if (($_POST['rgpd'] ?? '') !== '1') {
+                    $erreurs['rgpd'] = 'Vous devez accepter la politique de confidentialité pour créer un compte.';
+                }
 
                 // 2) le nom et l'email ne doivent pas déjà exister
                 $userManager = new UserManager($db);

@@ -387,6 +387,20 @@ button {
     left: 16px;
     width: auto;
   }
+
+  /* champ ouvert : l'en-tête s'agrandit, le champ ne recouvre plus le titre de la page */
+  .site-header:has(.recherche.ouvert) {
+    padding-bottom: 64px;
+
+    /* le champ et les résultats se placent dans cet espace réservé */
+    .recherche.ouvert input[type="search"] {
+      top: calc(100% - 60px);
+    }
+
+    .recherche-resultats {
+      top: calc(100% - 8px);
+    }
+  }
 }
 
 .nav-toggle {
@@ -2054,6 +2068,10 @@ main:has(.contact-infos) + .site-footer {
 }
 
 .form-connect {
+  width: min(
+    640px,
+    100%
+  ); /* largeur fixe : un long texte ne décale plus l'image */
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -2526,4 +2544,47 @@ main:has(.contact-infos) + .site-footer {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+}
+
+/* ===================== RGPD ===================== */
+
+/* case RGPD du formulaire d'inscription : texte centré, coupé en deux lignes, même taille que les autres libellés */
+.form-field .rgpd-label {
+  display: block;
+  padding-left: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  text-align: center;
+  cursor: pointer;
+
+  /* la case est au début de la première ligne, le tout reste centré */
+  input {
+    width: 18px;
+    height: 18px;
+    margin: 0 10px 3px 0;
+    padding: 0;
+    vertical-align: middle;
+    accent-color: var(--dore);
+  }
+
+  /* sur petit écran : lignes équilibrées */
+  span {
+    text-wrap: balance;
+  }
+
+  /* sur grand écran : coupure propre après « mon compte, » */
+  .rgpd-br {
+    display: none;
+  }
+
+  @media (min-width: 900px) {
+    .rgpd-br {
+      display: inline;
+    }
+  }
+
+  a {
+    color: var(--dore);
+    text-decoration: underline;
+  }
 }

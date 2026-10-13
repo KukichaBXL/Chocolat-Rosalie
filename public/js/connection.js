@@ -28,8 +28,11 @@ formulaire.addEventListener('submit', (e) => {
     afficherErreur('pwd', erreurPwd);
     afficherErreur('pwd-confirm', erreurConfirm);
 
+    const erreurRgpd = document.getElementById('rgpd').checked ? '' : 'Vous devez accepter la politique de confidentialité.';
+    afficherErreur('rgpd', erreurRgpd);
+
     // on bloque l'envoi seulement s'il reste une erreur
-    if (erreurPseudo || erreurMail || erreurPwd || erreurConfirm) {
+    if (erreurPseudo || erreurMail || erreurPwd || erreurConfirm || erreurRgpd) {
         e.preventDefault();
     }
 });

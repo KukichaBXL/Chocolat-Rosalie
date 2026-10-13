@@ -38,6 +38,13 @@ require RACINE_PATH . '/view/inc/header.php';
                 <span class="form-error" data-error-for="pwd-confirm"><?= $erreurs['pwd_confirm'] ?? '' ?></span>
             </div>
             <p>8 caractères minimum, avec une majuscule, une minuscule et un chiffre.</p>
+            <div class="form-field rgpd">
+                <label class="rgpd-label">
+                    <input type="checkbox" id="rgpd" name="rgpd" value="1" required <?= !empty($_POST['rgpd']) ? 'checked' : '' ?> />
+                    <span>J'accepte que mon nom d'utilisateur et mon email soient utilisés pour gérer mon compte,<br class="rgpd-br"> conformément à la <a href="<?= RACINE_URL ?>mentions-legales">politique de confidentialité</a> (RGPD).</span>
+                </label>
+                <span class="form-error" data-error-for="rgpd"><?= $erreurs['rgpd'] ?? '' ?></span>
+            </div>
             <br>
             <button type="submit" id="btn-connect" class="btn-pill">Créer mon compte</button>
         </form>
