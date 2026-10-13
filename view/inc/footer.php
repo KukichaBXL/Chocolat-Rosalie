@@ -28,7 +28,7 @@
             </div>
         </div>
 
-        <p class="copyright">© 2026 Maison Rosalie - Tous droits réservés</p>
+        <p class="copyright">© 2026 Maison Rosalie - Tous droits réservés · <a href="<?= RACINE_URL ?>mentions-legales">Mentions légales</a></p>
     </footer>
     </body>
 
