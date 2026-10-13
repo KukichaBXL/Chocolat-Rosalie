@@ -1,6 +1,7 @@
 <?php
 // path: view/connection.php
 $titre = 'Inscription';
+$description = 'Créez votre compte Maison Rosalie pour noter les recettes et laisser un commentaire.';
 require RACINE_PATH . '/view/inc/header.php';
 ?>
 

@@ -9,6 +9,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="<?= htmlspecialchars($description ?? 'Maison Rosalie : le livre de recettes au chocolat d\'une chocolaterie belge. Brownies, mousses, gâteaux et boissons, pas à pas.') ?>" />
     <title><?= $titre ?? 'Maison Rosalie' ?> | Maison Rosalie</title>
     <link rel="icon" href="<?= RACINE_URL ?>assets/favicon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -23,6 +24,7 @@
         crossorigin=""></script>
     <link rel="stylesheet" href="<?= RACINE_URL ?>css/style.css" />
     <script src="<?= RACINE_URL ?>js/navigation.js" defer></script>
+    <script src="<?= RACINE_URL ?>js/recherche.js" defer></script>
 </head>
 
 <body>
@@ -37,6 +39,15 @@
             </a>
 
             <div class="header-right">
+                <!-- recherche en temps réel : la loupe déplie le champ, js/recherche.js affiche les résultats -->
+                <form class="recherche" action="<?= RACINE_URL ?>recettes" method="get" role="search">
+                    <label for="recherche-champ" class="sr-only">Rechercher une recette ou un ingrédient</label>
+                    <input type="search" id="recherche-champ" name="q" maxlength="50" autocomplete="off" placeholder="Une recette, un ingrédient..." aria-controls="recherche-resultats" />
+                    <button type="submit" class="recherche-btn" aria-label="Rechercher" aria-expanded="false">
+                        <img src="<?= RACINE_URL ?>assets/search-alt-1-svgrepo-com.svg" alt="" width="22" height="22" />
+                    </button>
+                    <ul class="recherche-resultats" id="recherche-resultats" role="listbox" hidden></ul>
+                </form>
                 <?php if ($utilisateur === null) : ?>
                     <button type="button" class="account-btn" popovertarget="popup-connexion" aria-label="Se connecter ou créer un compte">
                         <img src="<?= RACINE_URL ?>assets/icon-compte.svg" alt="" width="22" height="26" />

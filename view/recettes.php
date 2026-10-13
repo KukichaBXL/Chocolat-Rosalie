@@ -2,6 +2,7 @@
 // path: view/recettes.php
 // $recettes (un tableau de RecipeMapping) est préparé par controller/PublicController.php
 $titre = 'Nos recettes';
+$description = 'Toutes les recettes au chocolat de la Maison Rosalie : gâteaux, mousses, boissons et douceurs glacées, expliquées pas à pas.';
 require RACINE_PATH . '/view/inc/header.php';
 ?>
 

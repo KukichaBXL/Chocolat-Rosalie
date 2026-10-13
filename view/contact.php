@@ -1,6 +1,7 @@
 <?php
 // path: view/contact.php
 $titre = 'Contact';
+$description = 'Une question, une idée, une commande ? Écrivez à la Maison Rosalie ou retrouvez-nous à Liège.';
 require RACINE_PATH . '/view/inc/header.php';
 ?>
 

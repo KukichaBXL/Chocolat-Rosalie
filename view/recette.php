@@ -2,6 +2,8 @@
 // path: view/recette.php
 // Les données ($recette, $ingredients, $etapes, $commentaires) sont préparées par controller/PublicController.php
 $titre = $recette->getTitle();
+// description de la page : celle de la recette, coupée à environ 155 caractères
+$description = mb_strimwidth(trim((string) $recette->getDescription()), 0, 155, '…') ?: 'Recette de ' . $recette->getTitle() . ' de la Maison Rosalie, pas à pas.';
 require RACINE_PATH . '/view/inc/header.php';
 ?>
 
@@ -35,13 +37,13 @@ require RACINE_PATH . '/view/inc/header.php';
             <section class="ingredients-carte" aria-labelledby="titre-ingredients">
                 <h2 id="titre-ingredients">Ingrédients</h2>
                 <!-- sans JavaScript : un simple texte ; portions.js le remplace par le sélecteur + / − -->
-                <p class="portions-fixe" id="portions-fixe">Pour <?= $portionsBase ?> personne<?= $portionsBase > 1 ? 's' : '' ?></p>
+                <p class="portions-fixe" id="portions-fixe">Pour <?= $portionsBase ?> portion<?= $portionsBase > 1 ? 's' : '' ?></p>
                 <div class="portions" id="portions" data-base="<?= $portionsBase ?>" hidden>
                     <span>Pour</span>
-                    <button type="button" id="portions-moins" aria-label="Une personne de moins">&minus;</button>
+                    <button type="button" id="portions-moins" aria-label="Une portion de moins">&minus;</button>
                     <output id="portions-nb" aria-live="polite"><?= $portionsBase ?></output>
-                    <button type="button" id="portions-plus" aria-label="Une personne de plus">+</button>
-                    <span id="portions-mot">personnes</span>
+                    <button type="button" id="portions-plus" aria-label="Une portion de plus">+</button>
+                    <span id="portions-mot">portions</span>
                 </div>
                 <?php if ($ingredients === []) : ?>
                     <p>Les ingrédients de cette recette arrivent bientôt.</p>

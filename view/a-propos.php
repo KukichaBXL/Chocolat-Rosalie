@@ -1,6 +1,7 @@
 <?php
 // path: view/a-propos.php
 $titre = 'À propos';
+$description = 'Depuis 1860, l\'histoire de la Maison Rosalie : une femme, un secret et une passion pour le chocolat, transmise de génération en génération.';
 require RACINE_PATH . '/view/inc/header.php';
 ?>
 <h1 class="about-title">

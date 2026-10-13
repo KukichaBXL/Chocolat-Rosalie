@@ -1,6 +1,7 @@
 <?php
 // path: view/accueil.php
 $titre = 'Recettes de chocolatier';
+$description = 'Maison Rosalie, chocolaterie belge : découvrez nos recettes au chocolat pas à pas et le top 3 des recettes les mieux notées.';
 require RACINE_PATH . '/view/inc/header.php';
 ?>
 

@@ -1,7 +1,8 @@
 <?php
 // path: view/404.php
 $titre = 'Page introuvable';
-require RACINE_PATH.'/view/inc/header.php';
+$description = 'Cette page n\'existe pas ou plus. Retrouvez toutes les recettes de la Maison Rosalie.';
+require RACINE_PATH . '/view/inc/header.php';
 ?>
 
 <section class="container page-title">
@@ -11,4 +12,4 @@ require RACINE_PATH.'/view/inc/header.php';
     <a href="<?= RACINE_URL ?>" class="btn-pill">Retour à l'accueil</a>
 </section>
 
-<?php require RACINE_PATH.'/view/inc/footer.php'; ?>
+<?php require RACINE_PATH . '/view/inc/footer.php'; ?>
