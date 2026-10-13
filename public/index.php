@@ -35,10 +35,19 @@ if (empty($_SESSION['csrf_token'])) {
 // inclusion du fichier de configuration si config-prod.php existe
 require_once(file_exists('../config-prod.php') ? '../config-prod.php' : '../config-dev.php');
 
+// bibliothèques installées par Composer (symfony/mailer) : seulement si le dossier vendor/ existe
+if (file_exists(RACINE_PATH . '/vendor/autoload.php')) {
+    require_once RACINE_PATH . '/vendor/autoload.php';
+}
+
 // Autoload fonctionnel avec les namespaces personnels,
 spl_autoload_register(function ($class) {
     $class = str_replace('\\', '/', $class);
-    require RACINE_PATH . '/' . $class . '.php';
+    // (les classes de vendor/ sont trouvées par Composer : on ne charge ici que nos propres fichiers)
+    $fichier = RACINE_PATH . '/' . $class . '.php';
+    if (is_file($fichier)) {
+        require $fichier;
+    }
 });
 
 // fonctions utiles aux formulaires

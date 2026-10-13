@@ -15,7 +15,8 @@ document.querySelectorAll('.photo-slot input[type="file"]').forEach(brancherAper
 // "Ajouter une étape" : on copie la dernière étape et on vide ses champs
 const listeEtapes = document.getElementById('liste-etapes');
 
-document.getElementById('ajouter-etape').addEventListener('click', () => {
+// (ces lignes ne servent que sur le formulaire de recette : sur les autres onglets il n'y a pas de bouton « Ajouter une étape »)
+document.getElementById('ajouter-etape')?.addEventListener('click', () => {
     const nombre = listeEtapes.children.length;
     if (nombre >= 20) {
         return; // le serveur n'accepte que 20 étapes
@@ -29,6 +30,15 @@ document.getElementById('ajouter-etape').addEventListener('click', () => {
     copie.querySelector('.photo-vide').style.backgroundImage = '';
     brancherApercu(photo);
     listeEtapes.appendChild(copie);
+});
+
+// demande une confirmation avant un bouton important : <button data-confirm="Question ?">
+document.querySelectorAll('button[data-confirm]').forEach((bouton) => {
+    bouton.addEventListener('click', (e) => {
+        if (!confirm(bouton.dataset.confirm)) {
+            e.preventDefault();
+        }
+    });
 });
 
 // demande une confirmation avant une suppression : <form data-confirm="Question ?">

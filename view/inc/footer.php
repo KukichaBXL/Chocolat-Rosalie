@@ -14,10 +14,17 @@
             <div class="footer-newsletter">
                 <h2>Newsletter</h2>
                 <p>Soyez les premiers à découvrir nos nouveautés, nos offres exclusives et nos promotions spéciales !</p>
-                <div class="newsletter-field">
-                    <img src="<?= RACINE_URL ?>assets/icon-mail.svg" alt="" width="24" height="24" />
-                    <input type="email" name="newsletter-email" aria-label="Votre adresse email" />
-                </div>
+                <!-- inscription à la newsletter : on tape l'adresse puis Entrée (ou un clic sur l'enveloppe) -->
+                <form class="newsletter-field" method="post" action="<?= RACINE_URL ?>">
+                    <input type="hidden" name="action" value="newsletter" />
+                    <input type="hidden" name="retour" value="<?= htmlspecialchars($_SERVER['REQUEST_URI']) ?>" />
+                    <?= champCsrf() ?>
+                    <input type="text" name="site_web" class="champ-piege" tabindex="-1" autocomplete="off" aria-hidden="true" />
+                    <button type="submit" class="newsletter-envoi" aria-label="S'inscrire à la newsletter">
+                        <img src="<?= RACINE_URL ?>assets/icon-mail.svg" alt="" width="24" height="24" />
+                    </button>
+                    <input type="email" name="newsletter-email" maxlength="120" required autocomplete="email" aria-label="Votre adresse email" />
+                </form>
                 <div class="socials">
                     <a href="#" aria-label="Instagram"><img src="<?= RACINE_URL ?>assets/icon-instagram.svg" alt="" width="28" height="28" /></a>
                     <a href="#" aria-label="Facebook"><img src="<?= RACINE_URL ?>assets/icon-facebook.svg" alt="" width="28" height="28" /></a>

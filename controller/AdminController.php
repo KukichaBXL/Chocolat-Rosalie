@@ -8,7 +8,9 @@ declare(strict_types=1);
 
 use model\manager\CategoryManager;
 use model\manager\CommentManager;
+use model\Mailer;
 use model\manager\IngredientManager;
+use model\manager\NewsletterManager;
 use model\manager\RecipeManager;
 use model\manager\StepManager;
 
@@ -146,6 +148,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verifierCsrf()) {
 
             $_SESSION['message'] = 'La recette « ' . $titre . ' » est publiée.';
             header('Location: ' . RACINE_URL . 'recette/' . $slug);
+            exit;
+
+            // la newsletter : enregistrer le message, envoyer un test à soi-même, l'envoyer à tous, retirer un abonné
+        case 'enregistrer-newsletter':
+        case 'tester-newsletter':
+        case 'envoyer-newsletter':
+            $sujetNews = lireTexte('subject');
+            $corpsNews = lireTexte('body');
+            if (mb_strlen($sujetNews) < 3 || mb_strlen($sujetNews) > 150) {
+                $_SESSION['message'] = 'Le sujet doit contenir de 3 à 150 caractères.';
+            } elseif (mb_strlen($corpsNews) < 10 || mb_strlen($corpsNews) > 5000) {
+                $_SESSION['message'] = 'Le message doit contenir de 10 à 5000 caractères.';
+            } else {
+                $newsletterManager = new NewsletterManager($db);
+                $newsletterManager->saveMessage($sujetNews, $corpsNews);
+                $action = lireTexte('action');
+                if ($action === 'enregistrer-newsletter') {
+                    $_SESSION['message'] = 'Le message de la newsletter est enregistré.';
+                } elseif ($action === 'tester-newsletter') {
+                    // un essai : le message part à l'adresse de l'administrateur connecté seulement
+                    $emailAdmin = $compte->getEmail();
+                    $ok = Mailer::envoyer($emailAdmin, '[TEST] ' . $sujetNews, texteNewsletter($corpsNews, 0, $emailAdmin));
+                    $_SESSION['message'] = $ok ? 'Un essai a été envoyé à ' . $emailAdmin . '.' : 'L\'essai n\'a pas pu être envoyé (voir logs/erreurs.log).';
+                } else {
+                    $reussis = 0;
+                    $abonnes = $newsletterManager->getAll();
+                    foreach ($abonnes as $abonne) {
+                        if (Mailer::envoyer($abonne['email'], $sujetNews, texteNewsletter($corpsNews, (int) $abonne['id'], $abonne['email']))) {
+                            $reussis++;
+                        }
+                    }
+                    $_SESSION['message'] = 'Newsletter envoyée à ' . $reussis . ' abonné(s) sur ' . count($abonnes) . '.';
+                }
+            }
+            header('Location: ' . RACINE_URL . 'admin/newsletter');
+            exit;
+
+        case 'retirer-abonne':
+            $idAbonne = lireEntier('subscriber_id', 1, PHP_INT_MAX);
+            if ($idAbonne !== null) {
+                (new NewsletterManager($db))->remove($idAbonne);
+                $_SESSION['message'] = 'L\'abonné est retiré.';
+            }
+            header('Location: ' . RACINE_URL . 'admin/newsletter');
             exit;
 
             // masquer une recette : elle reste dans la base (avec ses étapes, notes et commentaires), seul son statut change

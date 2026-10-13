@@ -1,5 +1,6 @@
 # Config file
 config.php
+config-prod.php
 
 # ignore backup WorkBench
 data/recipes.sql
@@ -7,3 +8,7 @@ data/mydb.sql
 data/chocolaterie-rosalie.sql
 
 logs/erreurs.log
+logs/emails.log
+
+# Dépendances Composer (installées avec « composer install »)
+vendor/

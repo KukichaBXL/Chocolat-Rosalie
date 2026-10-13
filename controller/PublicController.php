@@ -4,14 +4,16 @@
 declare(strict_types=1);
 
 // Contrôleur public, en deux temps :
-//   1. si un formulaire a été envoyé (POST) : inscription, connexion, contact
+//   1. si un formulaire a été envoyé (POST) : inscription, connexion, contact, newsletter, désinscription
 //   2. PRÉPARER les données de la page demandée avec les managers, puis inclure la vue (les vues ne font qu'afficher)
 
 
 use model\manager\CategoryManager;
 use model\manager\CommentManager;
 use model\manager\IngredientManager;
+use model\Mailer;
 use model\manager\MessageContactManager;
+use model\manager\NewsletterManager;
 use model\manager\RatingManager;
 use model\manager\RecipeManager;
 use model\manager\StepManager;
@@ -62,6 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     session_regenerate_id(true); // nouvel identifiant de session à la connexion
                     $_SESSION['user'] = ['id' => $nouveau->getId(), 'username' => $nouveau->getUsername()];
                     $_SESSION['message'] = 'Bienvenue ' . $pseudo . ', votre compte est créé.';
+                    Mailer::envoyer($email, 'Bienvenue à la Maison Rosalie', 'Bonjour ' . $pseudo . ",\n\nVotre compte est créé : vous pouvez maintenant noter les recettes et laisser un commentaire.\n\nÀ très vite,\nLa Maison Rosalie\n");
                     header('Location: ' . adresseDeRetour());
                     exit;
                 }
@@ -94,6 +97,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['user'] = ['id' => $compte->getId(), 'username' => $compte->getUsername()];
                 $_SESSION['message'] = 'Bonjour ' . $compte->getUsername() . ' !';
                 header('Location: ' . adresseDeRetour());
+                exit;
+
+                // l'inscription à la newsletter (le formulaire est dans le pied de page de toutes les pages)
+            case 'newsletter':
+                $retour = explode('#', adresseDeRetour())[0]; // sans le « #votre-note » ajouté sur les pages de recette
+                // champ piège : rempli, c'est un robot (on répond « merci » sans rien enregistrer)
+                if (lireTexte('site_web') !== '') {
+                    $_SESSION['message'] = 'Merci, vous êtes inscrit(e) à la newsletter.';
+                    header('Location: ' . $retour);
+                    exit;
+                }
+                $emailNews = mb_strtolower(lireTexte('newsletter-email'));
+                if (filter_var($emailNews, FILTER_VALIDATE_EMAIL) === false || mb_strlen($emailNews) > 120) {
+                    $_SESSION['message'] = 'L\'adresse email de la newsletter n\'est pas valide.';
+                    header('Location: ' . $retour);
+                    exit;
+                }
+                // anti-spam : 5 inscriptions au maximum par heure et par visiteur
+                $inscriptions = array_filter($_SESSION['newsletter_envois'] ?? [], fn($moment) => $moment > time() - 3600);
+                if (count($inscriptions) >= 5) {
+                    $_SESSION['message'] = 'Trop d\'inscriptions pour le moment. Réessayez plus tard.';
+                    header('Location: ' . $retour);
+                    exit;
+                }
+                $inscriptions[] = time();
+                $_SESSION['newsletter_envois'] = array_values($inscriptions);
+
+                $newsletterManager = new NewsletterManager($db);
+                if ($newsletterManager->subscribe($emailNews)) {
+                    $abonne = $newsletterManager->getByEmail($emailNews);
+                    Mailer::envoyer($emailNews, 'Vous êtes inscrit(e) à la newsletter', texteNewsletter("Bonjour,\n\nMerci de votre inscription : vous recevrez bientôt les nouveautés de la Maison Rosalie.", (int) $abonne['id'], $emailNews));
+                    $_SESSION['message'] = 'Merci, vous êtes inscrit(e) à la newsletter. Un e-mail de confirmation vient de vous être envoyé.';
+                } else {
+                    $_SESSION['message'] = 'Cette adresse est déjà inscrite à la newsletter.';
+                }
+                header('Location: ' . $retour);
+                exit;
+
+                // le bouton « Me désinscrire » de la page ouverte par le lien reçu par e-mail
+            case 'desinscription':
+                $idAbonne = lireEntier('id', 1, PHP_INT_MAX);
+                $newsletterManager = new NewsletterManager($db);
+                $abonne = $idAbonne === null ? null : $newsletterManager->getById($idAbonne);
+                if ($abonne !== null && hash_equals(jetonDesinscription($idAbonne, $abonne['email']), lireTexte('jeton'))) {
+                    $newsletterManager->remove($idAbonne);
+                    $_SESSION['message'] = 'Vous êtes désinscrit(e) de la newsletter.';
+                } else {
+                    $_SESSION['message'] = 'Ce lien de désinscription n\'est pas valide.';
+                }
+                header('Location: ' . RACINE_URL);
                 exit;
 
             case 'contact':
@@ -199,6 +252,7 @@ switch ($pg) {
             'ajouter' => 'Ajouter une recette',
             'commentaires' => 'Commentaires',
             'messages' => 'Messages',
+            'newsletter' => 'Newsletter',
         ];
         $onglet = $_GET['slug'] ?? 'recettes';
         if (!is_string($onglet) || !isset($onglets[$onglet])) {
@@ -218,6 +272,10 @@ switch ($pg) {
             case 'messages':
                 $messages = (new MessageContactManager($db))->getAll(100);
                 break;
+            case 'newsletter':
+                $abonnes = (new NewsletterManager($db))->getAll();
+                $messageNewsletter = (new NewsletterManager($db))->getMessage();
+                break;
         }
         require RACINE_PATH . '/view/admin.php';
         break;
@@ -234,6 +292,20 @@ switch ($pg) {
         break;
 
     // pages sans données à préparer
+    // le lien reçu par e-mail : /desinscription/12/jeton (on affiche un bouton de confirmation, rien n'est supprimé en GET)
+    case 'desinscription':
+        $abonne = null;
+        $idAbonne = filter_var($_GET['slug'] ?? '', FILTER_VALIDATE_INT);
+        $jetonRecu = is_string($_GET['id'] ?? null) ? $_GET['id'] : '';
+        if ($idAbonne !== false && $idAbonne > 0) {
+            $candidat = (new NewsletterManager($db))->getById($idAbonne);
+            if ($candidat !== null && hash_equals(jetonDesinscription($idAbonne, $candidat['email']), $jetonRecu)) {
+                $abonne = $candidat;
+            }
+        }
+        require RACINE_PATH . '/view/desinscription.php';
+        break;
+
     case 'a-propos':
     case 'mentions-legales':
     case 'contact':

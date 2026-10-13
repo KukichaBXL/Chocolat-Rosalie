@@ -35,6 +35,35 @@ function ancien(string $cle): string
     return htmlspecialchars(lireTexte($cle));
 }
 
+// ce qu'il faut remettre dans un champ du formulaire : ce qui vient d'être tapé (après une erreur),
+// sinon la valeur enregistrée ($defaut)
+function valeur(string $cle, string $defaut = ''): string
+{
+    return htmlspecialchars(isset($_POST[$cle]) ? lireTexte($cle) : $defaut);
+}
+
+// ===== Newsletter =====
+
+// le jeton d'un lien de désinscription : il prouve que le lien a été fabriqué par le site pour CET abonné
+function jetonDesinscription(int $id, string $email): string
+{
+    $secret = defined('APP_SECRET') ? APP_SECRET : hash('sha256', RACINE_PATH . DB_NAME . DB_PWD);
+    return substr(hash_hmac('sha256', $id . '|' . $email, $secret), 0, 32);
+}
+
+// l'adresse complète du lien de désinscription d'un abonné
+function lienDesinscription(int $id, string $email): string
+{
+    return RACINE_URL . 'desinscription/' . $id . '/' . jetonDesinscription($id, $email);
+}
+
+// le texte d'un e-mail de newsletter : le message de l'administrateur + le lien de désinscription
+function texteNewsletter(string $corps, int $id, string $email): string
+{
+    return $corps . "\n\n--\nVous recevez cet e-mail car vous êtes inscrit(e) à la newsletter de la Maison Rosalie.\n"
+        . 'Pour vous désinscrire : ' . lienDesinscription($id, $email) . "\n";
+}
+
 // transforme un titre en adresse : "Crème brûlée" donne "creme-brulee"
 function creerSlug(string $titre): string
 {
