@@ -6,10 +6,12 @@ require RACINE_PATH . '/view/inc/header.php';
 ?>
 
 <section class="hero reveal">
+    <h3>"La vie est comme le chocolat, c’est l’amer qui fait apprécier le sucre."</h3>
     <img
         src="<?= RACINE_URL ?>assets/hero-accueil.webp"
         alt="Une chocolatière garnit des bonbons au chocolat à la poche à douille dans l'atelier"
         width="1280" height="573" />
+
 </section>
 
 <section class="intro container reveal">

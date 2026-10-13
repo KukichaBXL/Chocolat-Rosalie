@@ -686,12 +686,26 @@ a.user-name:hover {
 
 /* ======================== ACCUEIL ========================= */
 
-.hero img {
-  width: 100%;
-  height: 573px;
-  object-fit: cover;
-  opacity: 0.86;
-  transition: transform 0.2s;
+.hero {
+
+  h3 {
+    color: var(--dore);
+    text-align: center;
+    font-size: 2.5vw;
+    font-family: var(--police-italique);
+    font-weight: 200;
+    position: relative;
+    top: 300px;
+    z-index: 1;
+  }
+  
+  img {
+    width: 100%;
+    height: 573px;
+    object-fit: cover;
+    opacity: 0.86;
+    transition: transform 0.2s;
+  }
 }
 
 .intro {
@@ -2384,3 +2398,109 @@ main:has(.contact-infos) + .site-footer {
   text-align: center;
   font-style: italic;
 }
+
+
+/* ===================== DARK MODE ===================== */
+
+/* bouton lune / soleil dans le header */
+.theme-toggle {
+  color: var(--bleu-nuit);
+  font-size: 22px;
+  position: relative;
+    top: 3px;
+
+  &:hover {
+    color: var(--dore);
+  }
+}
+
+/* Le principe : en sombre, le "bleu nuit" (texte, bordures) devient crème,
+   et la page prend un fond bleu nuit très foncé. */
+[data-theme="dark"] {
+  --bleu-nuit: #ece3cf;
+  --gris: #cfc8b9;
+  --fond: #0f1829;
+  --fond-bloc: #1c2a45;
+  color-scheme: dark;
+
+  body {
+    background: var(--fond);
+    transition: 0.5s ease-in;
+  }
+
+  /* les blocs qui avaient un fond bleu nuit gardent un fond sombre */
+  .btn-pill:hover,
+  .site-footer,
+  .contact-infos,
+  .recette-card,
+  .recette-card-body-txt,
+  .carousel-btn:hover:not(:disabled),
+  .recette-fiche,
+  .alerte {
+    background: var(--fond-bloc);
+    transition: 0.5s ease-in;
+  }
+
+  .top3 {
+    color: var(--fond);
+    transition: 0.5s ease-in;
+  }
+  .stat-card, 
+  .about-top-txt-citation {
+    color: var(--dore);
+    border: 1px solid var(--dore) ;
+    transition: 0.5s ease-in;
+  }
+
+  /* texte foncé sur le bouton doré */
+  .recette-btn:hover {
+    color: #152138;
+    transition: 0.5s ease-in;
+  }
+
+  .autre-recette {
+    color: var(--fond);
+    transition: 0.5s ease-in;
+  }
+
+  /* les fonds blancs passent en sombre */
+  .dropdown-content,
+  .popup-connexion,
+  .photo-vide {
+    background: var(--fond-bloc);
+    transition: 0.5s ease-in;
+  }
+
+  .dropdown-content a {
+    color: var(--bleu-nuit);
+
+    &:hover {
+      color: var(--dore);
+    }
+  }
+
+  input,
+  textarea,
+  select {
+    background: var(--fond);
+    color: var(--bleu-nuit);
+    transition: 0.5s ease-in;
+  }
+
+  /* l'icône compte est noire : on l'inverse pour qu'elle reste visible */
+  .account-btn img {
+    filter: invert(1);
+    transition: 0.5s ease-in;
+  }
+
+ .recherche-btn img {
+  filter: invert(1);
+  transition: 0.5s ease-in;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.5s;
+  }
+}
+
