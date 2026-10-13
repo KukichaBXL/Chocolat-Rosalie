@@ -24,7 +24,7 @@ class UserManager implements ManagerInterface
     // renvoie null si l'email n'existe pas
     public function getByEmail(string $email): ?UserMapping
     {
-        $sql = "SELECT id, username, email, password, role, created_at FROM users WHERE email = :email";
+        $sql = "SELECT id, username, email, password, role, created_at, email_verified FROM users WHERE email = :email";
         $prepare = $this->connect->prepare($sql);
         $prepare->bindValue(':email', $email);
         $prepare->execute();
@@ -40,7 +40,7 @@ class UserManager implements ManagerInterface
     // un utilisateur grâce à son id, SANS son mot de passe (pour une page de profil, par exemple)
     public function getById(int $id): ?UserMapping
     {
-        $sql = "SELECT id, username, email, role, created_at FROM users WHERE id = :id";
+        $sql = "SELECT id, username, email, role, created_at, email_verified FROM users WHERE id = :id";
         $prepare = $this->connect->prepare($sql);
         $prepare->bindValue(':id', $id, MyPDO::PARAM_INT);
         $prepare->execute();
@@ -82,13 +82,15 @@ class UserManager implements ManagerInterface
 
     // crée un compte et renvoie l'utilisateur créé
     // $passwordHash est DÉJÀ haché par password_hash()
-    public function create(string $username, string $email, string $passwordHash): UserMapping
+    // $emailVerifie = 0 : l'adresse doit encore être confirmée par le lien reçu par e-mail
+    public function create(string $username, string $email, string $passwordHash, int $emailVerifie = 1): UserMapping
     {
-        $sql = "INSERT INTO users (username, email, password) VALUES (:username, :email, :password)";
+        $sql = "INSERT INTO users (username, email, password, email_verified) VALUES (:username, :email, :password, :verifie)";
         $prepare = $this->connect->prepare($sql);
         $prepare->bindValue(':username', $username);
         $prepare->bindValue(':email', $email);
         $prepare->bindValue(':password', $passwordHash);
+        $prepare->bindValue(':verifie', $emailVerifie, MyPDO::PARAM_INT);
         $prepare->execute();
 
         // le rôle « inscrit » est la valeur par défaut de la colonne `role`
@@ -97,7 +99,16 @@ class UserManager implements ManagerInterface
             'username' => $username,
             'email' => $email,
             'role' => 'inscrit',
+            'email_verified' => $emailVerifie,
         ]);
+    }
+
+    // l'adresse e-mail est confirmée (lien reçu par e-mail)
+    public function verifyEmail(int $id): void
+    {
+        $prepare = $this->connect->prepare("UPDATE users SET email_verified = 1 WHERE id = :id");
+        $prepare->bindValue(':id', $id, MyPDO::PARAM_INT);
+        $prepare->execute();
     }
 
     // Protection contre les essais de connexion répétés 

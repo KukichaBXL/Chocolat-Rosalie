@@ -18,6 +18,7 @@ class UserMapping extends AbstractMapping
     protected ?string $password = null;
     protected ?string $role = null;
     protected ?string $created_at = null;
+    protected int $email_verified = 1;
 
 
     // Getter id
@@ -94,5 +95,13 @@ class UserMapping extends AbstractMapping
         $this->created_at = $created_at;
     }
 
-}
+    public function getEmailVerified(): int
+    {
+        return $this->email_verified;
+    }
 
+    public function setEmailVerified(int $email_verified): void
+    {
+        $this->email_verified = $email_verified;
+    }
+}

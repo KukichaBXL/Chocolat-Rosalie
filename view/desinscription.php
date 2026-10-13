@@ -5,7 +5,7 @@ $titre = 'Désinscription';
 $description = 'Se désinscrire de la newsletter de la Maison Rosalie.';
 require RACINE_PATH . '/view/inc/header.php';
 ?>
-<section class="container mentions">
+<section class="container mentions page-courte">
     <h1>Newsletter</h1>
     <?php if ($abonne !== null) : ?>
         <p class="mentions-note">Voulez-vous vraiment ne plus recevoir la newsletter à l'adresse <strong><?= htmlspecialchars($abonne['email']) ?></strong> ?</p>

@@ -64,7 +64,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 // 3) tout est bon : on crée le compte (mot de passe haché) et on connecte la personne
                 if ($erreurs === []) {
-                    $nouveau = $userManager->create($pseudo, $email, password_hash($motDePasse, PASSWORD_DEFAULT));
+                    $verification = verificationEmailActive();
+                    $nouveau = $userManager->create($pseudo, $email, password_hash($motDePasse, PASSWORD_DEFAULT), $verification ? 0 : 1);
+
+                    if ($verification) {
+                        // le compte est créé mais inactif : il faut cliquer sur le lien reçu par e-mail
+                        $lien = lienVerification($nouveau->getId(), $email);
+                        Mailer::envoyer(
+                            $email,
+                            'Confirmez votre adresse e-mail - Maison Rosalie',
+                            'Bonjour ' . $pseudo . ",\n\nBienvenue à la Maison Rosalie ! Pour activer votre compte, confirmez votre adresse e-mail :\n" . $lien . "\n\nSi vous n'êtes pas à l'origine de cette inscription, ignorez simplement ce message.\n\nLa Maison Rosalie\n",
+                            '<h2>Bienvenue chez Maison Rosalie !</h2><p>Bonjour ' . htmlspecialchars($pseudo) . ',</p><p>Pour activer votre compte, confirmez votre adresse e-mail :</p><p><a href="' . htmlspecialchars($lien) . '">Confirmer mon adresse e-mail</a></p><p>Si vous n\'êtes pas à l\'origine de cette inscription, ignorez simplement ce message.</p>'
+                        );
+                        $_SESSION['message'] = 'Votre compte est créé. Un e-mail de confirmation vient de vous être envoyé : cliquez sur le lien qu\'il contient pour activer votre compte.';
+                        header('Location: ' . RACINE_URL);
+                        exit;
+                    }
+
+                    // vérification désactivée : on connecte directement la personne
                     session_regenerate_id(true); // nouvel identifiant de session à la connexion
                     $_SESSION['user'] = ['id' => $nouveau->getId(), 'username' => $nouveau->getUsername()];
                     $_SESSION['message'] = 'Bienvenue ' . $pseudo . ', votre compte est créé.';
@@ -93,6 +110,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($compte === null || !password_verify($motDePasse, $compte->getPassword())) {
                     $userManager->addFailure($ip, $email);
                     $erreurs['connexion'] = 'Email ou mot de passe incorrect.';
+                    break;
+                }
+
+                // mot de passe correct, mais adresse e-mail pas encore confirmée
+                if (verificationEmailActive() && $compte->getEmailVerified() === 0) {
+                    $erreurs['connexion'] = 'Confirmez d\'abord votre adresse e-mail : cliquez sur le lien reçu par e-mail à l\'inscription.';
                     break;
                 }
 
@@ -296,6 +319,22 @@ switch ($pg) {
         break;
 
     // pages sans données à préparer
+    // le lien de confirmation reçu à l'inscription : /verification/12/jeton (active le compte)
+    case 'verification':
+        $verifie = false;
+        $idCompte = filter_var($_GET['slug'] ?? '', FILTER_VALIDATE_INT);
+        $jetonRecu = is_string($_GET['id'] ?? null) ? $_GET['id'] : '';
+        if ($idCompte !== false && $idCompte > 0) {
+            $managerUsers = new UserManager($db);
+            $candidat = $managerUsers->getById($idCompte);
+            if ($candidat !== null && hash_equals(jetonVerification($idCompte, (string) $candidat->getEmail()), $jetonRecu)) {
+                $managerUsers->verifyEmail($idCompte);
+                $verifie = true;
+            }
+        }
+        require RACINE_PATH . '/view/verification.php';
+        break;
+
     // le lien reçu par e-mail : /desinscription/12/jeton (on affiche un bouton de confirmation, rien n'est supprimé en GET)
     case 'desinscription':
         $abonne = null;

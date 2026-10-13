@@ -45,10 +45,30 @@ function valeur(string $cle, string $defaut = ''): string
 // ===== Newsletter =====
 
 // le jeton d'un lien de désinscription : il prouve que le lien a été fabriqué par le site pour CET abonné
+// (APP_SECRET est dans la configuration ; sans lui, on retombe sur une valeur propre à l'installation)
 function jetonDesinscription(int $id, string $email): string
 {
     $secret = defined('APP_SECRET') ? APP_SECRET : hash('sha256', RACINE_PATH . DB_NAME . DB_PWD);
     return substr(hash_hmac('sha256', $id . '|' . $email, $secret), 0, 32);
+}
+
+// la vérification de l'adresse e-mail est-elle obligatoire pour se connecter ? (EMAIL_VERIFICATION dans la configuration)
+function verificationEmailActive(): bool
+{
+    return defined('EMAIL_VERIFICATION') && EMAIL_VERIFICATION === true;
+}
+
+// le jeton du lien de confirmation d'e-mail : il prouve que le lien a été fabriqué par le site pour CE compte
+function jetonVerification(int $id, string $email): string
+{
+    $secret = defined('APP_SECRET') ? APP_SECRET : hash('sha256', RACINE_PATH . DB_NAME . DB_PWD);
+    return substr(hash_hmac('sha256', 'verification|' . $id . '|' . $email, $secret), 0, 32);
+}
+
+// l'adresse complète du lien de confirmation envoyé à l'inscription
+function lienVerification(int $id, string $email): string
+{
+    return RACINE_URL . 'verification/' . $id . '/' . jetonVerification($id, $email);
 }
 
 // l'adresse complète du lien de désinscription d'un abonné

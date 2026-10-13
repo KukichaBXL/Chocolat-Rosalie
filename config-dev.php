@@ -26,3 +26,6 @@ const MAIL_FROM = "no-reply@maisonrosalie.be";
 const MAIL_FROM_NAME = "Maison Rosalie";
 // clé secrète des liens de désinscription : à changer dans config-prod.php
 const APP_SECRET = "dev-cle-secrete-a-changer";
+
+// l'adresse e-mail doit être confirmée (lien reçu par e-mail) avant de pouvoir se connecter.
+const EMAIL_VERIFICATION = true;
