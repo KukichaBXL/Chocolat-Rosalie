@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verifierCsrf()) {
             $tempsCuisson = lireEntier('cook_time', 0, 1440);
             $portions = lireEntier('portions', 1, 50);
             $idCategorie = lireEntier('category', 1, PHP_INT_MAX);
-            $ingredients = lireIngredients(lireTexte('ingredients'));
+            $ingredients = lireIngredientsListe();
 
             // les étapes arrivent dans un tableau : etape_texte[0], etape_texte[1]... (les étapes vides sont ignorées)
             $etapes = [];
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verifierCsrf()) {
                 $erreurs['category'] = 'Choisissez une catégorie.';
             }
             if ($ingredients === null || $ingredients === []) {
-                $erreurs['ingredients'] = 'Indiquez de 1 à 40 ingrédients, un par ligne (100 caractères maximum chacun).';
+                $erreurs['ingredients'] = 'Indiquez de 1 à 40 ingrédients. Chaque ligne : un nom (100 caractères maximum), une quantité positive et une unité choisie dans la liste.';
             }
             if ($etapes === []) {
                 $erreurs['etapes'] = 'Indiquez au moins une étape.';

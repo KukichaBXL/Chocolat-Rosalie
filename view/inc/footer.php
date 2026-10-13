@@ -23,7 +23,7 @@
                     <button type="submit" class="newsletter-envoi" aria-label="S'inscrire à la newsletter">
                         <img src="<?= RACINE_URL ?>assets/icon-mail.svg" alt="" width="24" height="24" />
                     </button>
-                    <input type="email" name="newsletter-email" maxlength="120" required autocomplete="email" aria-label="Votre adresse email" />
+                    <input type="email" name="newsletter-email" maxlength="120" required autocomplete="email" placeholder="Votre adresse email" aria-label="Votre adresse email" />
                 </form>
                 <div class="socials">
                     <a href="#" aria-label="Instagram"><img src="<?= RACINE_URL ?>assets/icon-instagram.svg" alt="" width="28" height="28" /></a>

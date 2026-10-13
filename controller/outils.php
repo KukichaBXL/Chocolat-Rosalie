@@ -167,6 +167,68 @@ function lireIngredients(string $texte): ?array
     return count($resultat) > 40 ? null : $resultat;
 }
 
+// les unités de mesure proposées dans la liste déroulante du formulaire (valeur enregistrée => texte affiché)
+function unitesIngredient(): array
+{
+    return [
+        'g' => 'g (gramme)',
+        'kg' => 'kg (kilo)',
+        'ml' => 'ml (millilitre)',
+        'cl' => 'cl (centilitre)',
+        'l' => 'l (litre)',
+        'pincée' => 'pincée',
+        'gousse' => 'gousse',
+        'sachet' => 'sachet',
+        'cuillère à soupe' => 'cuillère à soupe',
+        'cuillère à café' => 'cuillère à café',
+    ];
+}
+
+// les ingrédients du formulaire « Ajouter une recette » : trois listes (quantité, unité, nom), une case par ligne.
+// Renvoie null si une ligne est incorrecte : nom vide ou trop long, quantité qui n'est pas un nombre positif,
+// unité absente de la liste (le serveur revérifie, même si la liste déroulante a été contournée).
+function lireIngredientsListe(): ?array
+{
+    $noms = $_POST['ing_nom'] ?? [];
+    $quantites = $_POST['ing_quantite'] ?? [];
+    $unites = $_POST['ing_unite'] ?? [];
+    if (!is_array($noms) || !is_array($quantites) || !is_array($unites)) {
+        return null;
+    }
+    $permises = unitesIngredient();
+    $resultat = [];
+    foreach (array_slice($noms, 0, 41, true) as $i => $nom) {
+        $quantite = is_string($quantites[$i] ?? null) ? trim(str_replace(',', '.', $quantites[$i])) : '';
+        $unite = is_string($unites[$i] ?? null) ? $unites[$i] : '';
+        if (!is_string($nom)) {
+            return null;
+        }
+        $nom = trim(preg_replace('/\s+/u', ' ', $nom));
+        if ($nom === '' && $quantite === '') {
+            continue; // ligne vide : ignorée
+        }
+        if ($nom === '' || mb_strlen($nom) > 100) {
+            return null;
+        }
+        if ($quantite === '') {
+            if ($unite !== '') {
+                return null; // une unité sans quantité n'a pas de sens
+            }
+            $nombre = null;
+        } else {
+            if (!is_numeric($quantite) || (float) $quantite <= 0 || (float) $quantite > 100000) {
+                return null;
+            }
+            $nombre = rtrim(rtrim(number_format((float) $quantite, 2, '.', ''), '0'), '.');
+        }
+        if ($unite !== '' && !isset($permises[$unite])) {
+            return null;
+        }
+        $resultat[] = ['name' => $nom, 'quantity' => $nombre, 'unit' => $unite === '' ? null : $unite];
+    }
+    return count($resultat) > 40 ? null : $resultat;
+}
+
 // Enregistre une image envoyée par un formulaire dans public/assets/.
 // $fichier est une entrée de $_FILES. Renvoie ['nom' => nom du fichier ou null, 'erreur' => message ou null].
 // Règles du cahier : jpg, png ou webp, 300 Ko maximum.

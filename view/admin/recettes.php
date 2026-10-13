@@ -24,7 +24,7 @@
                         <td><a href="<?= RACINE_URL ?>recette/<?= htmlspecialchars($recette->getRecipesSlug()) ?>"><?= htmlspecialchars($recette->getTitle()) ?></a></td>
                     <?php endif; ?>
                     <td><?= htmlspecialchars($recette->getDifficulty()) ?></td>
-                    <td><?= $masquee ? 'Masquée' : 'Visible' ?></td>
+                    <td><span class="badge <?= $masquee ? 'badge-masque' : '' ?>"><?= $masquee ? 'Masquée' : 'Visible' ?></span></td>
                     <td>
                         <form method="post">
                             <input type="hidden" name="action" value="<?= $masquee ? 'afficher-recette' : 'masquer-recette' ?>" />

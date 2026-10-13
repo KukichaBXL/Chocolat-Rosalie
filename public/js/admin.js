@@ -32,6 +32,35 @@ document.getElementById('ajouter-etape')?.addEventListener('click', () => {
     listeEtapes.appendChild(copie);
 });
 
+// "Ajouter un ingrédient" : on copie la dernière ligne (quantité, unité, nom) et on vide ses champs
+const listeIngredients = document.getElementById('liste-ingredients');
+
+document.getElementById('ajouter-ingredient')?.addEventListener('click', () => {
+    if (listeIngredients.children.length >= 40) {
+        return; // le serveur n'accepte que 40 ingrédients
+    }
+    const copie = listeIngredients.lastElementChild.cloneNode(true);
+    copie.querySelectorAll('input').forEach((champ) => (champ.value = ''));
+    copie.querySelector('select').selectedIndex = 0;
+    listeIngredients.appendChild(copie);
+    copie.querySelector('input').focus();
+});
+
+// le bouton × retire la ligne (la dernière ligne restante est seulement vidée)
+listeIngredients?.addEventListener('click', (e) => {
+    const bouton = e.target.closest('.ingredient-retirer');
+    if (!bouton) {
+        return;
+    }
+    const ligne = bouton.closest('.ingredient-ligne');
+    if (listeIngredients.children.length > 1) {
+        ligne.remove();
+    } else {
+        ligne.querySelectorAll('input').forEach((champ) => (champ.value = ''));
+        ligne.querySelector('select').selectedIndex = 0;
+    }
+});
+
 // demande une confirmation avant un bouton important : <button data-confirm="Question ?">
 document.querySelectorAll('button[data-confirm]').forEach((bouton) => {
     bouton.addEventListener('click', (e) => {

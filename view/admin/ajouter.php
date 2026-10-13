@@ -4,6 +4,11 @@
 
 // les textes des étapes déjà tapés (si le formulaire est revenu avec des erreurs), sinon 3 étapes vides
 $textesEtapes = is_array($_POST['etape_texte'] ?? null) ? array_values($_POST['etape_texte']) : ['', '', ''];
+
+// les ingrédients déjà saisis (si le formulaire est revenu avec des erreurs), sinon 3 lignes vides
+$ingNoms = is_array($_POST['ing_nom'] ?? null) ? array_values($_POST['ing_nom']) : ['', '', ''];
+$ingQtes = is_array($_POST['ing_quantite'] ?? null) ? array_values($_POST['ing_quantite']) : [];
+$ingUnites = is_array($_POST['ing_unite'] ?? null) ? array_values($_POST['ing_unite']) : [];
 ?>
 
 <section class="container page-title">
@@ -67,11 +72,30 @@ $textesEtapes = is_array($_POST['etape_texte'] ?? null) ? array_values($_POST['e
                     <textarea name="description" maxlength="400" placeholder="Description"><?= ancien('description') ?></textarea>
                     <span class="form-error"><?= $erreurs['description'] ?? '' ?></span>
                 </div>
-                <div class="form-field">
-                    <textarea name="ingredients" required placeholder="Ingrédients, un par ligne&#10;150 g de chocolat noir&#10;1 pincée de sel&#10;4 œufs"><?= ancien('ingredients') ?></textarea>
-                    <span class="form-error"><?= $erreurs['ingredients'] ?? '' ?></span>
-                </div>
             </div>
+        </div>
+    </fieldset>
+
+    <fieldset class="admin-bloc">
+        <legend>Les ingrédients</legend>
+        <div class="ingredients-bloc">
+            <div id="liste-ingredients">
+                <?php foreach ($ingNoms as $i => $nomIng) : ?>
+                    <div class="ingredient-ligne">
+                        <input type="number" name="ing_quantite[]" min="0.01" max="100000" step="any" placeholder="Quantité" aria-label="Quantité" value="<?= htmlspecialchars(is_string($ingQtes[$i] ?? null) ? $ingQtes[$i] : '') ?>" />
+                        <select name="ing_unite[]" aria-label="Unité de mesure">
+                            <option value="">Sans unité (ex. 3 œufs)</option>
+                            <?php foreach (unitesIngredient() as $valeur => $libelle) : ?>
+                                <option value="<?= htmlspecialchars($valeur) ?>" <?= ($ingUnites[$i] ?? '') === $valeur ? 'selected' : '' ?>><?= htmlspecialchars($libelle) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <input type="text" name="ing_nom[]" maxlength="100" placeholder="Ingrédient (ex. farine)" aria-label="Nom de l'ingrédient" value="<?= htmlspecialchars(is_string($nomIng) ? $nomIng : '') ?>" />
+                        <button type="button" class="ingredient-retirer" aria-label="Retirer cet ingrédient">×</button>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+            <span class="form-error"><?= $erreurs['ingredients'] ?? '' ?></span>
+            <button type="button" class="btn-pill" id="ajouter-ingredient">Ajouter un ingrédient</button>
         </div>
     </fieldset>
 

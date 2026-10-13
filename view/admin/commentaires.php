@@ -25,7 +25,7 @@
                         <td><?= htmlspecialchars($commentaire->getRecipeTitle()) ?></td>
                         <td><?= htmlspecialchars($commentaire->getUsername()) ?></td>
                         <td><?= htmlspecialchars($commentaire->getCommentText()) ?></td>
-                        <td><?= $masque ? 'Masqué' : 'Visible' ?></td>
+                        <td><span class="badge <?= $masque ? 'badge-masque' : '' ?>"><?= $masque ? 'Masqué' : 'Visible' ?></span></td>
                         <td>
                             <form method="post">
                                 <input type="hidden" name="action" value="<?= $masque ? 'afficher-commentaire' : 'masquer-commentaire' ?>" />
