@@ -31,26 +31,54 @@ require RACINE_PATH . '/view/inc/header.php';
                 <p class="recette-description"><?= htmlspecialchars($recette->getDescription()) ?></p>
             <?php endif; ?>
 
-            <h2>Ingrédients — <?= $recette->getPortions() ?> personne(s)</h2>
-            <?php if ($ingredients === []) : ?>
-                <p>Les ingrédients de cette recette arrivent bientôt.</p>
-            <?php else : ?>
-                <ul>
-                    <?php foreach ($ingredients as $ingredient) : ?>
-                        <li><?= htmlspecialchars($ingredient->getQuantityLabel()) ?> <?= htmlspecialchars($ingredient->getName()) ?></li>
-                    <?php endforeach; ?>
-                </ul>
-            <?php endif; ?>
+            <?php $portionsBase = max(1, (int) $recette->getPortions()); ?>
+            <section class="ingredients-carte" aria-labelledby="titre-ingredients">
+                <h2 id="titre-ingredients">Ingrédients</h2>
+                <!-- sans JavaScript : un simple texte ; portions.js le remplace par le sélecteur + / − -->
+                <p class="portions-fixe" id="portions-fixe">Pour <?= $portionsBase ?> personne<?= $portionsBase > 1 ? 's' : '' ?></p>
+                <div class="portions" id="portions" data-base="<?= $portionsBase ?>" hidden>
+                    <span>Pour</span>
+                    <button type="button" id="portions-moins" aria-label="Une personne de moins">&minus;</button>
+                    <output id="portions-nb" aria-live="polite"><?= $portionsBase ?></output>
+                    <button type="button" id="portions-plus" aria-label="Une personne de plus">+</button>
+                    <span id="portions-mot">personnes</span>
+                </div>
+                <?php if ($ingredients === []) : ?>
+                    <p>Les ingrédients de cette recette arrivent bientôt.</p>
+                <?php else : ?>
+                    <ul class="ingredients">
+                        <?php foreach ($ingredients as $ingredient) : ?>
+                            <?php
+                            // "sel 1" devient "1 pincée" ; une pincée ne change pas avec le nombre de personnes
+                            $quantiteBrute = $ingredient->getQuantity() === null ? null : (float) $ingredient->getQuantity();
+                            [$quantite, $unite, $change] = ingredientLogique($ingredient->getName(), $quantiteBrute, $ingredient->getUnit());
+                            ?>
+                            <li>
+                                <span class="ing-nom"><?= htmlspecialchars($ingredient->getName()) ?></span>
+                                <span class="ing-pointille" aria-hidden="true"></span>
+                                <?php if ($quantite === null) : ?>
+                                    <span class="ing-texte"><?= htmlspecialchars((string) $unite) ?></span>
+                                <?php elseif (!$change) : ?>
+                                    <span class="ing-texte"><?= htmlspecialchars(quantiteTexte($quantite, $unite)) ?></span>
+                                <?php else : ?>
+                                    <span class="ing-qte" data-qte="<?= $quantite ?>" data-unite="<?= htmlspecialchars((string) $unite) ?>"><?= htmlspecialchars(quantiteTexte($quantite, $unite)) ?></span>
+                                <?php endif; ?>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+            </section>
 
-            <h2>Préparation</h2>
+            <h2 class="preparation-titre">Préparation</h2>
             <?php if ($etapes === []) : ?>
                 <p>Les étapes de cette recette arrivent bientôt.</p>
             <?php else : ?>
-                <ol>
+                <ol class="preparation">
                     <?php foreach ($etapes as $etape) : ?>
                         <li>
-                            <strong><?= htmlspecialchars($etape->getStepTitle()) ?></strong><br />
-                            <?= htmlspecialchars($etape->getDescription()) ?>
+                            <strong><?= htmlspecialchars($etape->getStepTitle()) ?></strong>
+                            <!-- {chocolat noir} dans le texte devient "200 g de chocolat noir" et suit le nombre de personnes -->
+                            <p><?= texteEtape($etape->getDescription(), $ingredients) ?></p>
                         </li>
                     <?php endforeach; ?>
                 </ol>
@@ -199,5 +227,6 @@ require RACINE_PATH . '/view/inc/header.php';
 
 <script src="<?= RACINE_URL ?>js/notation.js"></script>
 <script src="<?= RACINE_URL ?>js/avis.js"></script>
+<script src="<?= RACINE_URL ?>js/portions.js"></script>
 <script src="<?= RACINE_URL ?>js/carrousel.js"></script>
 <?php require RACINE_PATH . '/view/inc/footer.php'; ?>

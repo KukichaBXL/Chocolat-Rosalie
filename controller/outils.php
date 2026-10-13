@@ -185,3 +185,115 @@ function adresseDeRetour(): string
     // sur une recette, on revient directement à la zone « Votre note » / commentaires
     return RACINE_URL . $page . (str_starts_with($page, 'recette/') ? '#votre-note' : '');
 }
+
+
+// ---------- portions : quantités des ingrédients recalculées ----------
+// (le même calcul existe en JavaScript dans public/js/portions.js : si tu changes l'un, change l'autre)
+
+// remet de la logique dans les données : "sel 1" devient "1 pincée de sel", "vanille 1" devient "1 gousse de vanille"
+// renvoie [quantité, unité, la quantité change-t-elle avec le nombre de personnes ?]
+function ingredientLogique(string $nom, ?float $quantite, ?string $unite): array
+{
+    $unite = $unite === 'gr' ? 'g' : ($unite === '' ? null : $unite);
+    $nom = mb_strtolower($nom);
+    if ($quantite !== null && $unite === null) {
+        if (in_array($nom, ['sel', 'fleur de sel', 'poivre'], true)) {
+            $unite = 'pincée';
+        } elseif ($nom === 'vanille') {
+            $unite = 'gousse';
+        }
+    }
+    // une pincée reste une pincée, quel que soit le nombre de personnes
+    return [$quantite, $unite, $quantite !== null && $unite !== 'pincée'];
+}
+
+// un nombre à la française : 1.50 donne "1,5" (les cuillères : 1.5 donne "1½")
+function nombreFr(float $nombre, bool $fraction = false): string
+{
+    if ($fraction && fmod($nombre, 1.0) === 0.5) {
+        $entier = (int) floor($nombre);
+        return ($entier > 0 ? $entier : '') . '½';
+    }
+    return str_replace('.', ',', rtrim(rtrim(number_format($nombre, 2, '.', ''), '0'), '.'));
+}
+
+// la quantité seule, arrondie comme on la lirait dans un livre : "200 g", "1,5 kg", "3", "2 cuillères à soupe"
+function quantiteTexte(float $quantite, ?string $unite): string
+{
+    $unite = $unite === 'gr' ? 'g' : (string) $unite;
+    // les grosses quantités changent d'unité : 1200 g = 1,2 kg
+    if ($unite === 'g' && $quantite >= 1000) {
+        [$quantite, $unite] = [$quantite / 1000, 'kg'];
+    } elseif ($unite === 'ml' && $quantite >= 1000) {
+        [$quantite, $unite] = [$quantite / 1000, 'l'];
+    } elseif ($unite === 'cl' && $quantite >= 100) {
+        [$quantite, $unite] = [$quantite / 100, 'l'];
+    }
+
+    $fraction = false;
+    if ($unite === 'g' || $unite === 'ml') {
+        // 333 g devient 335 g : on pèse à 5 g près
+        $quantite = $quantite < 10 ? round($quantite, 1) : round($quantite / 5) * 5;
+    } elseif ($unite === 'kg' || $unite === 'l' || $unite === 'cl') {
+        $quantite = round($quantite, 2);
+    } elseif (str_starts_with($unite, 'cuillère')) {
+        // une demi-cuillère existe, pas un tiers
+        $quantite = max(0.5, floor($quantite * 2 + 0.5) / 2);
+        $fraction = true;
+    } else {
+        // un œuf, une gousse, un sachet, une pincée : toujours entiers, au moins 1
+        $quantite = max(1, floor($quantite + 0.5));
+    }
+
+    // pluriel des unités "comptées" : 2 pincées, 3 cuillères à soupe
+    if ($quantite >= 2 && in_array($unite, ['pincée', 'gousse', 'sachet', 'cuillère à soupe', 'cuillère à café'], true)) {
+        $unite = str_replace('cuillère', 'cuillères', $unite);
+        $unite = in_array($unite, ['pincée', 'gousse', 'sachet'], true) ? $unite . 's' : $unite;
+    }
+    return trim(nombreFr($quantite, $fraction) . ' ' . $unite);
+}
+
+// la phrase complète : "200 g de chocolat noir", "100 g d'amandes", "3 œufs", "1 pincée de sel"
+function libelleIngredient(string $nom, ?float $quantite, ?string $unite): string
+{
+    [$quantite, $unite] = ingredientLogique($nom, $quantite, $unite);
+    if ($quantite === null) {
+        return $nom;
+    }
+    $texte = quantiteTexte($quantite, $unite);
+    if ($unite !== null) {
+        $de = preg_match('/^[aeiouyhéèêàâîïôœ]/iu', $nom) === 1 ? " d'" : ' de ';
+        return $texte . $de . $nom;
+    }
+    // sans unité : "3 œuf" devient "3 œufs"
+    if (max(1, floor($quantite + 0.5)) >= 2 && !preg_match('/[sxz]$/u', $nom)) {
+        $nom .= 's';
+    }
+    return $texte . ' ' . $nom;
+}
+
+// le texte d'une étape : {chocolat noir} devient "200 g de chocolat noir" (en <span> pour que le JavaScript le recalcule)
+function texteEtape(string $description, array $ingredients): string
+{
+    $parNom = [];
+    foreach ($ingredients as $ingredient) {
+        $parNom[mb_strtolower($ingredient->getName())] = $ingredient;
+    }
+
+    return preg_replace_callback('/\{([^{}]+)\}/u', function (array $m) use ($parNom): string {
+        $nom = trim(htmlspecialchars_decode($m[1]));
+        $cle = mb_strtolower($nom);
+        // {œuf} retrouve aussi l'ingrédient "œufs", et l'inverse
+        $ingredient = $parNom[$cle] ?? $parNom[$cle . 's'] ?? $parNom[rtrim($cle, 's')] ?? null;
+        if ($ingredient === null || $ingredient->getQuantity() === null) {
+            return htmlspecialchars($nom);
+        }
+        [$quantite, $unite, $change] = ingredientLogique($ingredient->getName(), (float) $ingredient->getQuantity(), $ingredient->getUnit());
+        $texte = htmlspecialchars(libelleIngredient($ingredient->getName(), $quantite, $unite));
+        if (!$change) {
+            return $texte; // "1 pincée de sel" ne bouge pas
+        }
+        return '<span class="qte" data-nom="' . htmlspecialchars($ingredient->getName()) . '" data-qte="' . $quantite
+            . '" data-unite="' . htmlspecialchars((string) $unite) . '">' . $texte . '</span>';
+    }, htmlspecialchars($description));
+}

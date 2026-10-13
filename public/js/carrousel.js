@@ -1,6 +1,6 @@
 /* Carrousels du site 
    1) page /recettes : défilement par translateX (.carousel-viewport)
-   2) page recette   : avis + autres recettes (.carrousel, scroll-snap) */
+   2) page recette   : avis + autres recettes (.carrousel, scroll-snap, défilement automatique) */
 
 /* 1) Carrousel de la page /recettes  */
 (function () {
@@ -58,4 +58,18 @@ document.querySelectorAll('.carrousel').forEach((carrousel) => {
     new MutationObserver(() => { piste.scrollTo({ left: 0 }); majFleches(); })
         .observe(piste, { childList: true });
     majFleches();
+
+    /* défilement automatique : toutes les 5 s, retour au début à la fin.
+       Il s'arrête quand la souris ou le doigt est dessus, quand on tape dans la page,
+       et si le visiteur a demandé moins d'animations. */
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
+    let pause = false;
+    ['mouseenter', 'focusin', 'touchstart'].forEach((nom) => carrousel.addEventListener(nom, () => { pause = true; }, { passive: true }));
+    ['mouseleave', 'focusout', 'touchend'].forEach((nom) => carrousel.addEventListener(nom, () => { pause = false; }, { passive: true }));
+    setInterval(() => {
+        const nbPages = Math.round(piste.scrollWidth / piste.clientWidth);
+        if (pause || document.hidden || nbPages < 2) { return; }
+        const fin = piste.scrollLeft + piste.clientWidth >= piste.scrollWidth - 4;
+        piste.scrollTo({ left: fin ? 0 : piste.scrollLeft + piste.clientWidth, behavior: 'smooth' });
+    }, 5000);
 });
