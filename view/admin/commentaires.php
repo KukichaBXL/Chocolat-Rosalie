@@ -24,7 +24,7 @@
                     <tr class="<?= $masque ? 'commentaire-masque' : '' ?>">
                         <td><?= htmlspecialchars($commentaire->getRecipeTitle()) ?></td>
                         <td><?= htmlspecialchars($commentaire->getUsername()) ?></td>
-                        <td><?= htmlspecialchars($commentaire->getCommentText()) ?></td>
+                        <td class="cellule-texte"><?= htmlspecialchars($commentaire->getCommentText()) ?></td>
                         <td><span class="badge <?= $masque ? 'badge-masque' : '' ?>"><?= $masque ? 'Masqué' : 'Visible' ?></span></td>
                         <td>
                             <form method="post">

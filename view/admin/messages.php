@@ -25,7 +25,7 @@
                         <td><?= htmlspecialchars((string) $envoi->getName()) ?></td>
                         <td><a href="mailto:<?= htmlspecialchars((string) $envoi->getEmail()) ?>"><?= htmlspecialchars((string) $envoi->getEmail()) ?></a></td>
                         <td><?= htmlspecialchars((string) $envoi->getSubject()) ?></td>
-                        <td><?= nl2br(htmlspecialchars((string) $envoi->getMessage())) ?></td>
+                        <td class="cellule-texte"><?= nl2br(htmlspecialchars((string) $envoi->getMessage())) ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
