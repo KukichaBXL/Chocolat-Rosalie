@@ -578,7 +578,6 @@ a.user-name:hover {
   display: block;
 }
 
-
 .barre-sticky {
   /* en haut de page : le conteneur n'existe pas pour la mise en page,
      les deux boutons restent à leur place d'origine */
@@ -920,17 +919,20 @@ a.user-name:hover {
   width: 100%;
   aspect-ratio: 1;
   height: auto;
+  position: relative;
   overflow: hidden;
 }
 
 .recette-card-body-txt {
+  position: absolute;
+  inset: auto 0 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding: 20px;
   background-color: var(--bleu-nuit);
   opacity: 0;
-  transform: translateY(200%);
+  transform: translateY(100%);
   transition:
     transform 0.5s ease,
     opacity 0.5s ease;
@@ -955,7 +957,7 @@ a.user-name:hover {
 
 .recette-card-body:hover .recette-card-body-txt {
   opacity: 1;
-  transform: translateY(90%);
+  transform: translateY(0);
 }
 
 .carousel {
@@ -1010,18 +1012,6 @@ a.user-name:hover {
   .main-txt {
     width: 70%;
   }
-
-  .recette-card-body:hover .recette-card-body-txt {
-  opacity: 1;
-  transform: translateY(165%);
-  }
-}
-
-@media (max-width: 1032px) {
-  .recette-card-body:hover .recette-card-body-txt {
-  opacity: 1;
-  transform: translateY(145%);
-  }
 }
 
 @media (max-width: 768px) {
@@ -1063,11 +1053,6 @@ a.user-name:hover {
   .recette-card {
     flex: 0 0 100%;
   }
-
-  .recette-card-body:hover .recette-card-body-txt {
-  opacity: 1;
-  transform: translateY(250%);
-  }
 }
 
 @media (max-width: 480px) {
@@ -1083,18 +1068,6 @@ a.user-name:hover {
     width: 36px;
     height: 36px;
     font-size: 24px;
-  }
-
-  .recette-card-body:hover .recette-card-body-txt {
-  opacity: 1;
-  transform: translateY(25%);
-  }
-}
-
-@media (max-width: 440px) {
-  .recette-card-body:hover .recette-card-body-txt {
-  opacity: 1;
-  transform: translateY(75%);
   }
 }
 
