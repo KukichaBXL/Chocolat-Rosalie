@@ -19,13 +19,13 @@
                 <?php $masquee = $recette->getRecipeStatus() === 'masquée'; ?>
                 <tr class="<?= $masquee ? 'recette-masquee' : '' ?>">
                     <?php if ($masquee) : ?>
-                        <td><?= htmlspecialchars($recette->getTitle()) ?></td>
+                        <td data-label="Titre"><?= htmlspecialchars($recette->getTitle()) ?></td>
                     <?php else : ?>
-                        <td><a href="<?= RACINE_URL ?>recette/<?= htmlspecialchars($recette->getRecipesSlug()) ?>"><?= htmlspecialchars($recette->getTitle()) ?></a></td>
+                        <td data-label="Titre"><a href="<?= RACINE_URL ?>recette/<?= htmlspecialchars($recette->getRecipesSlug()) ?>"><?= htmlspecialchars($recette->getTitle()) ?></a></td>
                     <?php endif; ?>
-                    <td><?= htmlspecialchars($recette->getDifficulty()) ?></td>
-                    <td><span class="badge <?= $masquee ? 'badge-masque' : '' ?>"><?= $masquee ? 'Masquée' : 'Visible' ?></span></td>
-                    <td>
+                    <td data-label="Difficulté"><?= htmlspecialchars($recette->getDifficulty()) ?></td>
+                    <td data-label="Statut"><span class="badge <?= $masquee ? 'badge-masque' : '' ?>"><?= $masquee ? 'Masquée' : 'Visible' ?></span></td>
+                    <td data-label="Actions">
                         <form method="post">
                             <input type="hidden" name="action" value="<?= $masquee ? 'afficher-recette' : 'masquer-recette' ?>" />
                             <input type="hidden" name="recipe_id" value="<?= $recette->getId() ?>" />

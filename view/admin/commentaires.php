@@ -22,11 +22,11 @@
                 <?php foreach ($commentairesAdmin as $commentaire) : ?>
                     <?php $masque = $commentaire->getCommentStatus() === 'banni'; ?>
                     <tr class="<?= $masque ? 'commentaire-masque' : '' ?>">
-                        <td><?= htmlspecialchars($commentaire->getRecipeTitle()) ?></td>
-                        <td><?= htmlspecialchars($commentaire->getUsername()) ?></td>
-                        <td class="cellule-texte"><?= htmlspecialchars($commentaire->getCommentText()) ?></td>
-                        <td><span class="badge <?= $masque ? 'badge-masque' : '' ?>"><?= $masque ? 'Masqué' : 'Visible' ?></span></td>
-                        <td>
+                        <td data-label="Recette"><?= htmlspecialchars($commentaire->getRecipeTitle()) ?></td>
+                        <td data-label="Auteur"><?= htmlspecialchars($commentaire->getUsername()) ?></td>
+                        <td data-label="Commentaire" class="cellule-texte"><?= htmlspecialchars($commentaire->getCommentText()) ?></td>
+                        <td data-label="Statut"><span class="badge <?= $masque ? 'badge-masque' : '' ?>"><?= $masque ? 'Masqué' : 'Visible' ?></span></td>
+                        <td data-label="Action">
                             <form method="post">
                                 <input type="hidden" name="action" value="<?= $masque ? 'afficher-commentaire' : 'masquer-commentaire' ?>" />
                                 <input type="hidden" name="comment_id" value="<?= $commentaire->getCommentId() ?>" />

@@ -41,9 +41,9 @@ $modeEnvoi = defined('MAIL_TRANSPORT') && MAIL_TRANSPORT === 'smtp' ? 'envoi ré
             <tbody>
                 <?php foreach ($abonnes as $abonne) : ?>
                     <tr>
-                        <td><?= htmlspecialchars($abonne['email']) ?></td>
-                        <td><?= htmlspecialchars(date('d/m/Y', strtotime($abonne['created_at']))) ?></td>
-                        <td>
+                        <td data-label="Email"><?= htmlspecialchars($abonne['email']) ?></td>
+                        <td data-label="Inscrit le"><?= htmlspecialchars(date('d/m/Y', strtotime($abonne['created_at']))) ?></td>
+                        <td data-label="Action">
                             <form method="post" data-confirm="Retirer cet abonné ?">
                                 <input type="hidden" name="action" value="retirer-abonne" />
                                 <input type="hidden" name="subscriber_id" value="<?= (int) $abonne['id'] ?>" />

@@ -184,32 +184,6 @@ button {
   animation: alerte-disparait 5s forwards;
 }
 
-
-
-.value-list{
-  li{
-    transition: all 0.3s ease-in-out;
-  }
-  li:hover{
-    transform: scale(1.15);
-    transition: all 0.3s ease-in-out;
-  }
-}
-
-.recette-photo-step{
-  height: 200px;
-  /* background-color: red; */
-  img{
-    transition: all 0.3s ease-in-out;
-
-  }
-  img:hover{
-    transform: scale(1.75);
-    transition: all 0.3s ease-in-out;
-    margin: 30px;
-  }
-}
-
 @keyframes alerte-disparait {
   0%,
   85% {
@@ -425,6 +399,10 @@ button {
 
 .nav-toggle {
   display: none;
+  color: var(--bleu-nuit);
+  font-family: var(--police-menu);
+  font-size: 18px;
+  cursor: pointer;
 }
 
 .main-nav {
@@ -473,6 +451,7 @@ button {
   border: 1px solid var(--bleu-nuit);
   border-radius: 64px;
   background: none;
+  color: var(--bleu-nuit);
   font-family: var(--police-menu);
   cursor: pointer;
 }
@@ -541,6 +520,27 @@ a.user-name:hover {
 
   .brand-tagline {
     font-size: 18px;
+  }
+}
+
+@media (max-width: 600px) {
+  /* connecté : pseudo et déconnexion, puis Menu, puis loupe et thème */
+  .header-right:has(.compte-connecte) {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+
+    .compte-connecte {
+      order: -1;
+      flex-basis: 100%;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav-toggle {
+      order: -1;
+      flex-basis: 100%;
+      text-align: right;
+    }
   }
 }
 
@@ -1927,14 +1927,6 @@ main:has(.histoire) + .site-footer {
       border-radius: 44px;
     }
   }
-  .recette-photo-step{
-    height: 350px;
-    img:hover{
-    transform: scale(1.50);
-    transition: all 0.3s ease-in-out;
-    margin: 10px;
-    }
-  }
 }
 
 /* ======================== CONTACT ========================= */
@@ -1968,7 +1960,7 @@ main:has(.contact-infos) + .site-footer {
 .contact-infos {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: stretch;
   text-align: start;
   margin-top: 90px;
   padding-block: 120px 100px;
@@ -1976,9 +1968,14 @@ main:has(.contact-infos) + .site-footer {
   color: var(--dore);
 }
 
+.contact-infos-inner {
+  display: flex;
+}
+
 .contact-texte {
+  flex: 1;
   background-color: #223355;
-  height: 40vh;
+  min-height: 40vh;
   padding: 50px;
   text-align: start;
   font-family: var(--police-texte);
@@ -1998,7 +1995,7 @@ main:has(.contact-infos) + .site-footer {
 
 #map {
   width: 40vw;
-  height: 40vh;
+  min-height: 40vh;
 }
 
 @media (max-width: 768px) {
@@ -2010,18 +2007,25 @@ main:has(.contact-infos) + .site-footer {
     grid-column: auto;
     grid-row: auto;
   }
-
-  .contact-infos-inner {
-    flex-direction: column;
-  }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 900px) {
+  /* carte et texte l'un sous l'autre, sur toute la largeur */
   .contact-infos {
     flex-direction: column;
+    padding-inline: 16px;
 
     #map {
-      width: 356px;
+      width: 100%;
+      min-height: 300px;
+    }
+  }
+
+  .contact-texte {
+    padding: 30px 24px;
+
+    h2 {
+      font-size: 36px;
     }
   }
 }
@@ -2458,8 +2462,50 @@ main:has(.contact-infos) + .site-footer {
     padding: 8px 14px;
   }
 
+  /* tableaux : chaque ligne devient une carte, le titre de colonne vient de data-label */
   .admin-table {
     font-size: 14px;
+
+    thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+    }
+
+    &,
+    tbody,
+    tr {
+      display: block;
+    }
+
+    tr {
+      padding: 10px 0;
+      border-bottom: 2px solid rgb(200 169 91 / 50%);
+    }
+
+    td {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 8px;
+      padding: 6px 0;
+      border: 0;
+
+      &::before {
+        content: attr(data-label);
+        padding-top: 2px;
+        color: var(--dore);
+        font-family: var(--police-menu);
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+    }
+
+    .cellule-texte {
+      min-width: 0;
+    }
   }
 }
 
