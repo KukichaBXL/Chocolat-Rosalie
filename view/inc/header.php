@@ -55,22 +55,24 @@
                     </button>
                     <ul class="recherche-resultats" id="recherche-resultats" role="listbox" hidden></ul>
                 </form>
-                <?php if ($utilisateur === null) : ?>
-                    <button type="button" class="account-btn" popovertarget="popup-connexion" aria-label="Se connecter ou créer un compte">
-                        <img src="<?= RACINE_URL ?>assets/icon-compte.svg" alt="" width="22" height="26" />
+                <div class="barre-sticky">
+                    <?php if ($utilisateur === null) : ?>
+                        <button type="button" class="account-btn" popovertarget="popup-connexion" aria-label="Se connecter ou créer un compte">
+                            <img src="<?= RACINE_URL ?>assets/icon-compte.svg" alt="" width="22" height="26" />
+                        </button>
+                    <?php else : ?>
+                        <form method="post" class="compte-connecte">
+                            <a href="<?= RACINE_URL ?>compte" class="user-name"><?= htmlspecialchars($utilisateur['username']) ?></a>
+                            <input type="hidden" name="action" value="deconnexion" />
+                            <?= champCsrf() ?>
+                            <button type="submit" class="logout-btn">Déconnexion</button>
+                        </form>
+                    <?php endif; ?>
+                    <button type="button" class="theme-toggle" aria-label="Changer de thème (clair / sombre)">
+                        <i class="fa fa-moon-o" aria-hidden="true"></i>
                     </button>
-                <?php else : ?>
-                    <!-- connecté : le nom et le bouton Déconnexion (un formulaire POST avec le jeton CSRF) -->
-                    <form method="post" class="compte-connecte">
-                        <a href="<?= RACINE_URL ?>compte" class="user-name"><?= htmlspecialchars($utilisateur['username']) ?></a>
-                        <input type="hidden" name="action" value="deconnexion" />
-                        <?= champCsrf() ?>
-                        <button type="submit" class="logout-btn">Déconnexion</button>
-                    </form>
-                <?php endif; ?>
-                <button type="button" class="theme-toggle" aria-label="Changer de thème (clair / sombre)">
-                    <i class="fa fa-moon-o" aria-hidden="true"></i>
-                </button>
+                </div>
+
                 <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="menu-principal">Menu</button>
             </div>
 

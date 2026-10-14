@@ -578,6 +578,50 @@ a.user-name:hover {
   display: block;
 }
 
+
+.barre-sticky {
+  /* en haut de page : le conteneur n'existe pas pour la mise en page,
+     les deux boutons restent à leur place d'origine */
+  display: contents;
+
+  /* ajoutée par navigation.js quand le header sort de l'écran */
+  &.detachee {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: fixed;
+    top: 16px;
+    /* même bord droit que .container (max-width 1176px + 24px de marge) */
+    right: max(24px, calc((100% - 1176px) / 2 + 24px));
+    z-index: 55;
+    padding: 4px 14px;
+    border: 1px solid var(--dore);
+    border-radius: 64px; /* le fond ovale */
+    background: rgb(255 255 255 / 90%);
+    box-shadow: 0 6px 18px rgb(21 33 56 / 15%);
+    backdrop-filter: blur(6px);
+    animation: barre-apparait 0.8s ease-out;
+    transition: 0.3s ease-in;
+  }
+}
+
+@keyframes barre-apparait {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+[data-theme="dark"] .barre-sticky.detachee {
+  background: rgb(28 42 69 / 90%); /* --fond-bloc légèrement transparent */
+  box-shadow: 0 6px 18px rgb(0 0 0 / 45%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .barre-sticky.detachee {
+    animation: none;
+  }
+}
 /* ====================== PIED DE PAGE ====================== */
 
 .site-footer {

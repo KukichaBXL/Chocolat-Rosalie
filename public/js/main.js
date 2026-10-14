@@ -25,3 +25,14 @@ if (document.getElementById('map')) {
       .bindPopup('Nous sommes ici!')
       .openPopup();
 }
+
+
+// icônes compte + thème : elles se détachent (fond ovale) quand le header sort de l'écran
+const barreSticky = document.querySelector(".barre-sticky");
+const zoneHeader = document.querySelector(".header-right");
+
+if (barreSticky && zoneHeader) {
+    new IntersectionObserver(([entree]) => {
+        barreSticky.classList.toggle("detachee", !entree.isIntersecting);
+    }).observe(zoneHeader);
+}
