@@ -14,16 +14,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && lireTexte('action') === 'deconnexio
         session_regenerate_id(true);     // ...et l'ancien identifiant ne marche plus
         $_SESSION['message'] = 'Vous êtes déconnecté.';
     }
-    header('Location: ' . RACINE_URL);
-    exit;
+    rediriger(RACINE_URL);
 }
 
 // changer son mot de passe (formulaire de la page /compte)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && lireTexte('action') === 'changer-mot-de-passe' && verifierCsrf()) {
-    // les mots de passe ne sont pas "trimés" : un espace peut en faire partie
-    $ancien = is_string($_POST['ancien_pwd'] ?? null) ? $_POST['ancien_pwd'] : '';
-    $nouveau = is_string($_POST['nouveau_pwd'] ?? null) ? $_POST['nouveau_pwd'] : '';
-    $confirmation = is_string($_POST['confirmation_pwd'] ?? null) ? $_POST['confirmation_pwd'] : '';
+    $ancien = lireMotDePasse('ancien_pwd');
+    $nouveau = lireMotDePasse('nouveau_pwd');
+    $confirmation = lireMotDePasse('confirmation_pwd');
 
     $userManager = new UserManager($db);
     $email = (string) $compte->getEmail();
@@ -39,8 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && lireTexte('action') === 'changer-mo
         $userManager->addFailure($ip, $email);
         $erreurs['ancien_pwd'] = 'Le mot de passe actuel est incorrect.';
     } else {
-        // même règle qu'à l'inscription : 8 à 72 caractères avec une majuscule, une minuscule et un chiffre
-        if (preg_match('/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,72}$/', $nouveau) !== 1) {
+        if (!motDePasseValide($nouveau)) {
             $erreurs['nouveau_pwd'] = 'Le mot de passe doit contenir de 8 à 72 caractères, avec une majuscule, une minuscule et un chiffre.';
         } elseif ($nouveau === $ancien) {
             $erreurs['nouveau_pwd'] = 'Le nouveau mot de passe doit être différent de l\'ancien.';
@@ -55,9 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && lireTexte('action') === 'changer-mo
         $userManager->updatePassword($utilisateur['id'], password_hash($nouveau, PASSWORD_DEFAULT));
         $userManager->clearFailures($email);
         session_regenerate_id(true);
-        $_SESSION['message'] = 'Votre mot de passe a été modifié.';
-        header('Location: ' . RACINE_URL . 'compte');
-        exit;
+        rediriger(RACINE_URL . 'compte', 'Votre mot de passe a été modifié.');
     }
     // sinon on continue : la page /compte s'affiche avec les messages d'erreur
 }

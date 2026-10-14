@@ -42,14 +42,59 @@ function valeur(string $cle, string $defaut = ''): string
     return htmlspecialchars(isset($_POST[$cle]) ? lireTexte($cle) : $defaut);
 }
 
-// ===== Newsletter =====
+// redirige vers une page du site (avec, si besoin, un message affiché une seule fois) et arrête le script
+function rediriger(string $url, ?string $message = null): never
+{
+    if ($message !== null) {
+        $_SESSION['message'] = $message;
+    }
+    header('Location: ' . $url);
+    exit;
+}
 
-// le jeton d'un lien de désinscription : il prouve que le lien a été fabriqué par le site pour CET abonné
-// (APP_SECRET est dans la configuration ; sans lui, on retombe sur une valeur propre à l'installation)
-function jetonDesinscription(int $id, string $email): string
+// une adresse e-mail correcte et qui tient dans la base (120 caractères)
+function emailValide(string $email): bool
+{
+    return filter_var($email, FILTER_VALIDATE_EMAIL) !== false && mb_strlen($email) <= 120;
+}
+
+// lit un mot de passe du formulaire, sans le « trimer » : un espace peut en faire partie
+function lireMotDePasse(string $cle): string
+{
+    return is_string($_POST[$cle] ?? null) ? $_POST[$cle] : '';
+}
+
+// 8 à 72 caractères avec une majuscule, une minuscule et un chiffre
+function motDePasseValide(string $motDePasse): bool
+{
+    return preg_match('/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,72}$/', $motDePasse) === 1;
+}
+
+// le lien /verification/12/jeton ou /desinscription/12/jeton : renvoie [numéro (ou null), jeton]
+function lireLienSigne(): array
+{
+    $id = filter_var($_GET['slug'] ?? '', FILTER_VALIDATE_INT);
+    $jeton = is_string($_GET['id'] ?? null) ? $_GET['id'] : '';
+    return [$id !== false && $id > 0 ? $id : null, $jeton];
+}
+
+// ===== Liens signés (désinscription, confirmation d'e-mail) =====
+
+// signature d'un lien : elle prouve que le lien a été fabriqué par le site (APP_SECRET est dans la configuration)
+function signature(string $texte): string
 {
     $secret = defined('APP_SECRET') ? APP_SECRET : hash('sha256', RACINE_PATH . DB_NAME . DB_PWD);
-    return substr(hash_hmac('sha256', $id . '|' . $email, $secret), 0, 32);
+    return substr(hash_hmac('sha256', $texte, $secret), 0, 32);
+}
+
+function jetonDesinscription(int $id, string $email): string
+{
+    return signature($id . '|' . $email);
+}
+
+function jetonVerification(int $id, string $email): string
+{
+    return signature('verification|' . $id . '|' . $email);
 }
 
 // la vérification de l'adresse e-mail est-elle obligatoire pour se connecter ? (EMAIL_VERIFICATION dans la configuration)
@@ -58,20 +103,11 @@ function verificationEmailActive(): bool
     return defined('EMAIL_VERIFICATION') && EMAIL_VERIFICATION === true;
 }
 
-// le jeton du lien de confirmation d'e-mail : il prouve que le lien a été fabriqué par le site pour CE compte
-function jetonVerification(int $id, string $email): string
-{
-    $secret = defined('APP_SECRET') ? APP_SECRET : hash('sha256', RACINE_PATH . DB_NAME . DB_PWD);
-    return substr(hash_hmac('sha256', 'verification|' . $id . '|' . $email, $secret), 0, 32);
-}
-
-// l'adresse complète du lien de confirmation envoyé à l'inscription
 function lienVerification(int $id, string $email): string
 {
     return RACINE_URL . 'verification/' . $id . '/' . jetonVerification($id, $email);
 }
 
-// l'adresse complète du lien de désinscription d'un abonné
 function lienDesinscription(int $id, string $email): string
 {
     return RACINE_URL . 'desinscription/' . $id . '/' . jetonDesinscription($id, $email);
@@ -106,65 +142,6 @@ function creerSlug(string $titre): string
     ]);
     // tout ce qui n'est pas une lettre ou un chiffre devient un tiret
     return trim(preg_replace('/[^a-z0-9]+/', '-', $slug), '-');
-}
-
-// Transforme le texte "un ingrédient par ligne" en tableau de ['name', 'quantity', 'unit'].
-//   "150 g de chocolat noir"  -> quantité 150, unité g,      nom "chocolat noir"
-//   "1 pincée de sel"         -> quantité 1,   unité pincée, nom "sel"
-//   "4 œufs"                  -> quantité 4,   sans unité,   nom "œufs"
-//   "beurre"                  -> sans quantité, sans unité,  nom "beurre"
-// Renvoie null s'il y a plus de 40 lignes ou une ligne de plus de 100 caractères.
-function lireIngredients(string $texte): ?array
-{
-    // unité tapée => unité enregistrée (toujours au singulier)
-    $unites = [
-        'g' => 'g',
-        'kg' => 'kg',
-        'ml' => 'ml',
-        'cl' => 'cl',
-        'l' => 'l',
-        'pincée' => 'pincée',
-        'pincées' => 'pincée',
-        'gousse' => 'gousse',
-        'gousses' => 'gousse',
-        'sachet' => 'sachet',
-        'sachets' => 'sachet',
-        'cuillère à soupe' => 'cuillère à soupe',
-        'cuillères à soupe' => 'cuillère à soupe',
-        'cuillère à café' => 'cuillère à café',
-        'cuillères à café' => 'cuillère à café',
-    ];
-    // les unités les plus longues d'abord, pour que "cl" ne soit pas lu "c" puis "l"
-    uksort($unites, fn($a, $b) => mb_strlen($b) <=> mb_strlen($a));
-    $motifUnites = implode('|', array_map('preg_quote', array_keys($unites)));
-
-    $resultat = [];
-    foreach (preg_split('/\R/', $texte) as $ligne) {
-        $ligne = trim($ligne);
-        if ($ligne === '') {
-            continue;
-        }
-        $quantite = null;
-        $unite = null;
-        $nom = $ligne;
-
-        // "quantité [unité [de]] nom"
-        if (preg_match('/^(\d+(?:[.,]\d+)?|une?)\s*(?:(' . $motifUnites . ')\s+(?:de\s+|d\')?)?(.+)$/iu', $ligne, $m)) {
-            $quantite = mb_strtolower($m[1]) === 'un' || mb_strtolower($m[1]) === 'une' ? '1' : str_replace(',', '.', $m[1]);
-            $unite = $m[2] === '' ? null : $unites[mb_strtolower($m[2])];
-            $nom = trim($m[3]);
-            // une quantité de 0 n'a pas de sens (la base la refuse)
-            if ((float) $quantite <= 0) {
-                $quantite = null;
-                $unite = null;
-            }
-        }
-        if (mb_strlen($nom) > 100) {
-            return null;
-        }
-        $resultat[] = ['name' => $nom, 'quantity' => $quantite, 'unit' => $unite];
-    }
-    return count($resultat) > 40 ? null : $resultat;
 }
 
 // les unités de mesure proposées dans la liste déroulante du formulaire (valeur enregistrée => texte affiché)
@@ -272,6 +249,7 @@ function repondreJson(int $code, bool $succes, string $message, array $donnees =
     ], JSON_UNESCAPED_UNICODE);
     exit;
 }
+
 // une note sur 5 en étoiles : etoiles(4.3) donne "★★★★☆" (la note est arrondie à l'étoile la plus proche)
 function etoiles(?float $note): string
 {
@@ -279,7 +257,7 @@ function etoiles(?float $note): string
     return str_repeat('★', $pleines) . str_repeat('☆', 5 - $pleines);
 }
 
-
+// adresse où renvoyer la personne après connexion (uniquement une page de ce site)
 function adresseDeRetour(): string
 {
     $retour = lireTexte('retour');
@@ -296,7 +274,6 @@ function adresseDeRetour(): string
     // sur une recette, on revient directement à la zone « Votre note » / commentaires
     return RACINE_URL . $page . (str_starts_with($page, 'recette/') ? '#votre-note' : '');
 }
-
 
 // ---------- portions : quantités des ingrédients recalculées ----------
 // (le même calcul existe en JavaScript dans public/js/portions.js : si tu changes l'un, change l'autre)

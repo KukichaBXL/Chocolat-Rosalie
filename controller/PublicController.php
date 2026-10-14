@@ -5,8 +5,7 @@ declare(strict_types=1);
 
 // Contrôleur public, en deux temps :
 //   1. si un formulaire a été envoyé (POST) : inscription, connexion, contact, newsletter, désinscription
-//   2. PRÉPARER les données de la page demandée avec les managers, puis inclure la vue (les vues ne font qu'afficher)
-
+//   2. préparer les données de la page demandée avec les managers, puis inclure la vue (les vues ne font qu'afficher)
 
 use model\manager\CategoryManager;
 use model\manager\CommentManager;
@@ -30,19 +29,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             case 'inscription':
                 $pseudo = lireTexte('username');
                 $email = mb_strtolower(lireTexte('email'));
-                // les mots de passe ne sont pas "trimés" : un espace peut en faire partie
-                $motDePasse = is_string($_POST['pwd'] ?? null) ? $_POST['pwd'] : '';
-                $confirmation = is_string($_POST['pwd_confirm'] ?? null) ? $_POST['pwd_confirm'] : '';
+                $motDePasse = lireMotDePasse('pwd');
+                $confirmation = lireMotDePasse('pwd_confirm');
 
                 // 1) on vérifie chaque champ
                 if (preg_match('/^[\p{L}\p{N}._-]{3,30}$/u', $pseudo) !== 1) {
                     $erreurs['username'] = 'Le nom d\'utilisateur doit contenir de 3 à 30 lettres, chiffres, points, tirets ou soulignés.';
                 }
-                if (filter_var($email, FILTER_VALIDATE_EMAIL) === false || mb_strlen($email) > 120) {
+                if (!emailValide($email)) {
                     $erreurs['email'] = 'L\'adresse email n\'est pas valide.';
                 }
-                // règle du mot de passe : 8 à 72 caractères avec une majuscule, une minuscule et un chiffre
-                if (preg_match('/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,72}$/', $motDePasse) !== 1) {
+                if (!motDePasseValide($motDePasse)) {
                     $erreurs['pwd'] = 'Le mot de passe doit contenir de 8 à 72 caractères, avec une majuscule, une minuscule et un chiffre.';
                 }
                 if ($motDePasse !== $confirmation) {
@@ -76,9 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             'Bonjour ' . $pseudo . ",\n\nBienvenue à la Maison Rosalie ! Pour activer votre compte, confirmez votre adresse e-mail :\n" . $lien . "\n\nSi vous n'êtes pas à l'origine de cette inscription, ignorez simplement ce message.\n\nLa Maison Rosalie\n",
                             '<h2>Bienvenue chez Maison Rosalie !</h2><p>Bonjour ' . htmlspecialchars($pseudo) . ',</p><p>Pour activer votre compte, confirmez votre adresse e-mail :</p><p><a href="' . htmlspecialchars($lien) . '">Confirmer mon adresse e-mail</a></p><p>Si vous n\'êtes pas à l\'origine de cette inscription, ignorez simplement ce message.</p>'
                         );
-                        $_SESSION['message'] = 'Votre compte est créé. Un e-mail de confirmation vient de vous être envoyé : cliquez sur le lien qu\'il contient pour activer votre compte.';
-                        header('Location: ' . RACINE_URL);
-                        exit;
+                        rediriger(RACINE_URL, 'Votre compte est créé. Un e-mail de confirmation vient de vous être envoyé : cliquez sur le lien qu\'il contient pour activer votre compte.');
                     }
 
                     // vérification désactivée : on connecte directement la personne
@@ -86,15 +81,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['user'] = ['id' => $nouveau->getId(), 'username' => $nouveau->getUsername()];
                     $_SESSION['message'] = 'Bienvenue ' . $pseudo . ', votre compte est créé.';
                     Mailer::envoyer($email, 'Bienvenue à la Maison Rosalie', 'Bonjour ' . $pseudo . ",\n\nVotre compte est créé : vous pouvez maintenant noter les recettes et laisser un commentaire.\n\nÀ très vite,\nLa Maison Rosalie\n");
-                    header('Location: ' . adresseDeRetour());
-                    exit;
+                    rediriger(adresseDeRetour());
                 }
                 // s'il y a des erreurs, on continue : la page /connection s'affiche avec les messages
                 break;
 
             case 'connexion':
                 $email = mb_strtolower(lireTexte('email'));
-                $motDePasse = is_string($_POST['pwd'] ?? null) ? $_POST['pwd'] : '';
+                $motDePasse = lireMotDePasse('pwd');
                 $ip = $_SERVER['REMOTE_ADDR'] ?? 'inconnue';
                 $userManager = new UserManager($db);
 
@@ -122,31 +116,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $userManager->clearFailures($email);
                 session_regenerate_id(true); // nouvel identifiant de session à la connexion
                 $_SESSION['user'] = ['id' => $compte->getId(), 'username' => $compte->getUsername()];
-                $_SESSION['message'] = 'Bonjour ' . $compte->getUsername() . ' !';
-                header('Location: ' . adresseDeRetour());
-                exit;
+                rediriger(adresseDeRetour(), 'Bonjour ' . $compte->getUsername() . ' !');
 
                 // l'inscription à la newsletter (le formulaire est dans le pied de page de toutes les pages)
             case 'newsletter':
                 $retour = explode('#', adresseDeRetour())[0]; // sans le « #votre-note » ajouté sur les pages de recette
                 // champ piège : rempli, c'est un robot (on répond « merci » sans rien enregistrer)
                 if (lireTexte('site_web') !== '') {
-                    $_SESSION['message'] = 'Merci, vous êtes inscrit(e) à la newsletter.';
-                    header('Location: ' . $retour);
-                    exit;
+                    rediriger($retour, 'Merci, vous êtes inscrit(e) à la newsletter.');
                 }
                 $emailNews = mb_strtolower(lireTexte('newsletter-email'));
-                if (filter_var($emailNews, FILTER_VALIDATE_EMAIL) === false || mb_strlen($emailNews) > 120) {
-                    $_SESSION['message'] = 'L\'adresse email de la newsletter n\'est pas valide.';
-                    header('Location: ' . $retour);
-                    exit;
+                if (!emailValide($emailNews)) {
+                    rediriger($retour, 'L\'adresse email de la newsletter n\'est pas valide.');
                 }
                 // anti-spam : 5 inscriptions au maximum par heure et par visiteur
                 $inscriptions = array_filter($_SESSION['newsletter_envois'] ?? [], fn($moment) => $moment > time() - 3600);
                 if (count($inscriptions) >= 5) {
-                    $_SESSION['message'] = 'Trop d\'inscriptions pour le moment. Réessayez plus tard.';
-                    header('Location: ' . $retour);
-                    exit;
+                    rediriger($retour, 'Trop d\'inscriptions pour le moment. Réessayez plus tard.');
                 }
                 $inscriptions[] = time();
                 $_SESSION['newsletter_envois'] = array_values($inscriptions);
@@ -159,8 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } else {
                     $_SESSION['message'] = 'Cette adresse est déjà inscrite à la newsletter.';
                 }
-                header('Location: ' . $retour);
-                exit;
+                rediriger($retour);
 
                 // le bouton « Me désinscrire » de la page ouverte par le lien reçu par e-mail
             case 'desinscription':
@@ -173,16 +158,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } else {
                     $_SESSION['message'] = 'Ce lien de désinscription n\'est pas valide.';
                 }
-                header('Location: ' . RACINE_URL);
-                exit;
+                rediriger(RACINE_URL);
 
             case 'contact':
                 // champ piège invisible pour un humain : s'il est rempli, c'est un robot.
                 // On répond "merci" sans rien enregistrer, pour ne pas lui dire qu'il est repéré.
                 if (lireTexte('site_web') !== '') {
-                    $_SESSION['message'] = 'Merci, votre message a bien été envoyé.';
-                    header('Location: ' . RACINE_URL . 'contact');
-                    exit;
+                    rediriger(RACINE_URL . 'contact', 'Merci, votre message a bien été envoyé.');
                 }
 
                 $nom = lireTexte('nom');
@@ -193,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (preg_match('/^[\p{L}\s\'-]{2,80}$/u', $nom) !== 1) {
                     $erreurs['nom'] = 'Le nom doit contenir entre 2 et 80 lettres.';
                 }
-                if (filter_var($email, FILTER_VALIDATE_EMAIL) === false || mb_strlen($email) > 120) {
+                if (!emailValide($email)) {
                     $erreurs['email'] = 'L\'adresse email n\'est pas valide (exemple : nom@domaine.be).';
                 }
                 if (mb_strlen($sujet) > 120) {
@@ -213,9 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     (new MessageContactManager($db))->add($nom, $email, $sujet === '' ? null : $sujet, $texte);
                     $envois[] = time();
                     $_SESSION['contact_envois'] = array_values($envois);
-                    $_SESSION['message'] = 'Merci, votre message a bien été envoyé. Nous vous répondrons rapidement.';
-                    header('Location: ' . RACINE_URL . 'contact');
-                    exit;
+                    rediriger(RACINE_URL . 'contact', 'Merci, votre message a bien été envoyé. Nous vous répondrons rapidement.');
                 }
                 break;
         }
@@ -253,7 +233,7 @@ switch ($pg) {
         $ingredients = (new IngredientManager($db))->getByRecipe($recette->getId());
         $etapes = (new StepManager($db))->getByRecipe($recette->getId());
 
-        // la note : moyenne, nombre de votes, et la note de la personne connectée (null si elle n'a pas voté)
+        // la moyenne, le nombre de votes, et la note de la personne connectée (null si elle n'a pas voté)
         $noteManager = new RatingManager($db);
         $stats = $noteManager->getStats($recette->getId());
         $maNote = $utilisateur === null ? null : $noteManager->getUserRate($utilisateur['id'], $recette->getId());
@@ -268,9 +248,7 @@ switch ($pg) {
     // l'administration : réservée aux administrateurs
     case 'admin':
         if (!$estAdmin) {
-            $_SESSION['message'] = 'Cette page est réservée aux administrateurs.';
-            header('Location: ' . RACINE_URL);
-            exit;
+            rediriger(RACINE_URL, 'Cette page est réservée aux administrateurs.');
         }
 
         // chaque onglet a son adresse (/admin/recettes...) : on ne charge que les données de l'onglet affiché
@@ -300,8 +278,9 @@ switch ($pg) {
                 $messages = (new MessageContactManager($db))->getAll(100);
                 break;
             case 'newsletter':
-                $abonnes = (new NewsletterManager($db))->getAll();
-                $messageNewsletter = (new NewsletterManager($db))->getMessage();
+                $newsletterManager = new NewsletterManager($db);
+                $abonnes = $newsletterManager->getAll();
+                $messageNewsletter = $newsletterManager->getMessage();
                 break;
         }
         require RACINE_PATH . '/view/admin.php';
@@ -310,21 +289,17 @@ switch ($pg) {
     // le compte de la personne connectée (changer son mot de passe)
     case 'compte':
         if ($utilisateur === null) {
-            $_SESSION['message'] = 'Connectez-vous pour accéder à votre compte.';
-            header('Location: ' . RACINE_URL);
-            exit;
+            rediriger(RACINE_URL, 'Connectez-vous pour accéder à votre compte.');
         }
         $monCompte = (new UserManager($db))->getById($utilisateur['id']);
         require RACINE_PATH . '/view/compte.php';
         break;
 
-    // pages sans données à préparer
     // le lien de confirmation reçu à l'inscription : /verification/12/jeton (active le compte)
     case 'verification':
         $verifie = false;
-        $idCompte = filter_var($_GET['slug'] ?? '', FILTER_VALIDATE_INT);
-        $jetonRecu = is_string($_GET['id'] ?? null) ? $_GET['id'] : '';
-        if ($idCompte !== false && $idCompte > 0) {
+        [$idCompte, $jetonRecu] = lireLienSigne();
+        if ($idCompte !== null) {
             $managerUsers = new UserManager($db);
             $candidat = $managerUsers->getById($idCompte);
             if ($candidat !== null && hash_equals(jetonVerification($idCompte, (string) $candidat->getEmail()), $jetonRecu)) {
@@ -338,9 +313,8 @@ switch ($pg) {
     // le lien reçu par e-mail : /desinscription/12/jeton (on affiche un bouton de confirmation, rien n'est supprimé en GET)
     case 'desinscription':
         $abonne = null;
-        $idAbonne = filter_var($_GET['slug'] ?? '', FILTER_VALIDATE_INT);
-        $jetonRecu = is_string($_GET['id'] ?? null) ? $_GET['id'] : '';
-        if ($idAbonne !== false && $idAbonne > 0) {
+        [$idAbonne, $jetonRecu] = lireLienSigne();
+        if ($idAbonne !== null) {
             $candidat = (new NewsletterManager($db))->getById($idAbonne);
             if ($candidat !== null && hash_equals(jetonDesinscription($idAbonne, $candidat['email']), $jetonRecu)) {
                 $abonne = $candidat;
@@ -349,6 +323,7 @@ switch ($pg) {
         require RACINE_PATH . '/view/desinscription.php';
         break;
 
+    // pages sans données à préparer
     case 'a-propos':
     case 'mentions-legales':
     case 'contact':

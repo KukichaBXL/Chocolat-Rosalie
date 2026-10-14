@@ -147,11 +147,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verifierCsrf()) {
                 throw $e; // la page d'erreur (public/index.php) s'en occupe
             }
 
-            $_SESSION['message'] = 'La recette « ' . $titre . ' » est publiée.';
-            header('Location: ' . RACINE_URL . 'recette/' . $slug);
-            exit;
+            rediriger(RACINE_URL . 'recette/' . $slug, 'La recette « ' . $titre . ' » est publiée.');
 
-            // la newsletter : enregistrer le message, envoyer un test à soi-même, l'envoyer à tous, retirer un abonné
+            // la newsletter : enregistrer le message, envoyer un test à soi-même, l'envoyer à tous
         case 'enregistrer-newsletter':
         case 'tester-newsletter':
         case 'envoyer-newsletter':
@@ -183,8 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verifierCsrf()) {
                     $_SESSION['message'] = 'Newsletter envoyée à ' . $reussis . ' abonné(s) sur ' . count($abonnes) . '.';
                 }
             }
-            header('Location: ' . RACINE_URL . 'admin/newsletter');
-            exit;
+            rediriger(RACINE_URL . 'admin/newsletter');
 
         case 'retirer-abonne':
             $idAbonne = lireEntier('subscriber_id', 1, PHP_INT_MAX);
@@ -192,8 +189,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verifierCsrf()) {
                 (new NewsletterManager($db))->remove($idAbonne);
                 $_SESSION['message'] = 'L\'abonné est retiré.';
             }
-            header('Location: ' . RACINE_URL . 'admin/newsletter');
-            exit;
+            rediriger(RACINE_URL . 'admin/newsletter');
 
             // masquer une recette : elle reste dans la base (avec ses étapes, notes et commentaires), seul son statut change
         case 'masquer-recette':
@@ -209,8 +205,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verifierCsrf()) {
                 $recetteManager->setStatus($idRecette, 'publiée');
                 $_SESSION['message'] = 'La recette est de nouveau visible.';
             }
-            header('Location: ' . RACINE_URL . 'admin/recettes');
-            exit;
+            rediriger(RACINE_URL . 'admin/recettes');
 
             // masquer un commentaire : il reste dans la base, seul son statut change
         case 'masquer-commentaire':
@@ -226,7 +221,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && verifierCsrf()) {
                 $commentaireManager->setStatus($idCommentaire, 'publié');
                 $_SESSION['message'] = 'Le commentaire est de nouveau visible.';
             }
-            header('Location: ' . RACINE_URL . 'admin/commentaires');
-            exit;
+            rediriger(RACINE_URL . 'admin/commentaires');
     }
 }
