@@ -184,6 +184,32 @@ button {
   animation: alerte-disparait 5s forwards;
 }
 
+
+
+.value-list{
+  li{
+    transition: all 0.3s ease-in-out;
+  }
+  li:hover{
+    transform: scale(1.15);
+    transition: all 0.3s ease-in-out;
+  }
+}
+
+.recette-photo-step{
+  height: 200px;
+  /* background-color: red; */
+  img{
+    transition: all 0.3s ease-in-out;
+
+  }
+  img:hover{
+    transform: scale(1.75);
+    transition: all 0.3s ease-in-out;
+    margin: 30px;
+  }
+}
+
 @keyframes alerte-disparait {
   0%,
   85% {
@@ -1899,6 +1925,14 @@ main:has(.histoire) + .site-footer {
 
     .histoire-image {
       border-radius: 44px;
+    }
+  }
+  .recette-photo-step{
+    height: 350px;
+    img:hover{
+    transform: scale(1.50);
+    transition: all 0.3s ease-in-out;
+    margin: 10px;
     }
   }
 }
