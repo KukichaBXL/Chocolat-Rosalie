@@ -114,12 +114,17 @@ button {
   }
 
   input,
-  textarea {
+  textarea,
+  select {
     padding: 12px 20px;
     border: 1px solid var(--bleu-nuit);
     border-radius: 23px;
     font-family: var(--police-texte);
     font-size: 18px;
+  }
+
+  select {
+    background: #fff;
   }
 
   textarea {
@@ -135,7 +140,6 @@ button {
   font-size: 15px;
 }
 
-/* champ piège anti-spam du formulaire de contact */
 .champ-piege {
   position: absolute;
   left: -9999px;
@@ -150,7 +154,6 @@ button {
   border: 1px solid var(--dore);
 }
 
-/* pour animer un bloc au scroll : ajouter la classe reveal */
 .reveal {
   opacity: 0;
   transform: translateY(40px);
@@ -164,7 +167,7 @@ button {
   transform: none;
 }
 
-/* message affiché une seule fois (connexion réussie, erreur...) */
+/* message affiché une seule fois (connexion réussie, erreur…) */
 .alerte {
   position: fixed;
   bottom: 24px;
@@ -190,15 +193,6 @@ button {
     opacity: 0;
     visibility: hidden;
   }
-}
-
-.form-field select {
-  padding: 12px 20px;
-  border: 1px solid var(--bleu-nuit);
-  border-radius: 23px;
-  background: #fff;
-  font-family: var(--police-texte);
-  font-size: 18px;
 }
 
 @media (max-width: 1100px) {
@@ -278,7 +272,7 @@ button {
   }
 
   img {
-    max-width: none; /* sinon les icônes tombent à 0 px de large sur mobile */
+    max-width: none;
   }
 }
 
@@ -412,7 +406,7 @@ button {
 
   ul {
     display: flex;
-    gap: 45px;
+    gap: 32px;
   }
 
   a {
@@ -420,6 +414,7 @@ button {
     font-family: var(--police-menu);
     font-weight: 300;
     font-size: 24px;
+    white-space: nowrap;
 
     &:hover,
     &.active {
@@ -433,36 +428,6 @@ button {
   }
 }
 
-.dropdown {
-  position: relative;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  border-radius: 15px;
-  border: 1px solid var(--dore);
-  background-color: #f9f9f9;
-  min-width: 280px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-}
-
-.dropdown-content a {
-  font-family: var(--police-italique);
-  float: none;
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-  text-align: left;
-}
-
-.dropdown:hover .dropdown-content {
-  display: block;
-}
-
-/* zone compte de l'en-tête quand on est connecté : le nom et le bouton Déconnexion */
 .compte-connecte {
   display: flex;
   align-items: center;
@@ -471,7 +436,7 @@ button {
 }
 
 .user-name {
-  text-transform: capitalize; /* « robin » s'affiche « Robin » */
+  text-transform: capitalize;
   color: var(--dore);
   font-family: var(--police-menu);
   font-weight: 500;
@@ -486,21 +451,8 @@ button {
   cursor: pointer;
 }
 
-a.user-name {
-  text-decoration: none;
-}
-
 a.user-name:hover {
   text-decoration: underline;
-}
-
-/* les liens ne passent jamais sur 2 lignes */
-.main-nav a {
-  white-space: nowrap;
-}
-
-.main-nav ul {
-  gap: 32px;
 }
 
 @media (max-width: 1400px) {
@@ -595,6 +547,38 @@ a.user-name:hover {
   }
 }
 
+.dropdown {
+  position: relative;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  border-radius: 15px;
+  border: 1px solid var(--dore);
+  background-color: #f9f9f9;
+  min-width: 280px;
+  box-shadow: 0 8px 16px 0 rgb(0 0 0 / 20%);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  display: block;
+  padding: 12px 16px;
+  color: black;
+  font-family: var(--police-menu);
+  font-weight: 400;
+  font-size: 16px;
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
 /* ====================== PIED DE PAGE ====================== */
 
 .site-footer {
@@ -621,7 +605,6 @@ a.user-name:hover {
 
 .footer-nav {
   display: flex;
-  flex-direction: row;
   align-items: center;
   gap: 37px;
   font-size: 24px;
@@ -691,7 +674,6 @@ a.user-name:hover {
 
 @media (max-width: 768px) {
   .footer-inner {
-    grid-template-columns: 1fr;
     flex-direction: column;
     text-align: center;
 
@@ -780,7 +762,6 @@ a.user-name:hover {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 30px;
-  list-style: none;
 }
 
 .top3-carte {
@@ -790,7 +771,7 @@ a.user-name:hover {
   gap: 10px;
   align-items: center;
   padding: 20px;
-  text-align: center; /* fond, bordure et relief : voir « CARTES ROSALIE » à la fin */
+  text-align: center;
 
   img {
     width: 100%;
@@ -887,8 +868,7 @@ a.user-name:hover {
 .recette-card {
   background: var(--bleu-nuit);
   color: white;
-  flex: 0 0 calc((100% - 40px) / 3);
-  /* 3 cartes visibles, 40px = 2 écarts de 20px */
+  flex: 0 0 calc((100% - 40px) / 3); /* 3 cartes visibles, 2 écarts de 20px */
 }
 
 .recette-card-body {
@@ -912,9 +892,6 @@ a.user-name:hover {
     transform 0.5s ease,
     opacity 0.5s ease;
 
-  /* position: relative;
-    top: 350px; */
-
   h2 {
     color: var(--dore);
     font-size: 26px;
@@ -925,7 +902,6 @@ a.user-name:hover {
     color: var(--dore);
     font-size: 22px;
     text-align: center;
-    transition-duration: 0.4s;
   }
 }
 
@@ -934,12 +910,9 @@ a.user-name:hover {
   color: var(--bleu-nuit);
 }
 
-.recette-card-body:hover {
-  .recette-card-body-txt {
-    display: flex;
-    opacity: 1;
-    transform: translateY(90%);
-  }
+.recette-card-body:hover .recette-card-body-txt {
+  opacity: 1;
+  transform: translateY(90%);
 }
 
 .carousel {
@@ -959,19 +932,15 @@ a.user-name:hover {
   transition: transform 0.6s ease-out;
 }
 
-.carousel-btn {
+.carousel-btn,
+.carrousel-fleche {
   flex: none;
-  width: 48px;
-  height: 48px;
   border: 1px solid var(--bleu-nuit);
   border-radius: 50%;
   background: none;
   color: var(--bleu-nuit);
-  font-size: 32px;
   line-height: 1;
-  transition:
-    background 0.3s,
-    color 0.3s;
+  transition-duration: 0.3s;
 
   &:hover:not(:disabled) {
     background: var(--bleu-nuit);
@@ -982,6 +951,12 @@ a.user-name:hover {
     opacity: 0.3;
     cursor: default;
   }
+}
+
+.carousel-btn {
+  width: 48px;
+  height: 48px;
+  font-size: 32px;
 }
 
 @media (max-width: 1100px) {
@@ -1062,18 +1037,18 @@ a.user-name:hover {
 }
 
 .recette-fiche {
+  display: flex;
+  flex-direction: column;
+  padding: 28px 32px 22px;
   border-radius: 19px;
   background: var(--bleu-nuit);
   color: white;
+  font-size: 16px;
+  line-height: 1.55;
 
   ul {
     list-style: disc;
   }
-  display: flex;
-  flex-direction: column;
-  padding: 28px 32px 22px;
-  font-size: 16px;
-  line-height: 1.55;
 
   h1 {
     margin-bottom: 14px;
@@ -1124,19 +1099,19 @@ a.user-name:hover {
   margin-bottom: 10px;
 }
 
-/* les photos d'étapes passent à la ligne sur petit écran */
 .recette-photo-step {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   gap: 20px;
+
   img {
-    object-fit: cover;
-    border-radius: 15px;
     width: 100px;
     height: 100px;
+    border-radius: 15px;
+    object-fit: cover;
   }
-  flex-wrap: wrap;
 }
 
 .commentaire-form {
@@ -1163,14 +1138,14 @@ a.user-name:hover {
 .etoile {
   border: none;
   background: none;
-  color: #bdb6a4; /* étoile vide */
+  color: #bdb6a4;
   font-size: 32px;
   line-height: 1;
   cursor: pointer;
 }
 
 .etoile.active {
-  color: var(--dore); /* étoile pleine */
+  color: var(--dore);
 }
 
 .etoile:focus-visible {
@@ -1181,36 +1156,15 @@ a.user-name:hover {
   min-height: 26px;
 }
 
-/* le vote est dans la zone commentaires, sous la liste des avis */
-.notation {
-  margin: 8px 0 24px;
-}
-
-/* les étoiles de l'auteur, à côté de la date du commentaire */
-.commentaire-note {
-  margin-left: 8px;
-  color: var(--dore);
-  letter-spacing: 2px;
-}
-
-/* bloc affiché aux visiteurs à la place du vote et du formulaire */
+.notation,
 .invitation-avis {
   margin: 8px 0 24px;
 }
 
-.commentaire {
-  position: relative;
-}
-
-/* bouton "Supprimer" d'un commentaire */
-.supprimer-avis {
-  padding: 4px 14px;
-  border: 1px solid #a32020;
-  border-radius: 20px;
-  background: transparent;
-  color: #a32020;
-  font-family: var(--police-texte);
-  cursor: pointer;
+.commentaire-note {
+  margin-left: 8px;
+  color: var(--dore);
+  letter-spacing: 2px;
 }
 
 .recette-categorie {
@@ -1235,10 +1189,15 @@ a.user-name:hover {
 }
 
 .recette-fiche .recette-infos {
-  margin-block: 14px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  padding: 0;
+  list-style: none;
 
   li {
-    font-weight: 400;
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -1248,22 +1207,11 @@ a.user-name:hover {
     border-radius: 999px;
     background: rgb(255 255 255 / 8%);
     font-family: var(--police-menu);
+    font-weight: 400;
     font-size: 13px;
   }
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-  margin: 0 0 10px;
-  padding: 0;
-  list-style: none;
 
   i {
-    color: var(--dore);
-  }
-
-  .recette-categorie {
-    border-color: var(--dore);
     color: var(--dore);
   }
 
@@ -1272,10 +1220,9 @@ a.user-name:hover {
   }
 }
 
-/* sur la page d'une recette, l'administrateur voit les commentaires masqués */
+/* commentaire masqué : seul l'administrateur le voit */
 .commentaire-masque {
   opacity: 0.55;
-  border-left: 4px solid var(--dore);
 }
 
 .commentaire-info {
@@ -1294,16 +1241,16 @@ a.user-name:hover {
   border-radius: 14px;
   background: rgb(255 255 255 / 6%);
 
-  h2,
   .portions-fixe {
     margin: 0;
   }
 
   h2 {
+    margin: 0;
+    color: var(--dore);
     font-family: var(--police-italique);
     font-style: italic;
     font-size: 24px;
-    color: var(--dore);
   }
 }
 
@@ -1402,7 +1349,6 @@ a.user-name:hover {
     counter-increment: etape;
   }
 
-  /* le rond doré avec le numéro */
   li::before {
     content: counter(etape);
     position: absolute;
@@ -1430,14 +1376,12 @@ a.user-name:hover {
     line-height: 1.2;
   }
 
-  /* les quantités qui suivent le nombre de personnes */
   .qte {
     color: var(--dore);
     font-weight: 700;
   }
 }
 
-/* logo de la maison : en bas à droite de la fiche */
 .recette-fiche .fiche-logo {
   display: flex;
   justify-content: flex-end;
@@ -1472,7 +1416,6 @@ a.user-name:hover {
   }
 }
 
-/* un carrousel = une piste qui défile + deux flèches */
 .carrousel-corps {
   display: flex;
   align-items: center;
@@ -1501,26 +1444,9 @@ a.user-name:hover {
 }
 
 .carrousel-fleche {
-  flex: none;
   width: 36px;
   height: 36px;
-  border: 1px solid var(--bleu-nuit);
-  border-radius: 50%;
-  background: none;
-  color: var(--bleu-nuit);
   font-size: 24px;
-  line-height: 1;
-  transition-duration: 0.3s;
-
-  &:hover:not(:disabled) {
-    background: var(--bleu-nuit);
-    color: var(--dore);
-  }
-
-  &:disabled {
-    opacity: 0.3;
-    cursor: default;
-  }
 
   &[hidden] {
     display: none;
@@ -1538,11 +1464,8 @@ a.user-name:hover {
   align-items: center;
   gap: 8px;
   padding: 10px 10px 16px;
-  color: var(
-    --bleu-nuit
-  ); /* fond, bordure et relief : voir « CARTES ROSALIE » à la fin */
+  color: var(--bleu-nuit);
   text-align: center;
-  text-decoration: none;
 
   img {
     width: 100%;
@@ -1565,7 +1488,6 @@ a.user-name:hover {
   }
 
   .note-etoiles {
-    color: var(--dore);
     letter-spacing: 3px;
   }
 
@@ -1580,39 +1502,23 @@ a.user-name:hover {
 }
 
 .divers-recettes {
-  overflow: hidden; /* l'ombre des cartes ne dépasse pas */
+  overflow: hidden;
 }
 
-/* avis : style « citation » (trait doré à gauche, grand texte) */
+/* carte d'un avis (le fond et la bordure sont ceux des cartes, voir plus bas) */
 .avis-bloc .commentaire {
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 8px;
-  min-height: 190px;
-  padding: 18px 20px 10px 34px;
-  border-left: 3px solid var(--dore);
+  min-height: 170px;
+  padding: 20px 24px;
   font-family: "Amiri", Georgia, serif;
   font-weight: 400;
   font-size: 20px;
   line-height: 1.45;
   text-align: left;
 
-  /* grand guillemet pâle derrière le texte */
-  &::before {
-    content: "“";
-    position: absolute;
-    top: -14px;
-    left: 8px;
-    color: rgb(200 169 91 / 35%);
-    font-family: var(--police-italique);
-    font-size: 110px;
-    line-height: 1;
-    pointer-events: none;
-  }
-
-  /* le sujet, en italique */
   p:has(> strong) {
     font-family: var(--police-italique);
     font-style: italic;
@@ -1624,7 +1530,6 @@ a.user-name:hover {
     font-weight: 400;
   }
 
-  /* l'auteur passe en bas : — Nom · date · étoiles */
   .commentaire-auteur {
     order: 5;
     margin-top: auto;
@@ -1664,13 +1569,7 @@ a.user-name:hover {
     color: #a32020;
     font-family: var(--police-texte);
     font-size: 15px;
-    cursor: pointer;
   }
-}
-
-.avis-bloc .commentaire-masque {
-  border-left-color: #999;
-  opacity: 0.6;
 }
 
 .avis-bloc #voir-plus {
@@ -1759,18 +1658,31 @@ a.user-name:hover {
   }
 }
 
-/* =========== CARTES (TOP 3 ET AUTRES RECETTES) ============ */
+/* =========== CARTES (top 3, autres recettes, avis, chiffres) ============ */
 
 .note-etoiles {
   color: var(--dore);
 }
 
 .top3-carte,
-.autre-recette {
+.autre-recette,
+.avis-bloc .commentaire,
+.stat-card {
   border: 1px solid rgb(196 151 74 / 20%);
   border-radius: 4px;
   background-color: #fbf9f5;
   box-shadow: 0 4px 12px rgb(0 0 0 / 2%);
+}
+
+.top3-carte,
+.autre-recette,
+.avis-bloc .commentaire {
+  border-color: rgb(196 151 74 / 45%);
+}
+
+.top3-carte,
+.autre-recette,
+.stat-card {
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease;
@@ -1833,9 +1745,9 @@ a.user-name:hover {
   .about-top-txt-citation {
     font-family: var(--police-italique);
     font-size: 24px;
-    background-color: #fbf9f5;
-    border: 1px solid rgba(196, 151, 74, 0.2);
     padding: 20px;
+    border: 1px solid rgb(196 151 74 / 20%);
+    background-color: #fbf9f5;
   }
 }
 
@@ -1868,23 +1780,11 @@ a.user-name:hover {
 }
 
 .stat-card {
-  background-color: #fbf9f5;
-  border: 1px solid rgba(196, 151, 74, 0.2);
-  border-radius: 4px;
-  padding: 36px 24px 30px;
-  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-}
-
-.stat-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(196, 151, 74, 0.12);
+  padding: 36px 24px 30px;
+  text-align: center;
 }
 
 .stat-icon {
@@ -1920,7 +1820,6 @@ main:has(.histoire) + .site-footer {
 }
 
 @media (max-width: 900px) {
-  /* texte et image s'empilent au lieu de rester côte à côte */
   .about-top {
     flex-direction: column;
     padding: 20px 0;
@@ -1961,7 +1860,6 @@ main:has(.histoire) + .site-footer {
 
 /* ======================== CONTACT ========================= */
 
-/* sur la page Contact, le bandeau bleu touche le pied de page */
 main:has(.contact-infos) + .site-footer {
   margin-top: 0;
 }
@@ -1972,7 +1870,6 @@ main:has(.contact-infos) + .site-footer {
   gap: 10px 70px;
   max-width: 966px;
 
-  /* le message occupe la colonne de droite sur la hauteur des 3 champs */
   .message {
     grid-column: 2;
     grid-row: 1 / 4;
@@ -2068,14 +1965,11 @@ main:has(.contact-infos) + .site-footer {
 }
 
 .form-connect {
-  width: min(
-    640px,
-    100%
-  ); /* largeur fixe : un long texte ne décale plus l'image */
-  text-align: center;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  width: min(640px, 100%);
+  text-align: center;
 
   form {
     margin: 30px 0;
@@ -2105,19 +1999,19 @@ main:has(.contact-infos) + .site-footer {
 }
 
 .popup-connexion {
-  /* place la fenêtre sous l'icône compte, en haut à droite */
-  inset: 130px 24px auto auto;
+  inset: 120px 0 auto;
   width: min(380px, calc(100% - 48px));
-  margin: 0;
+  margin: 0 auto;
   padding: 40px 30px 30px;
   border: 1px solid var(--dore);
   border-radius: 23px;
   background: white;
+  box-shadow: 0 20px 60px rgb(21 33 56 / 25%);
   color: var(--bleu-nuit);
   text-align: center;
 
   &::backdrop {
-    background: rgb(21 33 56 / 0.35); /* bleu nuit transparent */
+    background: rgb(21 33 56 / 35%);
   }
 
   h2 {
@@ -2136,10 +2030,6 @@ main:has(.contact-infos) + .site-footer {
   }
 
   .connect-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-
     > span {
       font-family: var(--police-texte);
       font-weight: 400;
@@ -2147,7 +2037,6 @@ main:has(.contact-infos) + .site-footer {
     }
 
     .btn-pill {
-      align-self: center;
       margin-top: 10px;
       font-size: 22px;
     }
@@ -2219,7 +2108,6 @@ main:has(.contact-infos) + .site-footer {
 @media (max-width: 480px) {
   .popup-connexion {
     inset: 80px 0 auto;
-    margin-inline: auto;
   }
 }
 
@@ -2236,17 +2124,14 @@ main:has(.contact-infos) + .site-footer {
   }
 }
 
-.admin-bloc {
-  border: none;
-
-  legend {
-    margin-bottom: 20px;
-    color: var(--dore);
-    font-family: var(--police-italique);
-    font-style: italic;
-    font-weight: 400;
-    font-size: 45px;
-  }
+.admin-bloc legend {
+  margin-bottom: 20px;
+  padding: 0 14px;
+  color: var(--dore);
+  font-family: var(--police-italique);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 34px;
 }
 
 .admin-infos {
@@ -2271,7 +2156,6 @@ main:has(.contact-infos) + .site-footer {
   gap: 20px;
 }
 
-/* Emplacement photo : zone vide à retoucher */
 .photo-slot {
   display: flex;
   flex-direction: column;
@@ -2286,11 +2170,29 @@ main:has(.contact-infos) + .site-footer {
 }
 
 .photo-vide {
-  display: block;
+  position: relative;
+  display: grid;
+  place-items: center;
   aspect-ratio: 4 / 3;
   border: 1px dashed var(--dore);
   border-radius: 15px;
-  background: #f7f3ea;
+  background-color: rgb(200 169 91 / 8%);
+  transition: 0.2s;
+
+  &::after {
+    content: "＋ Photo (facultative)";
+    color: var(--dore);
+    font-family: var(--police-menu);
+    font-size: 15px;
+  }
+
+  &[style*="background-image"]::after {
+    display: none;
+  }
+}
+
+.photo-slot:hover .photo-vide {
+  background-color: rgb(200 169 91 / 18%);
 }
 
 .photo-principale .photo-vide {
@@ -2309,17 +2211,56 @@ main:has(.contact-infos) + .site-footer {
   grid-template-columns: 220px 1fr;
   gap: 30px;
   align-items: start;
-  padding-bottom: 30px;
-  border-bottom: 1px solid var(--dore);
+  padding: 18px;
+  border: 1px solid rgb(200 169 91 / 40%);
+  border-radius: 16px;
 
   textarea {
     height: 165px;
   }
 }
 
+.admin-section,
+.admin-bloc {
+  padding: 28px;
+  border: 1px solid rgb(200 169 91 / 75%);
+  border-radius: 20px;
+  background: #f7f1e3;
+  box-shadow: 0 8px 24px rgb(21 33 56 / 10%);
+}
+
 .admin-section {
-  margin-bottom: 50px;
+  margin-block: 28px 50px;
   overflow-x: auto; /* sur mobile, le tableau défile dans son bloc, pas la page */
+
+  h2 {
+    margin-bottom: 18px;
+    color: var(--dore);
+    font-family: var(--police-italique);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 36px;
+  }
+
+  .admin-form {
+    margin-inline: auto;
+  }
+
+  .admin-note {
+    text-align: center;
+  }
+}
+
+.admin-note {
+  margin-bottom: 20px;
+  font-family: var(--police-texte);
+}
+
+.admin-boutons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
 }
 
 .admin-table {
@@ -2330,9 +2271,40 @@ main:has(.contact-infos) + .site-footer {
   th,
   td {
     padding: 10px 12px;
-    border-bottom: 1px solid var(--dore);
     text-align: left;
     vertical-align: top;
+  }
+
+  th {
+    border-bottom: 2px solid var(--dore);
+    color: var(--dore);
+    font-family: var(--police-menu);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  td {
+    border-bottom: 1px solid rgb(200 169 91 / 30%);
+  }
+
+  /* texte libre (message, commentaire) : même un mot géant passe à la ligne */
+  .cellule-texte {
+    min-width: 260px;
+    overflow-wrap: anywhere;
+  }
+
+  tbody tr:hover {
+    background: rgb(200 169 91 / 7%);
+  }
+
+  td a {
+    font-weight: 700;
+
+    &:hover {
+      color: var(--dore);
+    }
   }
 
   button {
@@ -2341,7 +2313,13 @@ main:has(.contact-infos) + .site-footer {
     border-radius: 20px;
     background: transparent;
     font-family: var(--police-texte);
-    cursor: pointer;
+    transition: 0.2s;
+
+    &:hover {
+      border-color: var(--dore);
+      background: var(--dore);
+      color: #152138;
+    }
   }
 }
 
@@ -2353,21 +2331,31 @@ main:has(.contact-infos) + .site-footer {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 8px 24px;
-  margin-top: 16px;
+  gap: 4px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 24px auto 0;
+  padding: 6px;
+  border: 1px solid var(--dore);
+  border-radius: 999px;
+  background: rgb(200 169 91 / 8%);
 
   a {
-    padding: 6px 2px;
-    border-bottom: 2px solid transparent;
+    padding: 8px 22px;
+    border-radius: 999px;
     color: var(--bleu-nuit);
     font-family: var(--police-menu);
     font-weight: 500;
-    text-decoration: none;
-  }
+    transition: 0.2s;
 
-  a:hover,
-  a.active {
-    border-bottom-color: var(--dore);
+    &:hover {
+      background: rgb(200 169 91 / 22%);
+    }
+
+    &.active {
+      background: var(--bleu-nuit);
+      color: var(--fond, #fff);
+    }
   }
 }
 
@@ -2382,8 +2370,13 @@ main:has(.contact-infos) + .site-footer {
     border-radius: 15px;
   }
 
-  .admin-bloc legend {
-    font-size: 36px;
+  .admin-section,
+  .admin-bloc {
+    padding: 16px;
+  }
+
+  .admin-onglets a {
+    padding: 8px 14px;
   }
 
   .admin-table {
@@ -2425,7 +2418,6 @@ main:has(.contact-infos) + .site-footer {
 
 /* ===================== DARK MODE ===================== */
 
-/* bouton lune / soleil dans le header */
 .theme-toggle {
   color: var(--bleu-nuit);
   font-size: 22px;
@@ -2437,8 +2429,7 @@ main:has(.contact-infos) + .site-footer {
   }
 }
 
-/* Le principe : en sombre, le "bleu nuit" (texte, bordures) devient crème,
-   et la page prend un fond bleu nuit très foncé. */
+/* En sombre, le « bleu nuit » (texte, bordures) devient crème et la page prend un fond bleu très foncé. */
 [data-theme="dark"] {
   --bleu-nuit: #ece3cf;
   --gris: #cfc8b9;
@@ -2451,7 +2442,6 @@ main:has(.contact-infos) + .site-footer {
     transition: 0.5s ease-in;
   }
 
-  /* les blocs qui avaient un fond bleu nuit gardent un fond sombre */
   .btn-pill:hover,
   .site-footer,
   .contact-infos,
@@ -2468,25 +2458,37 @@ main:has(.contact-infos) + .site-footer {
     color: var(--fond);
     transition: 0.5s ease-in;
   }
+
   .stat-card,
   .about-top-txt-citation {
-    color: var(--dore);
     border: 1px solid var(--dore);
+    background: var(--fond-bloc);
+    box-shadow: 0 4px 14px rgb(0 0 0 / 35%);
+    color: var(--dore);
     transition: 0.5s ease-in;
   }
 
-  /* texte foncé sur le bouton doré */
+  .top3-carte,
+  .autre-recette,
+  .avis-bloc .commentaire {
+    border-color: rgb(236 227 207 / 15%);
+    background: var(--fond-bloc);
+    box-shadow: 0 4px 14px rgb(0 0 0 / 35%);
+    color: var(--bleu-nuit);
+  }
+
+  .admin-section,
+  .admin-bloc {
+    border-color: rgb(236 227 207 / 28%);
+    background: var(--fond-bloc);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 45%);
+  }
+
   .recette-btn:hover {
     color: #152138;
     transition: 0.5s ease-in;
   }
 
-  .autre-recette {
-    color: var(--fond);
-    transition: 0.5s ease-in;
-  }
-
-  /* les fonds blancs passent en sombre */
   .dropdown-content,
   .popup-connexion,
   .photo-vide {
@@ -2510,12 +2512,8 @@ main:has(.contact-infos) + .site-footer {
     transition: 0.5s ease-in;
   }
 
-  /* l'icône compte est noire : on l'inverse pour qu'elle reste visible */
-  .account-btn img {
-    filter: invert(1);
-    transition: 0.5s ease-in;
-  }
-
+  /* icônes noires : inversées pour rester visibles */
+  .account-btn img,
   .recherche-btn img {
     filter: invert(1);
     transition: 0.5s ease-in;
@@ -2527,7 +2525,7 @@ main:has(.contact-infos) + .site-footer {
   }
 }
 
-/* ======================== NEWSLETTER ======================== */
+/* ======================== NEWSLETTER ET INSCRIPTION ======================== */
 
 .desinscription {
   display: flex;
@@ -2535,27 +2533,7 @@ main:has(.contact-infos) + .site-footer {
   margin-top: 24px;
 }
 
-.admin-note {
-  margin-bottom: 20px;
-  font-family: var(--police-texte);
-}
-
-.admin-boutons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-/* ===================== FINITIONS : pop-up, newsletter sombre, RGPD, admin ===================== */
-
-/* pop-up de connexion : centré sous l'en-tête (au lieu de coller au bord droit) */
-.popup-connexion {
-  inset: 120px 0 auto 0;
-  margin-inline: auto;
-  box-shadow: 0 20px 60px rgb(21 33 56 / 0.25);
-}
-
-/* case RGPD du formulaire d'inscription : texte centré, coupé en deux lignes, même taille que les autres libellés */
+/* case RGPD de l'inscription : texte centré sur deux lignes */
 .form-field .rgpd-label {
   display: block;
   padding-left: 0;
@@ -2564,7 +2542,6 @@ main:has(.contact-infos) + .site-footer {
   text-align: center;
   cursor: pointer;
 
-  /* la case est au début de la première ligne, le tout reste centré */
   input {
     width: 18px;
     height: 18px;
@@ -2574,12 +2551,11 @@ main:has(.contact-infos) + .site-footer {
     accent-color: var(--dore);
   }
 
-  /* sur petit écran : lignes équilibrées */
   span {
     text-wrap: balance;
   }
 
-  /* sur grand écran : coupure propre après « mon compte, » */
+  /* retour à la ligne forcé seulement sur grand écran */
   .rgpd-br {
     display: none;
   }
@@ -2596,12 +2572,11 @@ main:has(.contact-infos) + .site-footer {
   }
 }
 
-/* champ newsletter en mode sombre : plus de rectangle noir dans le cadre */
 [data-theme="dark"] .newsletter-field {
-  background: rgb(255 255 255 / 0.06);
+  background: rgb(255 255 255 / 6%);
 
   &:focus-within {
-    box-shadow: 0 0 0 2px rgb(200 169 91 / 0.4);
+    box-shadow: 0 0 0 2px rgb(200 169 91 / 40%);
   }
 
   input {
@@ -2609,109 +2584,12 @@ main:has(.contact-infos) + .site-footer {
     color: var(--bleu-nuit);
 
     &::placeholder {
-      color: rgb(236 227 207 / 0.55);
+      color: rgb(236 227 207 / 55%);
     }
   }
 
   .newsletter-envoi img {
     filter: none;
-  }
-}
-
-/* ---------- administration ---------- */
-
-.admin-onglets {
-  width: fit-content;
-  max-width: 100%;
-  margin: 24px auto 0;
-  padding: 6px;
-  gap: 4px;
-  border: 1px solid var(--dore);
-  border-radius: 999px;
-  background: rgb(200 169 91 / 0.08);
-
-  a {
-    padding: 8px 22px;
-    border: none;
-    border-radius: 999px;
-    transition: 0.2s;
-  }
-
-  a:hover {
-    background: rgb(200 169 91 / 0.22);
-  }
-
-  a.active {
-    background: var(--bleu-nuit);
-    color: var(--fond, #fff);
-  }
-}
-
-.admin-section,
-.admin-bloc {
-  padding: 28px;
-  border: 1px solid rgb(200 169 91 / 0.55);
-  border-radius: 20px;
-  background: var(--fond-bloc, #fff);
-  box-shadow: 0 10px 30px rgb(21 33 56 / 0.07);
-}
-
-.admin-section {
-  margin-top: 28px;
-  margin-bottom: 50px;
-
-  h2 {
-    margin-bottom: 18px;
-    color: var(--dore);
-    font-family: var(--police-italique);
-    font-style: italic;
-    font-weight: 400;
-    font-size: 36px;
-  }
-}
-
-.admin-bloc legend {
-  padding: 0 14px;
-  font-size: 34px;
-}
-
-.admin-table {
-  th {
-    border-bottom: 2px solid var(--dore);
-    color: var(--dore);
-    font-family: var(--police-menu);
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  td {
-    border-bottom: 1px solid rgb(200 169 91 / 0.3);
-    vertical-align: middle;
-  }
-
-  tbody tr:hover {
-    background: rgb(200 169 91 / 0.07);
-  }
-
-  td a {
-    font-weight: 700;
-    text-decoration: none;
-
-    &:hover {
-      color: var(--dore);
-    }
-  }
-
-  button {
-    transition: 0.2s;
-
-    &:hover {
-      border-color: var(--dore);
-      background: var(--dore);
-      color: #152138;
-    }
   }
 }
 
@@ -2732,67 +2610,23 @@ main:has(.contact-infos) + .site-footer {
 }
 
 [data-theme="dark"] .badge {
-  background: rgb(80 180 100 / 0.18);
+  background: rgb(80 180 100 / 18%);
   color: #8fd9a0;
 }
 
 [data-theme="dark"] .badge-masque {
-  background: rgb(255 255 255 / 0.1);
+  background: rgb(255 255 255 / 10%);
   color: #b9b9b9;
 }
 
-.photo-vide {
-  position: relative;
-  display: grid;
-  place-items: center;
-  background-color: rgb(200 169 91 / 0.08);
-  transition: 0.2s;
-
-  &::after {
-    content: "＋ Photo (facultative)";
-    color: var(--dore);
-    font-family: var(--police-menu);
-    font-size: 15px;
-  }
-
-  &[style*="background-image"]::after {
-    display: none;
-  }
-}
-
-.photo-slot:hover .photo-vide {
-  background-color: rgb(200 169 91 / 0.18);
-}
-
-.admin-etape {
-  padding: 18px;
-  border: 1px solid rgb(200 169 91 / 0.4);
-  border-radius: 16px;
-}
-
-@media (max-width: 768px) {
-  .admin-section,
-  .admin-bloc {
-    padding: 16px;
-  }
-
-  .admin-onglets a {
-    padding: 8px 14px;
-  }
-}
-
-/* pages courtes (confirmation d'e-mail, désinscription) : le pied de page reste en bas de l'écran
-   et le message est centré dans l'espace libre */
+/* pages courtes (confirmation d'e-mail, désinscription) : message centré, pied de page en bas de l'écran */
 .page-courte {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 18px;
-  box-sizing: border-box;
-  min-height: calc(
-    100vh - 560px
-  ); /* écran moins l'en-tête et le pied de page */
+  min-height: calc(100vh - 560px); /* écran moins en-tête et pied de page */
 
   h1 {
     margin-bottom: 0;
@@ -2807,21 +2641,7 @@ main:has(.contact-infos) + .site-footer {
   }
 }
 
-/* ===== MODE SOMBRE : cartes moins blanches (top 3 accueil, à propos, autres recettes) ===== */
-[data-theme="dark"] .top3-carte,
-[data-theme="dark"] .autre-recette {
-  background: var(--fond-bloc);
-  color: var(--bleu-nuit);
-  border: 1px solid rgba(236, 227, 207, 0.15);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
-}
-[data-theme="dark"] .stat-card,
-[data-theme="dark"] .about-top-txt-citation {
-  background: var(--fond-bloc);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
-}
-
-/* ===== Ajouter une recette : carte « Les ingrédients » (quantité + unité à choisir + nom) ===== */
+/* ===== Ajouter une recette : ingrédients (quantité, unité, nom) ===== */
 .ingredients-bloc {
   display: flex;
   flex-direction: column;
@@ -2835,10 +2655,9 @@ main:has(.contact-infos) + .site-footer {
   align-items: center;
   margin-bottom: 10px;
 
-  /* même look que les autres champs du formulaire */
   input,
   select {
-    min-width: 0; /* sinon une case trop large élargit toute la carte */
+    min-width: 0;
     padding: 12px 20px;
     border: 1px solid var(--bleu-nuit);
     border-radius: 23px;
@@ -2865,7 +2684,12 @@ main:has(.contact-infos) + .site-footer {
 }
 
 #ajouter-ingredient {
-  align-self: flex-start;
+  align-self: center;
+}
+
+#ajouter-etape {
+  display: block;
+  margin: 20px auto 0;
 }
 
 @media (max-width: 700px) {
